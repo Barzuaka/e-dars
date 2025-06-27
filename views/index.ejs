@@ -1,0 +1,271 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <%- include('partials/navbar') %>
+
+    <main class="main" id="main">
+      <!-- CAROUSEL -->
+      <div class="carousel-container-index">
+        <!-- Carousel placeholder: add your custom carousel here later -->
+      </div>
+
+      <!-- COURSES -->
+      <div class="courses-container">
+        <div class="courses-intro" id="courses-intro">
+          <p>Video kurslarimiz</p>
+        </div>
+        <div class="courses-filter-type">
+          <p style="font-weight: bold; color: rgb(66, 9, 21);">Dasturlar</p>
+          <p>|</p>
+          <p style="color: dimgray;">Sohalar</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- sticky menu - moved outside main container -->
+    <div class="courses-filter-categories"> 
+      <% categoryArray.forEach(category => { %>
+        <a href="#<%=category%>" class="category-link"><%=category %></a>
+      <% }) %>
+    </div>
+
+    <main class="main" id="main-courses">
+      <div class="courses-by-category">
+        <% categoryArray.forEach(category => { %>
+        <div class="category-group" id="<%=category%>">
+          <h2><%= category %> kurslari</h2>
+          <div class="course-list">
+            <% coursesByCategory[category].forEach(course => { %>
+            <div class="course-card-wrapper">
+              <div class="course-card">
+                <div class="top" style="background-image: url('<%= course.thumbnailImage %>');"></div>
+                <div class="bottom">
+                  <h1><%= course.title %></h1>
+                  <p><%= course.price.toLocaleString('ru-RU') %> so'm</p>
+                </div>
+                <button class="add-to-cart-icon-btn" 
+                  data-course-id="<%= course._id %>" 
+                  data-course-title="<%= course.title %>" 
+                  data-course-price="<%= course.price %>" 
+                  data-course-image="<%= course.thumbnailImage %>">
+                  <i class="fas fa-plus"></i>
+                  <i class="fas fa-check"></i>
+                </button>
+                <div class="inside">
+                  <div class="icon">
+                    <i class="fas fa-info-circle"></i>
+                  </div>
+                  <div class="contents">
+                    <table>
+                      <tr>
+                        <th>Videodarslar</th>
+                        <th><%= course.numberOfLessonsManual %></th>
+                      </tr>
+                      <tr>
+                        <td>Davomiylik</td>
+                        <td><%= course.totalHours %> soat</td>
+                      </tr>
+                      <tr>
+                        <th>Loyihalar</th>
+                        <th><%= course.numOfProjects %></th>
+                      </tr>
+                      <tr>
+                        <td>Hajmi</td>
+                        <td><%= course.sizeGb %> Gb</td>
+                      </tr>
+                      <tr>
+                        <th>Mavzular</th>
+                        <th><%= course.topicsCovered %></th>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+        <% }) %> <% if (Object.keys(coursesByCategory).length === 0) { %>
+        <p>No courses available yet.</p>
+        <% } %>
+      </div>
+    </main>
+
+    <!-- Floating Notification -->
+    <div id="floatingNotification" class="floating-notification">
+      <i class="fas fa-check-circle"></i>
+      <span>Kurs savatchaga qo'shildi</span>
+    </div>
+
+    <!-- Contact Sales Modal -->
+    <%- include('partials/contact-sales-modal') %>
+
+    <!-- JAVASCRIPT -->
+    <script src="/js/script.js"></script>
+    <script>
+      // Enhanced horizontal scrolling for course filter categories
+      document.addEventListener('DOMContentLoaded', function() {
+        const filterCategories = document.querySelector('.courses-filter-categories');
+        
+        if (filterCategories) {
+          // Add smooth scrolling behavior
+          filterCategories.style.scrollBehavior = 'smooth';
+          
+          // Ensure first category is visible on page load
+          filterCategories.scrollLeft = 0;
+          
+          // Add touch scrolling enhancement for mobile
+          let isScrolling = false;
+          let startX = 0;
+          let scrollLeft = 0;
+          
+          filterCategories.addEventListener('touchstart', function(e) {
+            isScrolling = true;
+            startX = e.touches[0].pageX - filterCategories.offsetLeft;
+            scrollLeft = filterCategories.scrollLeft;
+          });
+          
+          filterCategories.addEventListener('touchmove', function(e) {
+            if (!isScrolling) return;
+            e.preventDefault();
+            const x = e.touches[0].pageX - filterCategories.offsetLeft;
+            const walk = (x - startX) * 2;
+            filterCategories.scrollLeft = scrollLeft - walk;
+          });
+          
+          filterCategories.addEventListener('touchend', function() {
+            isScrolling = false;
+          });
+          
+          // Add keyboard navigation support
+          filterCategories.addEventListener('keydown', function(e) {
+            const scrollAmount = 200;
+            if (e.key === 'ArrowLeft') {
+              e.preventDefault();
+              filterCategories.scrollLeft -= scrollAmount;
+            } else if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              filterCategories.scrollLeft += scrollAmount;
+            }
+          });
+          
+          // Add focus management for accessibility
+          const categoryLinks = filterCategories.querySelectorAll('a');
+          categoryLinks.forEach(link => {
+            link.addEventListener('focus', function() {
+              // Scroll the focused element into view
+              this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            });
+          });
+        }
+      });
+      
+      // Add to cart functionality for homepage
+      document.addEventListener('DOMContentLoaded', function() {
+        const addToCartButtons = document.querySelectorAll('.add-to-cart-icon-btn');
+        
+        // Function to show floating notification
+        function showNotification(message = "Kurs savatchaga qo'shildi") {
+          const notification = document.getElementById('floatingNotification');
+          const messageSpan = notification.querySelector('span');
+          const icon = notification.querySelector('i');
+          
+          // Update message and icon based on the type
+          messageSpan.textContent = message;
+          
+          if (message.includes('allaqachon')) {
+            // Already in cart - show info icon
+            icon.className = 'fas fa-info-circle';
+            icon.style.color = '#FFA500'; // Orange for info
+          } else {
+            // Added to cart - show check icon
+            icon.className = 'fas fa-check-circle';
+            icon.style.color = '#4CAF50'; // Green for success
+          }
+          
+          notification.classList.add('show');
+          
+          // Hide notification after 2 seconds
+          setTimeout(() => {
+            notification.classList.remove('show');
+          }, 2000);
+        }
+        
+        // Function to check if course is in cart and update button state
+        function updateButtonState(button) {
+          const courseId = button.getAttribute('data-course-id');
+          
+          // Check if getCartItems function exists (from navbar)
+          if (typeof getCartItems === 'function') {
+            const cartItems = getCartItems();
+            const isInCart = cartItems.some(item => item.id === courseId);
+            
+            if (isInCart) {
+              button.classList.add('added');
+            } else {
+              button.classList.remove('added');
+            }
+          }
+        }
+        
+        // Update all button states on page load
+        addToCartButtons.forEach(button => {
+          updateButtonState(button);
+        });
+        
+        addToCartButtons.forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const courseId = this.getAttribute('data-course-id');
+            const courseTitle = this.getAttribute('data-course-title');
+            const coursePrice = parseInt(this.getAttribute('data-course-price'));
+            const courseImage = this.getAttribute('data-course-image');
+            
+            // Check if addToCart function exists (from navbar)
+            if (typeof addToCart === 'function') {
+              const wasAdded = addToCart(courseId, courseTitle, coursePrice, courseImage);
+              
+              if (wasAdded) {
+                // Course was added successfully - show success notification
+                showNotification("Kurs savatchaga qo'shildi");
+                
+                // Update button state after adding to cart
+                setTimeout(() => {
+                  updateButtonState(this);
+                }, 100);
+              } else {
+                // Course was already in cart - show info notification
+                showNotification("Kurs allaqachon savatchada, savatchani tekshiring");
+              }
+            } else {
+              console.error('addToCart function not found');
+            }
+          });
+        });
+        
+        // Add click handler for course card to navigate to course details
+        document.querySelectorAll('.course-card-wrapper').forEach(cardWrapper => {
+          cardWrapper.addEventListener('click', function(e) {
+            // Don't navigate if clicking on add to cart button or info panel
+            if (e.target.closest('.add-to-cart-icon-btn') || e.target.closest('.inside')) {
+              return;
+            }
+            
+            const courseId = this.querySelector('.add-to-cart-icon-btn').getAttribute('data-course-id');
+            window.location.href = `/courses/${courseId}`;
+          });
+        });
+      });
+    </script>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>

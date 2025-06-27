@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Student Works Management</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components/admin-student-works.css">
+  <link rel="stylesheet" href="/css/fontawesome-free-6.7.2-web/css/all.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <%- include('partials/navbar') %>
+
+  <!-- ADMIN HEADER -->
+  <div class="admin-header">
+    <div class="container">
+      <h1>Student Works Management</h1>
+      <p>Manage student work submissions and gallery content</p>
+    </div>
+  </div>
+
+  <!-- ADMIN CONTENT -->
+  <div class="admin-content">
+    <div class="container">
+      <!-- ACTIONS BAR -->
+      <div class="actions-bar">
+        <div class="actions-left">
+          <button id="addWorkBtn" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Add New Work
+          </button>
+        </div>
+        <div class="actions-right">
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search student works...">
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDENT WORKS TABLE -->
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Media</th>
+              <th>Student</th>
+              <th>Course</th>
+              <th>Job Position</th>
+              <th>Portfolio</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentWorksTableBody">
+            <% studentWorks.forEach(work => { %>
+              <tr data-id="<%= work._id %>">
+                <td class="media-cell">
+                  <% if (work.mediaType === 'image') { %>
+                    <img src="<%= work.mediaUrl %>" alt="Student work" class="thumbnail">
+                  <% } else if (work.mediaType === 'video') { %>
+                    <div class="video-thumbnail">
+                      <i class="fas fa-play"></i>
+                    </div>
+                  <% } else { %>
+                    <div class="no-media">
+                      <i class="fas fa-image"></i>
+                    </div>
+                  <% } %>
+                </td>
+                <td><%= work.studentName %></td>
+                <td><%= work.courseName %></td>
+                <td>
+                  <% if (work.jobPosition) { %>
+                    <span class="job-badge"><%= work.jobPosition %></span>
+                  <% } else { %>
+                    <span class="no-job">Not specified</span>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (work.portfolioLink) { %>
+                    <a href="<%= work.portfolioLink %>" target="_blank" class="portfolio-link">
+                      <i class="fas fa-external-link-alt"></i>
+                      View
+                    </a>
+                  <% } else { %>
+                    <span class="no-portfolio">No link</span>
+                  <% } %>
+                </td>
+                <td><%= new Date(work.createdAt).toLocaleDateString() %></td>
+                <td class="actions-cell">
+                  <div class="action-buttons">
+                    <button class="btn btn-sm btn-info" onclick="viewWork('<%= work._id %>')" title="View">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-warning" onclick="editWork('<%= work._id %>')" title="Edit">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteWork('<%= work._id %>')" title="Delete">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      <% if (pagination.totalPages > 1) { %>
+        <div class="pagination">
+          <% if (pagination.currentPage > 1) { %>
+            <a href="?page=<%= pagination.currentPage - 1 %>" class="page-link">
+              <i class="fas fa-chevron-left"></i>
+              Previous
+            </a>
+          <% } %>
+          
+          <div class="page-numbers">
+            <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+              <a href="?page=<%= i %>" class="page-link <%= i === pagination.currentPage ? 'active' : '' %>">
+                <%= i %>
+              </a>
+            <% } %>
+          </div>
+          
+          <% if (pagination.currentPage < pagination.totalPages) { %>
+            <a href="?page=<%= pagination.currentPage + 1 %>" class="page-link">
+              Next
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- ADD/EDIT WORK MODAL -->
+  <div id="workModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add New Student Work</h2>
+        <button class="close-btn" onclick="closeWorkModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <form id="workForm" enctype="multipart/form-data">
+        <div class="modal-body">
+          <!-- Basic Information -->
+          <div class="form-section">
+            <h3>Basic Information</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="studentName">Student Name *</label>
+                <input type="text" id="studentName" name="studentName" required>
+              </div>
+              <div class="form-group">
+                <label for="courseName">Course Name *</label>
+                <input type="text" id="courseName" name="courseName" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="portfolioLink">Portfolio Link</label>
+                <input type="url" id="portfolioLink" name="portfolioLink" placeholder="https://portfolio.com">
+                <small>Optional: Link to student's portfolio</small>
+              </div>
+              <div class="form-group">
+                <label for="jobPosition">Job Position & Company</label>
+                <input type="text" id="jobPosition" name="jobPosition" placeholder="e.g. 3D Artist at Studio XYZ">
+                <small>Optional: Current job position and company</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Media File -->
+          <div class="form-section">
+            <h3>Media File</h3>
+            <div class="form-row">
+              <div class="form-group" style="width: 100%">
+                <label for="media">Image or Video *</label>
+                <input type="file" id="media" name="media" accept="image/*,video/*" required>
+                <small>Only one file allowed. Image or video will be auto-detected.</small>
+              </div>
+            </div>
+            <div id="mediaPreview" class="media-preview"></div>
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeWorkModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i>
+            <span id="submitBtnText">Save Work</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- VIEW WORK MODAL -->
+  <div id="viewWorkModal" class="modal">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <h2 id="viewModalTitle">Student Work Details</h2>
+        <button class="close-btn" onclick="closeViewModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body" id="viewWorkContent">
+        <!-- Content will be loaded dynamically -->
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeViewModal()">Close</button>
+        <button class="btn btn-warning" onclick="editCurrentWork()">
+          <i class="fas fa-edit"></i>
+          Edit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Notification -->
+  <div id="floatingNotification" class="floating-notification">
+    <i class="fas fa-check-circle"></i>
+    <span>Notification message</span>
+  </div>
+
+  <script>
+    let currentWorkId = null;
+    let isEditMode = false;
+
+    // Show notification function
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('floatingNotification');
+      const messageSpan = notification.querySelector('span');
+      const icon = notification.querySelector('i');
+      
+      messageSpan.textContent = message;
+      
+      if (type === 'error') {
+        icon.className = 'fas fa-exclamation-circle';
+        icon.style.color = '#dc3545';
+      } else if (type === 'warning') {
+        icon.className = 'fas fa-exclamation-triangle';
+        icon.style.color = '#ffc107';
+      } else {
+        icon.className = 'fas fa-check-circle';
+        icon.style.color = '#28a745';
+      }
+      
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Modal functions
+    function openWorkModal(workId = null) {
+      const modal = document.getElementById('workModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const submitBtnText = document.getElementById('submitBtnText');
+      const form = document.getElementById('workForm');
+      
+      currentWorkId = workId;
+      isEditMode = !!workId;
+      
+      if (isEditMode) {
+        modalTitle.textContent = 'Edit Student Work';
+        submitBtnText.textContent = 'Update Work';
+        loadWorkData(workId);
+      } else {
+        modalTitle.textContent = 'Add New Student Work';
+        submitBtnText.textContent = 'Save Work';
+        form.reset();
+        document.getElementById('mediaPreview').innerHTML = '';
+      }
+      
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeWorkModal() {
+      const modal = document.getElementById('workModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      currentWorkId = null;
+      isEditMode = false;
+    }
+
+    function closeViewModal() {
+      const modal = document.getElementById('viewWorkModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Load work data for editing
+    async function loadWorkData(workId) {
+      try {
+        const response = await fetch(`/api/student-works/${workId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          const work = data.data;
+          
+          // Fill form fields
+          document.getElementById('studentName').value = work.studentName;
+          document.getElementById('courseName').value = work.courseName;
+          document.getElementById('portfolioLink').value = work.portfolioLink || '';
+          document.getElementById('jobPosition').value = work.jobPosition || '';
+          
+          // Show existing media
+          showMediaPreview(work);
+        }
+      } catch (error) {
+        console.error('Error loading work data:', error);
+        showNotification('Error loading work data', 'error');
+      }
+    }
+
+    // Show media preview
+    function showMediaPreview(work) {
+      const preview = document.getElementById('mediaPreview');
+      let html = '<h4>Current Media:</h4>';
+      
+      if (work.mediaUrl) {
+        if (work.mediaType === 'image') {
+          html += `
+            <div class="media-item">
+              <img src="${work.mediaUrl}" alt="Current media">
+            </div>
+          `;
+        } else if (work.mediaType === 'video') {
+          html += `
+            <div class="media-item">
+              <video src="${work.mediaUrl}" controls></video>
+            </div>
+          `;
+        }
+      }
+      
+      preview.innerHTML = html;
+    }
+
+    // Form submission
+    document.getElementById('workForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      
+      try {
+        const url = isEditMode 
+          ? `/api/student-works/${currentWorkId}`
+          : '/api/student-works';
+        
+        const method = isEditMode ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+          method: method,
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showNotification(data.message);
+          closeWorkModal();
+          // Reload the page to show updated data
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          showNotification(data.message, 'error');
+        }
+      } catch (error) {
+        console.error('Error saving work:', error);
+        showNotification('Error saving work', 'error');
+      }
+    });
+
+    // Action functions
+    function addWork() {
+      openWorkModal();
+    }
+
+    function editWork(workId) {
+      openWorkModal(workId);
+    }
+
+    async function viewWork(workId) {
+      try {
+        const response = await fetch(`/api/student-works/${workId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          const work = data.data;
+          currentWorkId = workId;
+          
+          const content = document.getElementById('viewWorkContent');
+          content.innerHTML = `
+            <div class="work-details-view">
+              <div class="work-header">
+                <h3>${work.studentName}</h3>
+                <p class="course-name">${work.courseName}</p>
+                ${work.jobPosition ? `<p class="job-position"><i class="fas fa-briefcase"></i> ${work.jobPosition}</p>` : ''}
+                ${work.portfolioLink ? `<a href="${work.portfolioLink}" target="_blank" class="portfolio-link"><i class="fas fa-external-link-alt"></i> View Portfolio</a>` : ''}
+              </div>
+              
+              ${work.mediaUrl ? `
+                <div class="work-media">
+                  <h4>Media File</h4>
+                  <div class="media-item">
+                    ${work.mediaType === 'image' 
+                      ? `<img src="${work.mediaUrl}" alt="Student work">`
+                      : `<video src="${work.mediaUrl}" controls></video>`
+                    }
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+          
+          document.getElementById('viewWorkModal').style.display = 'block';
+          document.body.style.overflow = 'hidden';
+        }
+      } catch (error) {
+        console.error('Error loading work details:', error);
+        showNotification('Error loading work details', 'error');
+      }
+    }
+
+    function editCurrentWork() {
+      closeViewModal();
+      setTimeout(() => {
+        editWork(currentWorkId);
+      }, 300);
+    }
+
+    async function deleteWork(workId) {
+      if (!confirm('Are you sure you want to delete this student work? This action cannot be undone.')) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/api/student-works/${workId}`, {
+          method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showNotification(data.message);
+          // Remove the row from the table
+          document.querySelector(`tr[data-id="${workId}"]`).remove();
+        } else {
+          showNotification(data.message, 'error');
+        }
+      } catch (error) {
+        console.error('Error deleting work:', error);
+        showNotification('Error deleting work', 'error');
+      }
+    }
+
+    // Event listeners
+    document.getElementById('addWorkBtn').addEventListener('click', addWork);
+
+    // Close modals when clicking outside
+    window.addEventListener('click', function(event) {
+      const workModal = document.getElementById('workModal');
+      const viewModal = document.getElementById('viewWorkModal');
+      
+      if (event.target === workModal) {
+        closeWorkModal();
+      }
+      if (event.target === viewModal) {
+        closeViewModal();
+      }
+    });
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const rows = document.querySelectorAll('#studentWorksTableBody tr');
+      
+      rows.forEach(row => {
+        const studentName = row.cells[1].textContent.toLowerCase();
+        const courseName = row.cells[2].textContent.toLowerCase();
+        const jobPosition = row.cells[3].textContent.toLowerCase();
+        
+        if (studentName.includes(searchTerm) || 
+            courseName.includes(searchTerm) || 
+            jobPosition.includes(searchTerm)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

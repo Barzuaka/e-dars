@@ -1,0 +1,116 @@
+/* Legacy styles - Only styles not covered by component files */
+
+/* Icon margins - specific styling */
+i {
+  margin: 0 10px;
+}
+
+/* Large screen specific styles */
+@media (min-width: 1024px) {
+  body {
+    font-family: "Poppins", sans-serif;
+    background-color: #fff8f6;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+/* Contact Sales Modal - specific styles not in modal.css */
+.contact-sales-modal {
+  background-color: var(--white);
+  margin: 5% auto;
+  padding: 0;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  animation: modalSlideIn 0.3s ease-out;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.contact-sales-header {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+  color: var(--white);
+  padding: 24px 32px 20px;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+  position: relative;
+}
+
+.contact-sales-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.contact-sales-header p {
+  margin: 8px 0 0;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.close-modal .close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  color: var(--white);
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.close-modal .close:hover {
+  opacity: 1;
+}
+
+.contact-methods {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.contact-form-section {
+  padding: 32px;
+}
+
+/* Responsive design for contact sales modal */
+@media (max-width: 768px) {
+  .contact-sales-modal {
+    width: 95%;
+    margin: 10% auto;
+  }
+  
+  .contact-sales-header {
+    padding: 20px 24px 16px;
+  }
+  
+  .contact-methods,
+  .contact-form-section {
+    padding: 24px;
+  }
+  
+  .close-modal .close {
+    right: 16px;
+    top: 16px;
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-sales-header {
+    padding: 16px 20px 12px;
+  }
+  
+  .contact-form-section.compact {
+    padding: 20px;
+  }
+  
+  .submit-contact-btn.compact {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}

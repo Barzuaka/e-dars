@@ -1,0 +1,510 @@
+/* Button Component Styles */
+
+/* Base Button Styles */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  font-family: inherit;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Primary Button */
+.btn-primary {
+  background: var(--primary-light);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: var(--primary-lighter);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: var(--white);
+  color: var(--primary-dark);
+  border: 2px solid var(--primary-dark);
+}
+
+.btn-secondary:hover {
+  background: var(--primary-dark);
+  color: var(--white);
+}
+
+/* Outline Button */
+.btn-outline {
+  background: transparent;
+  color: var(--primary-dark);
+  border: 2px solid var(--primary-dark);
+}
+
+.btn-outline:hover {
+  background: var(--primary-dark);
+  color: var(--white);
+}
+
+/* Login Button */
+.login-btn {
+  background: var(--white);
+  color: var(--primary-dark);
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all var(--transition);
+  border: 2px solid var(--primary-dark);
+  font-weight: 500;
+}
+
+.login-btn:hover {
+  background: var(--primary-dark);
+  color: var(--white);
+  transform: translateY(-1px);
+}
+
+/* Register Button */
+.register-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all var(--transition);
+  font-weight: 500;
+}
+
+.register-btn:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-1px);
+}
+
+/* My Courses Navigation Button */
+.my-courses-nav-btn {
+  background: var(--primary-dark);
+  color: var(--white) !important;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all var(--transition);
+  margin-right: 16px;
+  margin-left: 16px;
+  display: inline-block;
+  border: none;
+}
+
+.my-courses-nav-btn:hover {
+  background: var(--primary-light);
+  color: var(--white) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(93, 14, 65, 0.3);
+}
+
+/* Create Course Button */
+.create-course-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition);
+  display: inline-block;
+  border: none;
+}
+
+.create-course-btn:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(186, 28, 130, 0.3);
+  color: white;
+}
+
+/* Course Card Button */
+.course-card-button {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  text-align: center;
+  display: block;
+}
+
+.course-card-button:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-1px);
+}
+
+/* Add to Cart Button */
+.add-to-cart-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+}
+
+.add-to-cart-btn:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-1px);
+}
+
+.add-to-cart-btn i {
+  margin-right: 8px;
+}
+
+.add-to-cart-btn.success {
+  background: #28a745;
+  transform: scale(1.05);
+  cursor: not-allowed;
+}
+
+.add-to-cart-btn.success:hover {
+  background: #28a745;
+  transform: scale(1.05);
+}
+
+/* Add to Cart Button (Course) */
+.add-to-cart-btn-course {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 14px 28px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(186, 28, 130, 0.2);
+}
+
+.add-to-cart-btn-course:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(186, 28, 130, 0.3);
+}
+
+/* Add to Cart Icon Button */
+.add-to-cart-icon-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(186, 28, 130, 0.2);
+}
+
+.add-to-cart-icon-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(186, 28, 130, 0.3);
+}
+
+.add-to-cart-icon-btn.added {
+  background: #28a745;
+  transform: scale(1.1);
+}
+
+.add-to-cart-icon-btn.added i {
+  color: var(--white);
+}
+
+.add-to-cart-icon-btn i {
+  transition: all var(--transition);
+}
+
+.add-to-cart-icon-btn.added i.fa-plus {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.add-to-cart-icon-btn.added i.fa-check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.add-to-cart-icon-btn i.fa-check {
+  opacity: 0;
+  transform: scale(0);
+}
+
+/* Contact Sales Button */
+.contact-sales-btn-course {
+  background: var(--white);
+  color: var(--primary-dark);
+  padding: 14px 28px;
+  border: 2px solid var(--primary-dark);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+}
+
+.contact-sales-btn-course:hover {
+  background: var(--primary-dark);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+/* Modal Buttons */
+.modal-btn {
+  flex: 1;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+}
+
+.modal-btn-primary {
+  background: var(--primary-light);
+  color: var(--white);
+}
+
+.modal-btn-primary:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-1px);
+}
+
+.modal-btn-secondary {
+  background: var(--gray-light);
+  color: var(--text-dark);
+}
+
+.modal-btn-secondary:hover {
+  background: var(--gray-medium);
+  transform: translateY(-1px);
+}
+
+/* Navigation Buttons */
+.nav-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--primary-lighter);
+  transform: translateY(-1px);
+}
+
+.nav-btn:disabled {
+  background: var(--gray-medium);
+  color: var(--text-light);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Tab Buttons */
+.tab-btn {
+  background: transparent;
+  color: var(--text-light);
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.tab-btn:hover {
+  color: var(--primary-dark);
+  background: rgba(102, 51, 153, 0.1);
+}
+
+.tab-btn.active {
+  background: var(--primary-dark);
+  color: var(--white);
+}
+
+/* Save Button */
+.save-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.save-btn:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-1px);
+}
+
+/* Auth Button */
+.auth-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #5e72e4 0%, #825ee4 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.auth-btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 4px 15px rgba(94, 114, 228, 0.4);
+}
+
+/* Submit Contact Button */
+.submit-contact-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+}
+
+.submit-contact-btn:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-1px);
+}
+
+.submit-contact-btn.compact {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+}
+
+.submit-contact-btn.compact:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-1px);
+}
+
+/* Buy Cart Button */
+.buy-cart-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  padding: 14px 28px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  text-align: center;
+  display: block;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(186, 28, 130, 0.2);
+}
+
+.buy-cart-btn:hover {
+  background: var(--primary-lighter);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(186, 28, 130, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .login-btn, .register-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
+  .my-courses-nav-btn {
+    padding: 10px 20px;
+    font-size: 13px;
+    margin-right: 12px;
+  }
+  
+  .add-to-cart-btn-course {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+  
+  .contact-sales-btn-course {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+  
+  .modal-btn {
+    width: 100%;
+  }
+  
+  .submit-contact-btn.compact {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+} 

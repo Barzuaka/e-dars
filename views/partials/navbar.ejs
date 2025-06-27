@@ -1,0 +1,376 @@
+<!-- GOOGLE FONTS -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+  rel="stylesheet"
+/>
+
+<!-- MODULAR CSS STRUCTURE -->
+<link rel="stylesheet" href="/css/main.css" />
+
+<!-- FONTAWESOME -->
+<link rel="stylesheet" href="/css/fontawesome-free-6.7.2-web/css/all.css" />
+
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="nav-left">
+      <a href="/" class="logo">
+        <img src="/images/edars-logo.png" alt="Edars Logo" id="logo" />
+      </a>
+      <a href="/#courses-intro" class="menu-item">Videokurslar</a>
+      <a href="/student-works" class="menu-item">Natijalar</a>
+    </div>
+    <div class="nav-right">
+      <!-- Shopping Cart -->
+      <div class="cart-container">
+        <button class="cart-icon" onclick="toggleCart()">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+        <div class="cart-dropdown" id="cartDropdown">
+          <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="close-cart" onclick="toggleCart()">&times;</button>
+          </div>
+          <div class="cart-items" id="cartItems">
+            <!-- Cart items will be dynamically added here -->
+          </div>
+          <div class="cart-summary" id="cartSummary">
+            <!-- Cart summary will be dynamically added here -->
+          </div>
+          <div class="cart-actions">
+            <p class="contact-message"><i class="fa-solid fa-triangle-exclamation"></i>Kurslarni sotib olish uchun biz bilan bog'laning</p>
+            <div class="cart-button-container">
+              <button class="buy-cart-btn" onclick="openCartContactModal()">
+                <i class="fas fa-phone"></i>
+                Sotib olish
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <% if (user) { %>
+        <% if (user.role === 'admin') { %>
+          <a href="/admin-page" class="menu-item">A-panel</a>
+          <a href="/admin/student-works" class="menu-item">Student Works</a>
+        <% } %>
+        <span class="menu-item">Salom, <%= user.firstName %>!</span>
+        <a href="/api/auth/logout" class="login-btn menu-item">Chiqish</a>
+      <% } else { %>
+        <a href="/login" class="login-btn menu-item">Kirish</a>
+        <a href="/register" class="register-btn menu-item">Ro'yxatdan o'tish</a>
+      <% } %>
+      
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+<!-- Mobile Menu (moved outside navbar-container) -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="user-info">
+    <% if (user) { %>
+      <span class="user-name"><%= user.firstName %> <%= user.lastName %></span>
+    <% } else { %>
+      <span class="user-name">Guest User</span>
+    <% } %>
+  </div>
+  
+  <a href="/#courses-intro" class="menu-item" onclick="closeMobileMenu()">Videokurslar</a>
+  <a href="/student-works" class="menu-item" onclick="closeMobileMenu()">Natijalar</a>
+  
+  <% if (user) { %>
+    <% if (user.role === 'admin') { %>
+      <a href="/admin-page" class="menu-item" onclick="closeMobileMenu()">A-panel</a>
+      <a href="/admin/student-works" class="menu-item" onclick="closeMobileMenu()">Student Works</a>
+    <% } %>
+    <% if (user.purchasedCourses && user.purchasedCourses.length > 0) { %>
+      <a href="/dashboard" class="menu-item highlight-btn" onclick="closeMobileMenu()">Mening kurslarim</a>
+    <% } %>
+    <a href="/api/auth/logout" class="menu-item logout-btn" onclick="closeMobileMenu()">Chiqish</a>
+  <% } else { %>
+    <a href="/login" class="menu-item" onclick="closeMobileMenu()">Kirish</a>
+    <a href="/register" class="menu-item" onclick="closeMobileMenu()">Ro'yxatdan o'tish</a>
+  <% } %>
+</div>
+
+<script>
+// Mobile menu functionality
+function toggleMobileMenu() {
+  const mobileMenu = document.getElementById('mobileMenu');
+  const toggleBtn = document.querySelector('.mobile-menu-toggle i');
+  
+  console.log('Toggle mobile menu clicked');
+  console.log('Mobile menu element:', mobileMenu);
+  console.log('Toggle button element:', toggleBtn);
+  
+  if (mobileMenu) {
+    mobileMenu.classList.toggle('show');
+    console.log('Mobile menu classes after toggle:', mobileMenu.className);
+    
+    // Change icon
+    if (mobileMenu.classList.contains('show')) {
+      toggleBtn.className = 'fas fa-times';
+      console.log('Menu opened, changed to X icon');
+    } else {
+      toggleBtn.className = 'fas fa-bars';
+      console.log('Menu closed, changed to bars icon');
+    }
+  } else {
+    console.error('Mobile menu element not found!');
+  }
+}
+
+function closeMobileMenu() {
+  const mobileMenu = document.getElementById('mobileMenu');
+  const toggleBtn = document.querySelector('.mobile-menu-toggle i');
+  
+  console.log('Close mobile menu called');
+  
+  if (mobileMenu) {
+    mobileMenu.classList.remove('show');
+    toggleBtn.className = 'fas fa-bars';
+    console.log('Mobile menu closed');
+  }
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+  const mobileMenu = document.getElementById('mobileMenu');
+  const toggleBtn = document.querySelector('.mobile-menu-toggle');
+  
+  if (!mobileMenu.contains(event.target) && !toggleBtn.contains(event.target)) {
+    closeMobileMenu();
+  }
+});
+
+// Cart functionality
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function updateCartCount() {
+  document.getElementById('cartCount').textContent = cart.length;
+}
+
+function addToCart(courseId, courseTitle, coursePrice, courseImage) {
+  // Check if course is already in cart
+  const existingItem = cart.find(item => item.id === courseId);
+  if (existingItem) {
+    // Don't show alert here - let the calling code handle notification
+    return false; // Return false to indicate course was already in cart
+  }
+  
+  // Add to local cart for immediate UI feedback
+  cart.push({
+    id: courseId,
+    title: courseTitle,
+    price: coursePrice,
+    image: courseImage
+  });
+  
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+  renderCart();
+  
+  return true; // Return true to indicate course was added successfully
+}
+
+function removeFromCart(courseId, event) {
+  // Prevent event from bubbling up and closing the cart dropdown
+  if (event) {
+    event.stopPropagation();
+  }
+  
+  cart = cart.filter(item => item.id !== courseId);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+  renderCart();
+}
+
+function getCartItems() {
+  return cart;
+}
+
+function clearCart() {
+  cart = [];
+  localStorage.removeItem('cart');
+  updateCartCount();
+  renderCart();
+}
+
+function renderCart() {
+  const cartItems = document.getElementById('cartItems');
+  const cartSummary = document.getElementById('cartSummary');
+  
+  if (cart.length === 0) {
+    cartItems.innerHTML = '<p class="empty-cart">Savat bo\'sh</p>';
+    cartSummary.innerHTML = '';
+    return;
+  }
+  
+  // Render cart items
+  cartItems.innerHTML = cart.map((item, index) => {
+    const discount = index >= 1 ? 0.2 : 0; // 20% discount for 2nd course onwards
+    const discountedPrice = item.price * (1 - discount);
+    
+    return `
+      <div class="cart-item">
+        <img src="${item.image}" alt="${item.title}" class="cart-item-image">
+        <div class="cart-item-details">
+          <h4>${item.title}</h4>
+          <div class="cart-item-price">
+            ${discount > 0 ? `<span class="original-price">${item.price.toLocaleString('ru-RU')} so'm</span>` : ''}
+            <span class="final-price">${discountedPrice.toLocaleString('ru-RU')} so'm</span>
+          </div>
+        </div>
+        <button class="remove-cart-item" onclick="removeFromCart('${item.id}', event)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+  }).join('');
+  
+  // Calculate totals
+  let totalOriginal = 0;
+  let totalDiscounted = 0;
+  
+  cart.forEach((item, index) => {
+    totalOriginal += item.price;
+    const discount = index >= 1 ? 0.2 : 0;
+    totalDiscounted += item.price * (1 - discount);
+  });
+  
+  const totalSavings = totalOriginal - totalDiscounted;
+  
+  // Render cart summary
+  cartSummary.innerHTML = `
+    <div class="cart-totals">
+      <div class="total-row">
+        <span>Jami:</span>
+        ${totalSavings > 0 ? `<span class="original-total">${totalOriginal.toLocaleString('ru-RU')} so'm</span>` : ''}
+        <span class="final-total">${totalDiscounted.toLocaleString('ru-RU')} so'm</span>
+      </div>
+      ${totalSavings > 0 ? `<div class="savings">Chegirma: ${totalSavings.toLocaleString('ru-RU')} so'm</div>` : ''}
+    </div>
+  `;
+}
+
+function toggleCart() {
+  const dropdown = document.getElementById('cartDropdown');
+  dropdown.classList.toggle('show');
+  
+  // Close mobile menu when cart is opened
+  closeMobileMenu();
+}
+
+function showCartNotification() {
+  // You can add a toast notification here
+  console.log('Course added to cart!');
+}
+
+function openCartContactModal() {
+  // This will open the contact modal with cart information
+  if (cart.length === 0) {
+    // Show floating notification instead of alert
+    const notification = document.getElementById('floatingNotification');
+    if (notification) {
+      const messageSpan = notification.querySelector('span');
+      const icon = notification.querySelector('i');
+      
+      messageSpan.textContent = "Savatcha bo'sh, kurslarni savatga qo'shing va sotib oling!";
+      icon.className = 'fas fa-info-circle';
+      icon.style.color = '#FFA500'; // Orange for info
+      
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000); // Show for 3 seconds since it's longer message
+    } else {
+      // Fallback to alert if notification doesn't exist
+      alert("Savatcha bo'sh, kurslarni savatga qo'shing va sotib oling!");
+    }
+    return;
+  }
+  
+  // Close cart dropdown
+  document.getElementById('cartDropdown').classList.remove('show');
+  
+  // Check if we're on a page with the contact modal
+  const contactModal = document.getElementById('contactSalesModal');
+  
+  if (contactModal) {
+    // Call the global openContactModal function if it exists
+    if (typeof openContactModal === 'function') {
+      openContactModal();
+    } else {
+      contactModal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+  } else {
+    // If no contact modal found, process purchase directly
+    const courseIds = cart.map(item => item.id);
+    
+    // Prompt for phone number
+    const phoneNumber = prompt('Telefon raqamingizni kiriting:');
+    if (!phoneNumber) {
+      return;
+    }
+    
+    // Send purchase request
+    fetch('/api/cart/purchase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        courseIds,
+        phoneNumber 
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+        clearCart();
+      } else {
+        alert('Error: ' + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error processing purchase:', error);
+      alert('Xatolik yuz berdi, qaytadan urinib ko\'ring');
+    });
+  }
+}
+
+// Initialize cart on page load
+document.addEventListener('DOMContentLoaded', function() {
+  updateCartCount();
+  renderCart();
+  
+  // Initialize mobile menu
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileToggle = document.querySelector('.mobile-menu-toggle');
+  
+  console.log('Page loaded - Mobile menu initialization:');
+  console.log('Mobile menu element:', mobileMenu);
+  console.log('Mobile toggle button:', mobileToggle);
+  
+  if (mobileMenu) {
+    console.log('Mobile menu found and ready');
+  } else {
+    console.error('Mobile menu element not found during initialization');
+  }
+  
+  // Close cart when clicking outside
+  document.addEventListener('click', function(event) {
+    const cartContainer = document.querySelector('.cart-container');
+    if (!cartContainer.contains(event.target)) {
+      document.getElementById('cartDropdown').classList.remove('show');
+    }
+  });
+});
+</script>

@@ -1,0 +1,390 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Users</title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  <h1>Manage Users</h1>
+  <a href="/admin-page" style="margin-bottom: 20px; display: inline-block;">&larr; Back to Admin Panel</a>
+  <table class="admin-table" style="width:100%; border-collapse:collapse; margin-top:20px;">
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Registered</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(user => { %>
+        <tr data-id="<%= user._id %>">
+          <td><%= user.firstName %></td>
+          <td><%= user.lastName %></td>
+          <td><%= user.email %></td>
+          <td><%= new Date(user.createdAt).toLocaleString() %></td>
+          <td>
+            <button class="edit-user-btn">Edit</button>
+            <button class="manage-courses-btn" style="background: #28a745; color: white; margin: 0 5px;">Manage Courses</button>
+            <button class="delete-user-btn" style="color:red;">Delete</button>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <!-- Edit User Modal -->
+  <div id="editUserModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal" id="closeEditUserModal">&times;</span>
+      <h2>Edit User</h2>
+      <form id="editUserForm">
+        <input type="hidden" name="_id" id="edit-user-id" />
+        <div>
+          <label>First Name:</label>
+          <input type="text" name="firstName" id="edit-firstName" required />
+        </div>
+        <div>
+          <label>Last Name:</label>
+          <input type="text" name="lastName" id="edit-lastName" required />
+        </div>
+        <div>
+          <label>Email:</label>
+          <input type="email" name="email" id="edit-email" required />
+        </div>
+        <div>
+          <label>New Password (leave blank to keep unchanged):</label>
+          <input type="password" name="password" id="edit-password" minlength="8" />
+        </div>
+        <div style="margin-top: 20px;">
+          <button type="submit">Save Changes</button>
+          <button type="button" id="cancelEditUserBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Manage User Courses Modal -->
+  <div id="manageCoursesModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
+      <span class="close-modal" id="closeManageCoursesModal">&times;</span>
+      <h2>Manage User Courses</h2>
+      <div id="userInfo" class="course-management-user-info">
+        <h3 id="userName"></h3>
+        <p id="userEmail"></p>
+      </div>
+      
+      <div class="course-management-container">
+        <!-- Enrolled Courses -->
+        <div class="course-management-section">
+          <h3>Enrolled Courses (<span id="enrolledCount">0</span>)</h3>
+          <div id="enrolledCourses" style="max-height: 400px; overflow-y: auto;">
+            <p style="text-align: center; color: #666;">Loading...</p>
+          </div>
+        </div>
+        
+        <!-- Available Courses -->
+        <div class="course-management-section">
+          <h3>Available Courses</h3>
+          <div id="availableCourses" style="max-height: 400px; overflow-y: auto;">
+            <p style="text-align: center; color: #666;">Loading...</p>
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 20px; text-align: center;">
+        <button type="button" id="closeManageCoursesBtn" class="course-management-btn add">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Notification -->
+  <div id="floatingNotification" class="floating-notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="notificationMessage"></span>
+  </div>
+
+  <script>
+    // Modal logic
+    const modal = document.getElementById('editUserModal');
+    const closeModalBtn = document.getElementById('closeEditUserModal');
+    const cancelEditBtn = document.getElementById('cancelEditUserBtn');
+    const editForm = document.getElementById('editUserForm');
+    let currentUserId = null;
+
+    // Course management modal
+    const coursesModal = document.getElementById('manageCoursesModal');
+    const closeCoursesModalBtn = document.getElementById('closeManageCoursesModal');
+    const closeManageCoursesBtn = document.getElementById('closeManageCoursesBtn');
+    let currentUserEnrollments = null;
+    let currentUserAllCourses = null;
+    let currentUserForCourses = null;
+
+    // Floating notification function
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('floatingNotification');
+      const messageSpan = document.getElementById('notificationMessage');
+      const icon = notification.querySelector('i');
+      
+      messageSpan.textContent = message;
+      
+      // Update icon based on type
+      if (type === 'success') {
+        icon.className = 'fas fa-check-circle';
+        notification.style.background = 'var(--primary-light)';
+      } else if (type === 'error') {
+        icon.className = 'fas fa-exclamation-circle';
+        notification.style.background = '#dc3545';
+      } else if (type === 'warning') {
+        icon.className = 'fas fa-exclamation-triangle';
+        notification.style.background = '#ffc107';
+      }
+      
+      notification.classList.add('show');
+      
+      // Auto hide after 3 seconds
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    document.querySelectorAll('.edit-user-btn').forEach((btn, idx) => {
+      btn.onclick = function() {
+        const row = btn.closest('tr');
+        currentUserId = row.getAttribute('data-id');
+        fetch(`/admin-page/users/${currentUserId}`)
+          .then(res => res.json())
+          .then(user => {
+            document.getElementById('edit-user-id').value = user._id;
+            document.getElementById('edit-firstName').value = user.firstName;
+            document.getElementById('edit-lastName').value = user.lastName;
+            document.getElementById('edit-email').value = user.email;
+            document.getElementById('edit-password').value = '';
+            modal.style.display = 'flex';
+          });
+      };
+    });
+
+    // Course management button handlers
+    document.querySelectorAll('.manage-courses-btn').forEach((btn, idx) => {
+      btn.onclick = function() {
+        const row = btn.closest('tr');
+        const userId = row.getAttribute('data-id');
+        loadUserEnrollments(userId);
+      };
+    });
+
+    function loadUserEnrollments(userId) {
+      fetch(`/admin-page/users/${userId}/enrollments`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            currentUserEnrollments = data.enrolledCourses;
+            currentUserAllCourses = data.allCourses;
+            currentUserForCourses = data.user;
+            
+            // Update user info
+            document.getElementById('userName').textContent = `${data.user.firstName} ${data.user.lastName}`;
+            document.getElementById('userEmail').textContent = data.user.email;
+            
+            // Render enrolled courses
+            renderEnrolledCourses();
+            
+            // Render available courses
+            renderAvailableCourses();
+            
+            coursesModal.style.display = 'flex';
+          } else {
+            showNotification('Failed to load user enrollments: ' + data.message, 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error loading user enrollments:', error);
+          showNotification('Error loading user enrollments', 'error');
+        });
+    }
+
+    function renderEnrolledCourses() {
+      const container = document.getElementById('enrolledCourses');
+      const countSpan = document.getElementById('enrolledCount');
+      
+      if (currentUserEnrollments.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666;">No enrolled courses</p>';
+        countSpan.textContent = '0';
+        return;
+      }
+      
+      countSpan.textContent = currentUserEnrollments.length;
+      
+      const coursesHtml = currentUserEnrollments.map(course => `
+        <div class="course-management-item">
+          <div class="course-management-info">
+            <h4>${course.title}</h4>
+            <p>${course.category}</p>
+          </div>
+          <div class="course-management-actions">
+            <button onclick="removeCourseFromUser('${course._id}', '${course.title}')" 
+                    class="course-management-btn remove" 
+                    title="Remove course from user">
+              <i class="fas fa-trash"></i> Remove
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+      container.innerHTML = coursesHtml;
+    }
+
+    function renderAvailableCourses() {
+      const container = document.getElementById('availableCourses');
+      const enrolledCourseIds = currentUserEnrollments.map(course => course._id.toString());
+      
+      const availableCourses = currentUserAllCourses.filter(course => 
+        !enrolledCourseIds.includes(course._id.toString())
+      );
+      
+      if (availableCourses.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666;">No available courses to add</p>';
+        return;
+      }
+      
+      const coursesHtml = availableCourses.map(course => `
+        <div class="course-management-item">
+          <div class="course-management-info">
+            <h4>${course.title}</h4>
+            <p>${course.category}</p>
+          </div>
+          <div class="course-management-actions">
+            <button onclick="addCourseToUser('${course._id}', '${course.title}')" 
+                    class="course-management-btn add" 
+                    title="Add course to user">
+              <i class="fas fa-plus"></i> Add
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+      container.innerHTML = coursesHtml;
+    }
+
+    function addCourseToUser(courseId, courseTitle) {
+      if (!currentUserForCourses) {
+        showNotification('User ID not found', 'error');
+        return;
+      }
+      
+      fetch('/admin-page/users/enrollments/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: currentUserForCourses._id, courseId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showNotification(`Course "${courseTitle}" added successfully!`);
+          loadUserEnrollments(currentUserForCourses._id);
+        } else {
+          showNotification('Failed to add course: ' + data.message, 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error adding course:', error);
+        showNotification('Error adding course', 'error');
+      });
+    }
+
+    function removeCourseFromUser(courseId, courseTitle) {
+      if (!currentUserForCourses) {
+        showNotification('User ID not found', 'error');
+        return;
+      }
+      
+      fetch('/admin-page/users/enrollments/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: currentUserForCourses._id, courseId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showNotification(`Course "${courseTitle}" removed successfully!`);
+          loadUserEnrollments(currentUserForCourses._id);
+        } else {
+          showNotification('Failed to remove course: ' + data.message, 'error');
+        }
+      })
+      .catch(error => {
+        console.error('Error removing course:', error);
+        showNotification('Error removing course', 'error');
+      });
+    }
+
+    closeModalBtn.onclick = cancelEditBtn.onclick = function() {
+      modal.style.display = 'none';
+    };
+
+    closeCoursesModalBtn.onclick = closeManageCoursesBtn.onclick = function() {
+      coursesModal.style.display = 'none';
+    };
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+      if (event.target == coursesModal) {
+        coursesModal.style.display = 'none';
+      }
+    };
+
+    editForm.onsubmit = function(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-user-id').value;
+      const data = {
+        firstName: document.getElementById('edit-firstName').value,
+        lastName: document.getElementById('edit-lastName').value,
+        email: document.getElementById('edit-email').value,
+        password: document.getElementById('edit-password').value
+      };
+      fetch(`/admin-page/users/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          showNotification('Update successful!');
+          window.location.reload();
+        } else {
+          showNotification('Update failed: ' + (result.message || 'Unknown error'), 'error');
+        }
+      });
+    };
+    // Delete user
+    document.querySelectorAll('.delete-user-btn').forEach((btn, idx) => {
+      btn.onclick = function() {
+        const row = btn.closest('tr');
+        const id = row.getAttribute('data-id');
+        if (confirm('Are you sure you want to delete this user?')) {
+          fetch(`/admin-page/users/${id}`, {
+            method: 'DELETE'
+          })
+          .then(res => res.json())
+          .then(result => {
+            if (result.success) {
+              showNotification('User deleted successfully!');
+              window.location.reload();
+            } else {
+              showNotification('Delete failed: ' + (result.message || 'Unknown error'), 'error');
+            }
+          });
+        }
+      };
+    });
+  </script>
+  <%- include('partials/footer') %>
+</body>
+</html> 

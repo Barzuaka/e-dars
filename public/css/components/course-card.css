@@ -1,0 +1,414 @@
+/* Course Card Component Styles */
+
+.course-card {
+  /* background: var(--white); */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.course-card-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+}
+
+.course-card-content {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.course-card-description {
+  color: var(--text-light);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.course-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.course-card-price {
+  font-weight: 600;
+  color: var(--primary-dark);
+  font-size: 18px;
+}
+
+.course-card-duration {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Course Grid Layout */
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .courses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .course-card-content {
+    padding: 16px;
+  }
+  
+  .course-card-title {
+    font-size: 16px;
+  }
+  
+  .course-card-description {
+    font-size: 13px;
+  }
+  
+  .course-card-price {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .courses-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+}
+
+/* Enhanced Course Card Design */
+.course-card-wrapper {
+  position: relative;
+  width: 380px;
+  height: 285px;
+  background: #fff;
+  margin: 0 8px 16px 8px;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0;
+  transform: scale(0.95);
+  transition: box-shadow 0.5s, transform 0.5s;
+  z-index: 1;
+  will-change: transform;
+}
+
+.course-card-wrapper:hover {
+  transform: scale(1);
+  box-shadow: 5px 20px 30px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+.course-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Top section - Course Image */
+.course-card .top {
+  height: 70%;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+/* Bottom section - Course Info and Actions */
+.course-card .bottom {
+  width: 100%;
+  height: 30%;
+  position: relative;
+  background: var(--background-warm);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.course-card .bottom h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+  line-height: 1.3;
+}
+
+.course-card .bottom p {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+/* Add to cart button - Reverted to previous design */
+.add-to-cart-icon-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px; /* Changed to bottom right */
+  width: 48px; /* Made bigger */
+  height: 48px; /* Made bigger */
+  background: var(--white);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.add-to-cart-icon-btn:hover {
+  /* Only shadow enhancement, no background change */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.add-to-cart-icon-btn i {
+  font-size: 22px; /* Made bigger */
+  color: var(--primary-dark);
+  transition: all 0.3s ease;
+}
+
+.add-to-cart-icon-btn i.fa-plus {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.add-to-cart-icon-btn:hover i.fa-plus {
+  transform: rotate(90deg); /* Only rotation, no scaling */
+}
+
+.add-to-cart-icon-btn i.fa-check {
+  opacity: 0;
+  transform: scale(0);
+  position: absolute;
+}
+
+.add-to-cart-icon-btn.added {
+  background: var(--primary-dark);
+}
+
+.add-to-cart-icon-btn.added i.fa-plus {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.add-to-cart-icon-btn.added i.fa-check {
+  opacity: 1;
+  transform: scale(1);
+  color: var(--white);
+}
+
+/* Info panel - Expandable details */
+.course-card .inside {
+  z-index: 9;
+  background: rebeccapurple;
+  width: 140px;
+  height: 140px;
+  position: absolute;
+  top: -70px;
+  right: -70px;
+  border-radius: 0px 0px 200px 200px;
+  transition: all 0.5s, border-radius 2s, top 1s;
+  overflow: hidden;
+}
+
+.course-card .inside .icon {
+  position: absolute;
+  right: 85px;
+  top: 85px;
+  color: white;
+  opacity: 1;
+  font-size: 20px;
+}
+
+.course-card .inside:hover {
+  width: 100%;
+  right: 0;
+  top: 0;
+  border-radius: 0;
+  height: 70%;
+}
+
+.course-card .inside:hover .icon {
+  opacity: 0;
+  right: 15px;
+  top: 15px;
+}
+
+.course-card .inside:hover .contents {
+  opacity: 1;
+  transform: scale(1);
+  transform: translateY(0);
+}
+
+.course-card .inside .contents {
+  padding: 5%;
+  opacity: 0;
+  transform: scale(0.5);
+  transform: translateY(-200%);
+  transition: opacity 0.2s, transform 0.8s;
+}
+
+.course-card .inside .contents table {
+  text-align: left;
+  width: 100%;
+  color: white;
+  font-size: 1rem;
+}
+
+.course-card .inside .contents h1,
+.course-card .inside .contents p,
+.course-card .inside .contents table {
+  color: white;
+}
+
+.course-card .inside .contents p {
+  font-size: 13px;
+}
+
+.course-card .inside .contents th {
+  font-weight: 600;
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.course-card .inside .contents td {
+  padding: 4px 8px;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .course-card-wrapper {
+    width: 340px;
+    height: 255px; /* 4:3 aspect ratio (340 * 3/4 = 255) */
+    margin: 0 6px 12px 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .course-card-wrapper {
+    width: 300px;
+    height: 225px; /* 4:3 aspect ratio (300 * 3/4 = 225) */
+    margin: 0 4px 8px 4px;
+  }
+  
+  .course-card .top {
+    height: 70%;
+  }
+  
+  .course-card .bottom {
+    height: 30%;
+    padding: 14px 16px;
+  }
+  
+  .course-card .bottom h1 {
+    font-size: 15px;
+  }
+  
+  .course-card .bottom p {
+    font-size: 13px;
+  }
+  
+  .add-to-cart-icon-btn {
+    width: 44px;
+    height: 44px;
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .add-to-cart-icon-btn i {
+    font-size: 20px;
+  }
+  
+  .course-card .inside {
+    width: 120px;
+    height: 120px;
+    top: -60px;
+    right: -60px;
+  }
+  
+  .course-card .inside .icon {
+    right: 75px;
+    top: 75px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .course-card-wrapper {
+    width: 280px;
+    height: 210px; /* 4:3 aspect ratio (280 * 3/4 = 210) */
+    margin: 0 2px 4px 2px;
+  }
+  
+  .course-card .bottom {
+    padding: 12px 14px;
+  }
+  
+  .course-card .bottom h1 {
+    font-size: 14px;
+  }
+  
+  .course-card .bottom p {
+    font-size: 12px;
+  }
+  
+  .add-to-cart-icon-btn {
+    width: 40px;
+    height: 40px;
+    bottom: 8px;
+    right: 8px;
+  }
+  
+  .add-to-cart-icon-btn i {
+    font-size: 18px;
+  }
+} 

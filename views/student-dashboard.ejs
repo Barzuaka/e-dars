@@ -1,0 +1,169 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/fontawesome-free-6.7.2-web/css/all.css" />
+</head>
+<body>
+  <!-- NAVBAR -->
+  <%- include('partials/navbar') %>
+  
+  <div class="dashboard-container">
+    <div class="dashboard-content">
+      <h1>Welcome, <%= user.firstName %>!</h1>
+      
+      <h2>My Courses</h2>
+      <% if (myCourses.length === 0) { %>
+        <p>You have not enrolled in any courses yet.</p>
+      <% } else { %>
+        <div class="admin-courses-list">
+          <% myCourses.forEach(course => { %>
+            <div class="admin-course-card">
+              <img src="<%= course.thumbnailImage %>" alt="<%= course.title %> Thumbnail" class="admin-course-thumb" />
+              <div class="admin-course-info">
+                <div class="course-info-content">
+                  <h3><%= course.title %></h3>
+                  <p><%= course.category %></p>
+                </div>
+                <div class="course-actions">
+                  <a href="/learning-dashboard?course=<%= course._id %>" class="create-course-btn">Start Learning</a>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <h2>Available Courses</h2>
+      <div class="admin-courses-list">
+        <% allCourses.forEach(course => {
+             const alreadyEnrolled = myCourses.some(c => c._id.toString() === course._id.toString());
+        %>
+          <div class="admin-course-card">
+            <img src="<%= course.thumbnailImage %>" alt="<%= course.title %> Thumbnail" class="admin-course-thumb" />
+            <div class="admin-course-info">
+              <div class="course-info-content">
+                <h3><%= course.title %></h3>
+                <p><%= course.category %></p>
+              </div>
+              <div class="course-actions">
+                <% if (alreadyEnrolled) { %>
+                  <span class="enrolled-badge">Enrolled</span>
+                <% } else { %>
+                  <button type="button" class="add-to-cart-btn" 
+                    data-course-id="<%= course._id %>" 
+                    data-course-title="<%= course.title %>" 
+                    data-course-price="<%= course.price %>" 
+                    data-course-image="<%= course.thumbnailImage %>">
+                    <i class="fas fa-cart-plus"></i>
+                    Savatga qo'shish
+                  </button>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Contact Sales Modal -->
+  <%- include('partials/contact-sales-modal') %>
+  
+  <!-- Floating Notification -->
+  <div id="floatingNotification" class="floating-notification">
+    <i class="fas fa-check-circle"></i>
+    <span>Kurs savatchaga qo'shildi</span>
+  </div>
+  
+  <%- include('partials/footer') %>
+  
+  <script>
+    // Add to cart functionality for dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+      
+      // Function to show floating notification
+      function showNotification(message = "Kurs savatchaga qo'shildi") {
+        const notification = document.getElementById('floatingNotification');
+        if (!notification) {
+          console.error('Floating notification element not found');
+          return;
+        }
+        
+        const messageSpan = notification.querySelector('span');
+        const icon = notification.querySelector('i');
+        
+        // Update message and icon based on the type
+        messageSpan.textContent = message;
+        
+        if (message.includes('allaqachon')) {
+          // Already in cart - show info icon
+          icon.className = 'fas fa-info-circle';
+          icon.style.color = '#FFA500'; // Orange for info
+        } else {
+          // Added to cart - show check icon
+          icon.className = 'fas fa-check-circle';
+          icon.style.color = '#4CAF50'; // Green for success
+        }
+        
+        notification.classList.add('show');
+        
+        // Hide notification after 2 seconds
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 2000);
+      }
+      
+      // Wait for cart functions to be available
+      function waitForCartFunctions() {
+        return new Promise((resolve) => {
+          const checkFunctions = () => {
+            if (typeof addToCart === 'function' && typeof getCartItems === 'function') {
+              resolve();
+            } else {
+              setTimeout(checkFunctions, 100);
+            }
+          };
+          checkFunctions();
+        });
+      }
+      
+      addToCartButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+          const courseId = this.getAttribute('data-course-id');
+          const courseTitle = this.getAttribute('data-course-title');
+          const coursePrice = parseInt(this.getAttribute('data-course-price'));
+          const courseImage = this.getAttribute('data-course-image');
+          
+          // Wait for cart functions to be available
+          await waitForCartFunctions();
+          
+          // Check if addToCart function exists
+          if (typeof addToCart === 'function') {
+            const wasAdded = addToCart(courseId, courseTitle, coursePrice, courseImage);
+            
+            if (wasAdded) {
+              // Course was added successfully
+              showNotification("Kurs savatchaga qo'shildi");
+              
+              // Show success message on button
+              this.innerHTML = '<i class="fas fa-check"></i> Savatga qo\'shildi!';
+              this.classList.add('success');
+              this.disabled = true;
+            } else {
+              // Course was already in cart
+              showNotification("Kurs allaqachon savatchada, savatchani tekshiring");
+            }
+          } else {
+            console.error('addToCart function not found');
+            showNotification("Xatolik yuz berdi, qaytadan urinib ko'ring");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html> 

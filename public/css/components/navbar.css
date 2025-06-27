@@ -1,0 +1,82 @@
+/* Navbar Component Styles */
+
+.navbar {
+  padding: 20px 0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.menu-item {
+  margin: 0 10px;
+  color: var(--text-dark);
+  transition: color 0.3s ease;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.menu-item:hover {
+  color: var(--primary-light);
+}
+
+#logo {
+  width: 72px;
+  height: auto;
+  margin-right: 20px;
+}
+
+/* Mobile menu toggle - hidden by default */
+.mobile-menu-toggle {
+  display: none;
+}
+
+/* Mobile menu - hidden by default */
+.mobile-menu {
+  display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 10px 16px;
+  }
+  
+  .nav-left, .nav-right {
+    gap: 12px;
+  }
+  
+  .menu-item {
+    margin: 0 6px;
+    font-size: 14px;
+  }
+  
+  #logo {
+    width: 60px;
+    margin-right: 12px;
+  }
+  
+  /* Show mobile menu toggle on mobile */
+  .mobile-menu-toggle {
+    display: flex;
+  }
+} 

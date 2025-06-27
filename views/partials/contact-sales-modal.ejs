@@ -1,0 +1,163 @@
+<!-- Contact Sales Modal -->
+<div id="contactSalesModal" class="modal">
+  <div class="modal-content contact-sales-modal">
+    <div class="contact-sales-header">
+      <h2>Contact Sales</h2>
+      <p>Get in touch with our sales team to purchase these courses</p>
+    </div>
+    <div class="contact-methods-compact">
+      <a href="tel:+998901234567" class="contact-btn">
+        <i class="fas fa-phone"></i> <span>+998 90 123 45 67</span>
+      </a>
+      <a href="https://t.me/edars_sales" target="_blank" class="contact-btn">
+        <i class="fab fa-telegram"></i> <span>@edars_sales</span>
+      </a>
+    </div>
+    <div style="text-align:center; font-size:0.98rem; color:var(--primary-dark); margin-bottom:8px; margin-top:2px; font-weight:500;">Yoki telefon raqamingizni qoldiring, o'zimiz siz bilan bog'lanamiz</div>
+    <div class="contact-form-section compact">
+      <form id="contactForm" class="contact-form compact">
+        <div class="form-group compact">
+          <input type="tel" id="contactPhone" name="phone" required class="large-centered-input" placeholder="+998 (XX) XXX-XX-XX">
+        </div>
+        <button type="submit" class="submit-contact-btn compact">
+          <i class="fas fa-paper-plane"></i> Men bilan bog'laning
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Notification -->
+<div id="floatingNotification" class="floating-notification">
+  <i class="fas fa-check-circle"></i>
+  <span>Kurs savatchaga qo'shildi</span>
+</div>
+
+<script>
+// Contact Sales Modal Functions
+function openContactModal() {
+  document.getElementById('contactSalesModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeContactModal() {
+  document.getElementById('contactSalesModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// Handle contact form submission
+document.addEventListener('DOMContentLoaded', function() {
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      
+      // Get cart items if available
+      let cartItems = [];
+      if (typeof getCartItems === 'function') {
+        cartItems = getCartItems();
+      }
+      
+      // Prepare contact data
+      const contactData = {
+        phone: formData.get('phone'),
+        course: cartItems.length > 0 ? cartItems.map(item => item.title).join(', ') : 'Not specified',
+        message: `Interested in purchasing ${cartItems.length} course(s)`
+      };
+      
+      fetch('/api/cart/contact-sales', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Show success notification instead of alert
+          const notification = document.getElementById('floatingNotification');
+          if (notification) {
+            const messageSpan = notification.querySelector('span');
+            const icon = notification.querySelector('i');
+            
+            messageSpan.textContent = data.message;
+            icon.className = 'fas fa-check-circle';
+            icon.style.color = '#4CAF50';
+            
+            notification.classList.add('show');
+            setTimeout(() => {
+              notification.classList.remove('show');
+            }, 3000);
+          } else {
+            alert(data.message);
+          }
+          
+          closeContactModal();
+          
+          // Clear cart after successful contact
+          if (typeof clearCart === 'function') {
+            clearCart();
+          }
+        } else {
+          // Show error notification
+          const notification = document.getElementById('floatingNotification');
+          if (notification) {
+            const messageSpan = notification.querySelector('span');
+            const icon = notification.querySelector('i');
+            
+            messageSpan.textContent = 'Error: ' + data.message;
+            icon.className = 'fas fa-exclamation-circle';
+            icon.style.color = '#dc3545';
+            
+            notification.classList.add('show');
+            setTimeout(() => {
+              notification.classList.remove('show');
+            }, 3000);
+          } else {
+            alert('Error: ' + data.message);
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        
+        // Show error notification
+        const notification = document.getElementById('floatingNotification');
+        if (notification) {
+          const messageSpan = notification.querySelector('span');
+          const icon = notification.querySelector('i');
+          
+          messageSpan.textContent = 'Xatolik yuz berdi, qaytadan urinib ko\'ring';
+          icon.className = 'fas fa-exclamation-circle';
+          icon.style.color = '#dc3545';
+          
+          notification.classList.add('show');
+          setTimeout(() => {
+            notification.classList.remove('show');
+          }, 3000);
+        } else {
+          alert('An error occurred. Please try again.');
+        }
+      });
+    });
+  }
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', function(event) {
+  const modal = document.getElementById('contactSalesModal');
+  if (event.target === modal) {
+    closeContactModal();
+  }
+});
+
+// Close modal when pressing Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeContactModal();
+  }
+});
+</script> 

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Dashboard</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/fontawesome-free-6.7.2-web/css/all.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Top Navigation -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <!-- Mobile Sidebar Toggle -->
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="header-center">
+                <div class="course-selector">
+                    <select id="courseSelect">
+                        <% myCourses.forEach(course => { %>
+                            <option value="<%= course._id %>" <%= selectedCourse && selectedCourse._id.toString() === course._id.toString() ? 'selected' : '' %>>
+                                <%= course.title %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <!-- 3-dot menu toggle -->
+                <button class="dashboard-menu-toggle" onclick="toggleDashboardMenu()">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Mobile Menu -->
+        <div class="dashboard-mobile-menu" id="dashboardMobileMenu">
+            <div class="user-info">
+                <span class="user-name"><%= user.firstName %> <%= user.lastName %></span>
+            </div>
+            <a href="/#courses-intro" class="menu-item" onclick="closeDashboardMenu()">Videokurslar</a>
+            <a href="/student-works" class="menu-item" onclick="closeDashboardMenu()">Natijalar</a>
+            <a href="/dashboard" class="menu-item highlight-btn" onclick="closeDashboardMenu()">Mening kurslarim</a>
+            <a href="/api/auth/logout" class="menu-item logout-btn" onclick="closeDashboardMenu()">Chiqish</a>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="dashboard-main">
+            <!-- Sidebar -->
+            <aside class="dashboard-sidebar" id="dashboardSidebar">
+                <div class="sidebar-header">
+                    <h3>Course Content</h3>
+                    <div class="progress-info">
+                        <span class="progress-text">Progress</span>
+                        <span class="progress-percentage"><%= progressPercentage %>%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: <%= progressPercentage %>%"></div>
+                    </div>
+                </div>
+                
+                <div class="lessons-list">
+                    <% if (selectedCourse && selectedCourse.sections) { %>
+                        <% selectedCourse.sections.forEach((section, sectionIndex) => { %>
+                            <div class="section-item">
+                                <div class="section-header">
+                                    <i class="fas fa-folder"></i>
+                                    <span><%= section.sectionTitle %></span>
+                                    <span class="lesson-count"><%= section.lessons ? section.lessons.length : 0 %> lessons</span>
+                                </div>
+                                <div class="lessons-container">
+                                    <% if (section.lessons) { %>
+                                        <% section.lessons.forEach((lesson, lessonIndex) => { %>
+                                            <div class="lesson-item <%= currentLesson && currentLesson.sectionIndex === sectionIndex && currentLesson.lessonIndex === lessonIndex ? 'active' : '' %>"
+                                                 data-section="<%= sectionIndex %>" 
+                                                 data-lesson="<%= lessonIndex %>">
+                                                <div class="lesson-info">
+                                                    <i class="fas fa-play-circle"></i>
+                                                    <span class="lesson-title"><%= lesson.title %></span>
+                                                </div>
+                                                <div class="lesson-duration">
+                                                    <% if (lesson.videoUrl) { %>
+                                                        <i class="fas fa-check-circle completed"></i>
+                                                    <% } else { %>
+                                                        <i class="fas fa-circle"></i>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        <% }) %>
+                                    <% } %>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="dashboard-content">
+                <% if (selectedCourse) { %>
+                    <!-- Video Player Section -->
+                    <div class="video-section">
+                        <div class="video-container">
+                            <% if (currentLesson && currentLesson.videoUrl) { %>
+                                <video id="lessonVideo" controls>
+                                    <source src="<%= currentLesson.videoUrl %>" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            <% } else { %>
+                                <div class="no-video-placeholder">
+                                    <i class="fas fa-video-slash"></i>
+                                    <p>No video available for this lesson</p>
+                                </div>
+                            <% } %>
+                        </div>
+                        
+                        <!-- Lesson Info -->
+                        <div class="lesson-info-panel">
+                            <h2 class="lesson-title"><%= currentLesson ? currentLesson.title : 'Select a lesson to start learning' %></h2>
+                            <div class="lesson-navigation">
+                                <button id="prevLesson" class="nav-btn" 
+                                    <%= !hasPreviousLesson ? 'disabled' : '' %>
+                                    data-current-section="<%= currentLesson ? currentLesson.sectionIndex : 0 %>"
+                                    data-current-lesson="<%= currentLesson ? currentLesson.lessonIndex : 0 %>">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </button>
+                                <button id="nextLesson" class="nav-btn" 
+                                    <%= !hasNextLesson ? 'disabled' : '' %>
+                                    data-current-section="<%= currentLesson ? currentLesson.sectionIndex : 0 %>"
+                                    data-current-lesson="<%= currentLesson ? currentLesson.lessonIndex : 0 %>">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Notes/Resources -->
+                    <div class="course-resources">
+                        <div class="resources-tabs">
+                            <button class="tab-btn active" data-tab="overview">Overview</button>
+                            <button class="tab-btn" data-tab="notes">Notes</button>
+                            <button class="tab-btn" data-tab="resources">Resources</button>
+                        </div>
+                        
+                        <div class="tab-content active" id="overview">
+                            <h3>About this course</h3>
+                            <p><%= selectedCourse.description %></p>
+                            <div class="course-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span><%= selectedCourse.totalHours %> hours</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span><%= selectedCourse.numberOfLessonsManual %> lessons</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-project-diagram"></i>
+                                    <span><%= selectedCourse.numOfProjects %> projects</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="notes">
+                            <h3>Your Notes</h3>
+                            <textarea id="lessonNotes" placeholder="Take notes for this lesson..."></textarea>
+                            <button id="saveNotes" class="save-btn">Save Notes</button>
+                        </div>
+                        
+                        <div class="tab-content" id="resources">
+                            <h3>Course Resources</h3>
+                            <div class="resources-list">
+                                <% if (selectedCourse.gallery && selectedCourse.gallery.length > 0) { %>
+                                    <% selectedCourse.gallery.forEach(item => { %>
+                                        <div class="resource-item">
+                                            <i class="fas fa-<%= item.mediaFileType === 'video' ? 'video' : 'image' %>"></i>
+                                            <span><%= item.caption || 'Resource' %></span>
+                                            <a href="<%= item.url %>" target="_blank" class="download-btn">View</a>
+                                        </div>
+                                    <% }) %>
+                                <% } else { %>
+                                    <p>No additional resources available for this course.</p>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="no-course-selected">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h2>Welcome to your learning dashboard!</h2>
+                        <p>Select a course from the dropdown above to start learning.</p>
+                    </div>
+                <% } %>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Set up global course sections data
+        window.courseSections = <%- JSON.stringify(selectedCourse ? selectedCourse.sections : []) %>;
+        
+        // Mobile sidebar toggle functionality
+        function toggleSidebar() {
+            console.log('toggleSidebar function called');
+            const sidebar = document.getElementById('dashboardSidebar');
+            console.log('Sidebar element:', sidebar);
+            if (sidebar) {
+                sidebar.classList.toggle('open');
+                console.log('Sidebar classes after toggle:', sidebar.className);
+                console.log('Sidebar is open:', sidebar.classList.contains('open'));
+            } else {
+                console.error('Sidebar element not found!');
+            }
+        }
+        
+        // Dashboard mobile menu functionality
+        function toggleDashboardMenu() {
+            console.log('toggleDashboardMenu function called');
+            const dashboardMenu = document.getElementById('dashboardMobileMenu');
+            const toggleBtn = document.querySelector('.dashboard-menu-toggle i');
+            
+            console.log('Dashboard menu element:', dashboardMenu);
+            console.log('Toggle button element:', toggleBtn);
+            
+            if (dashboardMenu) {
+                dashboardMenu.classList.toggle('show');
+                console.log('Dashboard menu classes after toggle:', dashboardMenu.className);
+                
+                // Change icon
+                if (dashboardMenu.classList.contains('show')) {
+                    toggleBtn.className = 'fas fa-times';
+                    console.log('Dashboard menu opened, changed to X icon');
+                } else {
+                    toggleBtn.className = 'fas fa-ellipsis-v';
+                    console.log('Dashboard menu closed, changed to ellipsis icon');
+                }
+            } else {
+                console.error('Dashboard menu element not found!');
+            }
+        }
+        
+        function closeDashboardMenu() {
+            const dashboardMenu = document.getElementById('dashboardMobileMenu');
+            const toggleBtn = document.querySelector('.dashboard-menu-toggle i');
+            
+            console.log('Close dashboard menu called');
+            
+            if (dashboardMenu) {
+                dashboardMenu.classList.remove('show');
+                toggleBtn.className = 'fas fa-ellipsis-v';
+                console.log('Dashboard menu closed');
+            }
+        }
+        
+        // Close sidebar when clicking on a lesson (mobile)
+        document.querySelectorAll('.lesson-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Close sidebar on mobile after lesson selection
+                if (window.innerWidth <= 767) {
+                    document.getElementById('dashboardSidebar').classList.remove('open');
+                }
+            });
+        });
+        
+        // Close sidebar when clicking outside (mobile)
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('dashboardSidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            
+            if (window.innerWidth <= 767 && 
+                !sidebar.contains(event.target) && 
+                !toggleBtn.contains(event.target)) {
+                sidebar.classList.remove('open');
+            }
+            
+            // Close dashboard mobile menu when clicking outside
+            const dashboardMenu = document.getElementById('dashboardMobileMenu');
+            const dashboardMenuToggle = document.querySelector('.dashboard-menu-toggle');
+            
+            if (window.innerWidth <= 767 && 
+                dashboardMenu && 
+                !dashboardMenu.contains(event.target) && 
+                !dashboardMenuToggle.contains(event.target)) {
+                closeDashboardMenu();
+            }
+        });
+
+        // Course switching
+        document.getElementById('courseSelect').addEventListener('change', function() {
+            const courseId = this.value;
+            window.location.href = `/learning-dashboard?course=${courseId}`;
+        });
+
+        // Lesson navigation
+        document.querySelectorAll('.lesson-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const sectionIndex = this.dataset.section;
+                const lessonIndex = this.dataset.lesson;
+                const courseId = document.getElementById('courseSelect').value;
+                window.location.href = `/learning-dashboard?course=${courseId}&section=${sectionIndex}&lesson=${lessonIndex}`;
+            });
+        });
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                const tabId = this.dataset.tab;
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Navigation buttons
+        document.getElementById('prevLesson').addEventListener('click', function() {
+            if (!this.disabled) {
+                // Get current lesson info from data attributes
+                const currentSection = parseInt(this.getAttribute('data-current-section') || '0');
+                const currentLessonIndex = parseInt(this.getAttribute('data-current-lesson') || '0');
+                const courseId = document.getElementById('courseSelect').value;
+                
+                // Calculate previous lesson
+                let prevSection = currentSection;
+                let prevLesson = currentLessonIndex - 1;
+                
+                if (prevLesson < 0) {
+                    prevSection = currentSection - 1;
+                    if (prevSection >= 0) {
+                        // Get sections from a global variable set by EJS
+                        const sections = window.courseSections || [];
+                        if (sections[prevSection] && sections[prevSection].lessons) {
+                            prevLesson = sections[prevSection].lessons.length - 1;
+                        }
+                    }
+                }
+                
+                if (prevSection >= 0 && prevLesson >= 0) {
+                    window.location.href = `/learning-dashboard?course=${courseId}&section=${prevSection}&lesson=${prevLesson}`;
+                }
+            }
+        });
+
+        document.getElementById('nextLesson').addEventListener('click', function() {
+            if (!this.disabled) {
+                // Get current lesson info from data attributes
+                const currentSection = parseInt(this.getAttribute('data-current-section') || '0');
+                const currentLessonIndex = parseInt(this.getAttribute('data-current-lesson') || '0');
+                const courseId = document.getElementById('courseSelect').value;
+                
+                // Calculate next lesson
+                const sections = window.courseSections || [];
+                let nextSection = currentSection;
+                let nextLesson = currentLessonIndex + 1;
+                
+                if (sections[currentSection] && nextLesson >= sections[currentSection].lessons.length) {
+                    nextSection = currentSection + 1;
+                    nextLesson = 0;
+                }
+                
+                if (nextSection < sections.length && sections[nextSection] && nextLesson < sections[nextSection].lessons.length) {
+                    window.location.href = `/learning-dashboard?course=${courseId}&section=${nextSection}&lesson=${nextLesson}`;
+                }
+            }
+        });
+
+        // Notes functionality
+        document.getElementById('saveNotes')?.addEventListener('click', function() {
+            const notes = document.getElementById('lessonNotes').value;
+            const courseId = document.getElementById('courseSelect').value;
+            const lessonId = '<%= currentLesson ? currentLesson._id : "" %>';
+            
+            // Save notes to localStorage for now
+            localStorage.setItem(`notes_${courseId}_${lessonId}`, notes);
+            
+            // Show success message
+            this.textContent = 'Saved!';
+            this.style.backgroundColor = '#4CAF50';
+            
+            setTimeout(() => {
+                this.textContent = 'Save Notes';
+                this.style.backgroundColor = '';
+            }, 2000);
+        });
+
+        // Load saved notes
+        document.addEventListener('DOMContentLoaded', function() {
+            const courseId = document.getElementById('courseSelect').value;
+            const lessonId = '<%= currentLesson ? currentLesson._id : "" %>';
+            const savedNotes = localStorage.getItem(`notes_${courseId}_${lessonId}`);
+            
+            if (savedNotes) {
+                document.getElementById('lessonNotes').value = savedNotes;
+            }
+            
+            // Debug sidebar toggle button
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            console.log('Sidebar toggle button found:', toggleBtn);
+            if (toggleBtn) {
+                console.log('Button display style:', window.getComputedStyle(toggleBtn).display);
+                console.log('Button visibility:', window.getComputedStyle(toggleBtn).visibility);
+                console.log('Button position:', window.getComputedStyle(toggleBtn).position);
+                console.log('Button z-index:', window.getComputedStyle(toggleBtn).zIndex);
+                console.log('Window width:', window.innerWidth);
+                console.log('Is mobile:', window.innerWidth <= 767);
+            }
+            
+            // Debug sidebar
+            const sidebar = document.getElementById('dashboardSidebar');
+            console.log('Sidebar found:', sidebar);
+            if (sidebar) {
+                console.log('Sidebar position:', window.getComputedStyle(sidebar).position);
+                console.log('Sidebar left:', window.getComputedStyle(sidebar).left);
+                console.log('Sidebar z-index:', window.getComputedStyle(sidebar).zIndex);
+            }
+        });
+    </script>
+</body>
+</html> 

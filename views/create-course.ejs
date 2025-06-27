@@ -1,0 +1,311 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create a new course</title>
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <%- include('partials/navbar') %>
+    <form
+      enctype="multipart/form-data"
+      action="/admin-page/courses/new"
+      method="post"
+    >
+      <p><%= message %></p>
+      <div>
+        <label for="course-title">Course title:</label>
+        <input type="text" name="title" id="course-title" required />
+      </div>
+      <div>
+        <label for="course-category">Category:</label>
+        <select
+          id="course-category"
+          name="category"
+          onchange="toggleNewCategoryInput()"
+        >
+          <option value="">-- Select or Create a Category --</option>
+          <% categories.forEach(category => { %>
+          <option value="<%= category %>"><%= category %></option>
+          <% }) %>
+          <option value="new">-- Create New Category --</option>
+        </select>
+
+        <div id="newCategoryInput">
+          <label for="newCategoryName">New Category Name:</label>
+          <input
+            type="text"
+            id="newCategoryName"
+            name="newCategoryName"
+            placeholder="Enter new category name"
+          />
+        </div>
+      </div>
+      <div>
+        <label for="courseThumbnail">Upload course course Thumbnail</label>
+        <input type="file" name="courseThumbnail" id="courseThumbnail" />
+      </div>
+      <div>
+        <label for="course-description">Course description:</label>
+        <textarea name="description" id="course-description" required>
+Write course description...</textarea>
+      </div>
+      
+      <!-- Quill Editor for Course Contents -->
+      <div>
+        <label for="quill-editor">Course Contents (Rich Text):</label>
+        <div id="quill-editor" style="height: 250px;"></div>
+        <input type="hidden" name="courseContents" id="courseContents">
+      </div>
+      <div>
+        <label for="course-introVideoUrl">Course Intro video url:</label>
+        <input
+          type="text"
+          name="introVideoID"
+          id="course-introVideoUrl"
+          required
+        />
+      </div>
+      <div>
+        <label for="course-totalHours">Course total hours:</label>
+        <input
+          type="number"
+          name="totalHours"
+          id="course-totalHours"
+          required
+        />
+      </div>
+      <div>
+        <label for="course-topicsCovered">Topics covered:</label>
+        <input
+          type="number"
+          name="topicsCovered"
+          id="course-topicsCovered"
+          required
+        />
+      </div>
+      <div>
+        <label for="course-numOfProjects">Number of real life projects:</label>
+        <input
+          type="number"
+          name="numOfProjects"
+          id="course-numOfProjects"
+          required
+        />
+      </div>
+      <div>
+        <label for="course-sizeGb">Course size (in GB): </label>
+        <input type="number" name="sizeGb" id="course-sizeGb" required />
+      </div>
+      <div>
+        <label for="course-numberOfLessonsManual"
+          >Number of video lessons in the course:</label
+        >
+        <input
+          type="number"
+          name="numberOfLessonsManual"
+          id="course-numberOfLessonsManual"
+          required
+        />
+      </div>
+      <div>
+        <label for="course-price">Course price:</label>
+        <input type="number" name="price" id="course-price" required />
+      </div>
+
+      <!-- Lesson sections -->
+      <div id="lessonSectionsContainer"></div>
+
+      <button type="button" id="addSectionBtn">Add Lesson Section</button>
+
+      <!-- Gallery items -->
+
+      <h3>Gallery items</h3>
+      <div id="galleryItemsContainer"></div>
+      <button type="button" id="addGalleryItemBtn">Add images or videos</button>
+
+      <hr />
+      <button type="submit">Create course</button>
+    </form>
+    <br />
+    <a href="/admin-page">Back to admin page</a>
+    <br />
+    <a href="/">Go back home</a>
+
+    <%- include('partials/footer') %>
+
+    <!-- JAVASCRIPT -->
+    <!-- Quill CSS & JS (CDN) -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script>
+      // implemeting category dropdown and new category functionality
+
+      const toggleNewCategoryInput = () => {
+        const categorySelect = document.getElementById("course-category");
+        const newCategoryInputDiv = document.getElementById("newCategoryInput");
+        const newCategoryNameInput = document.getElementById("newCategoryName");
+
+        if (categorySelect.value === "new") {
+          // If 'Create New Category' is selected
+          newCategoryInputDiv.style.display = "block";
+          newCategoryNameInput.setAttribute("name", "category"); // Set name for new input
+          newCategoryNameInput.setAttribute("required", "required"); // Make it required
+          categorySelect.removeAttribute("name"); // Remove name from dropdown
+        } else {
+          // If an existing category or no category is selected
+          newCategoryInputDiv.style.display = "none";
+          newCategoryNameInput.removeAttribute("name"); // Remove name from new input
+          newCategoryNameInput.removeAttribute("required"); // No longer required
+          categorySelect.setAttribute("name", "category"); // Set name back to dropdown
+        }
+      };
+
+      // Ensure the correct state on page load (e.g., if user navigates back)
+      document.addEventListener("DOMContentLoaded", toggleNewCategoryInput);
+
+      // LESSON SECTIONS AND LESSON TITLES HANDLER
+
+      const lessonSectionsContainer = document.getElementById(
+        "lessonSectionsContainer"
+      );
+      const addSectionBtn = document.getElementById("addSectionBtn");
+
+      // Keeps track of how many sections exist
+      let sectionCount = 0;
+
+      // event handler
+      addSectionBtn.addEventListener("click", () => {
+        const currentSectionIndex = sectionCount;
+        const sectionDiv = document.createElement("div");
+        sectionDiv.classList.add("section");
+        sectionDiv.dataset.index = sectionCount;
+        sectionDiv.innerHTML = `
+          <h3>Section ${currentSectionIndex + 1}</h3>
+          <label for="section-${currentSectionIndex}">Section title:</label>
+          <input type='text' id="section-${currentSectionIndex}" name="sections[${currentSectionIndex}][sectionTitle]" required>
+          <div class="lessonsContainer"></div>
+          <button type="button" class="addLessonBtn">Add lesson</button>
+        `;
+        lessonSectionsContainer.appendChild(sectionDiv);
+        const lessonsContainer = sectionDiv.querySelector('.lessonsContainer');
+        let lessonCount = 0;
+        sectionDiv.querySelector('.addLessonBtn').addEventListener('click', () => {
+          const currentLessonIndex = lessonCount;
+          const lessonDiv = document.createElement('div');
+          lessonDiv.classList.add('lesson');
+          lessonDiv.innerHTML = `
+            <label>Lesson title:</label>
+            <input type="text" name="sections[${currentSectionIndex}][lessons][${currentLessonIndex}][title]" required />
+            <div class="lesson-video-upload">
+              <label>Video:</label>
+              <input type="file" accept="video/*" class="lesson-video-input" style="display:none;" />
+              <button type="button" class="lesson-video-upload-btn">Upload Video</button>
+              <span class="lesson-video-progress" style="display:none;"></span>
+              <input type="hidden" name="sections[${currentSectionIndex}][lessons][${currentLessonIndex}][videoUrl]" class="lesson-video-url" />
+              <div class="lesson-video-preview"><span style="color:#888;">No video</span></div>
+            </div>
+            <button type="button" class="removeLessonBtn">Remove lesson</button>
+          `;
+          lessonsContainer.appendChild(lessonDiv);
+          // Remove lesson logic
+          lessonDiv.querySelector('.removeLessonBtn').onclick = function() {
+            lessonDiv.remove();
+          };
+          // Video upload logic
+          const videoInput = lessonDiv.querySelector('.lesson-video-input');
+          const uploadBtn = lessonDiv.querySelector('.lesson-video-upload-btn');
+          const progressSpan = lessonDiv.querySelector('.lesson-video-progress');
+          const videoUrlInput = lessonDiv.querySelector('.lesson-video-url');
+          const previewDiv = lessonDiv.querySelector('.lesson-video-preview');
+          uploadBtn.onclick = () => videoInput.click();
+          videoInput.onchange = function() {
+            if (videoInput.files.length > 0) {
+              const file = videoInput.files[0];
+              const formData = new FormData();
+              formData.append('video', file);
+              progressSpan.style.display = 'inline';
+              progressSpan.textContent = 'Uploading...';
+              fetch(`/admin-page/lessons/upload-video`, {
+                method: 'POST',
+                body: formData
+              }).then(res => res.json())
+                .then(data => {
+                  if (data.success) {
+                    videoUrlInput.value = data.url;
+                    previewDiv.innerHTML = `<video src="${data.url}" controls style="max-width:180px;max-height:100px;"></video>`;
+                    progressSpan.textContent = 'Uploaded!';
+                  } else {
+                    progressSpan.textContent = 'Upload failed.';
+                  }
+                  setTimeout(() => { progressSpan.style.display = 'none'; }, 2000);
+                })
+                .catch(() => {
+                  progressSpan.textContent = 'Upload failed.';
+                  setTimeout(() => { progressSpan.style.display = 'none'; }, 2000);
+                });
+            }
+          };
+          lessonCount++;
+        });
+        sectionCount++;
+      });
+
+      // HANDLING GALLERY CREATION FORM
+
+      let galleryItemCount = 0;
+
+      document
+        .getElementById("addGalleryItemBtn")
+        .addEventListener("click", () => {
+          const container = document.getElementById("galleryItemsContainer");
+
+          const html = `
+        
+        <div class="galleryItem">
+          <label for="galleryFile-${galleryItemCount}">Media file:</label>
+          <input
+          type="file"
+          name="galleryFiles"
+          id="galleryFile-${galleryItemCount}"
+          required
+        />
+
+        <label for="galleryCaption-${galleryItemCount}">Caption:</label>
+        <input
+          type="text"
+          name="galleryCaptions"
+          id="galleryCaption-${galleryItemCount}"
+          placeholder="Optional caption..."
+        />
+
+        <label for="galleryType-${galleryItemCount}">Type:</label>
+        <select name="galleryTypes" id="galleryType-${galleryItemCount}">
+          <option value="image">Image</option>
+          <option value="video">Video</option>
+        </select>
+
+      <br>
+      </div>
+
+        `;
+
+        container.insertAdjacentHTML('beforeend', html);
+        galleryItemCount++;
+
+
+        });
+
+      // Initialize Quill editor
+      var quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        placeholder: 'Write course contents here...'
+      });
+
+      // On form submit, set the hidden input value to the Quill HTML
+      document.querySelector('form').addEventListener('submit', function(e) {
+        document.getElementById('courseContents').value = quill.root.innerHTML;
+      });
+    </script>
+  </body>
+</html>

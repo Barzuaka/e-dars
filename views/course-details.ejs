@@ -1,0 +1,474 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <title><%= title %></title>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <%- include('partials/navbar') %>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div style="color: red; background: #ffeaea; padding: 12px; border-radius: 6px; margin: 16px 0;">
+        <%= error %>
+      </div>
+    <% } %>
+
+    <!-- PATH -->
+    <div class="path">
+      <p>
+        <a href="/#courses-intro">Videokurslar </a>
+        <i class="fa-solid fa-chevron-right fa-xs"></i> <%= title %>
+      </p>
+    </div>
+
+    <!-- CALL TO ACTION AREA -->
+    <% if (typeof user !== 'undefined' && user && !user.purchasedCourses.some(c => c.toString() === course._id.toString())) { %>
+      <div class="cta-container" id="ctaContainer">
+        <div class="cta-content">
+          <div class="cta-text">
+            <h3>🚀 Tayyormisiz?</h3>
+            <p>Kursni sotib oling va o'rganishni boshlang!</p>
+          </div>
+          <div class="cta-button">
+            <button class="add-to-cart-btn-course" 
+              data-course-id="<%= course._id %>" 
+              data-course-title="<%= course.title %>" 
+              data-course-price="<%= course.price %>" 
+              data-course-image="<%= course.thumbnailImage %>">
+              <i class="fas fa-cart-plus"></i>
+              Savatga!
+            </button>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- CAROUSEL -->
+    <div class="carousel-container">
+      <div class="course-title"><p><%= course.title %></p></div>
+
+      <% if (typeof user !== 'undefined' && user && user.purchasedCourses && user.purchasedCourses.some(c => c.toString() === course._id.toString())) { %>
+        <div style="text-align: center; margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+          <h3 style="margin-bottom: 10px; font-size: 24px;">🎉 You're enrolled in this course!</h3>
+          <p style="margin-bottom: 20px; opacity: 0.9;">Ready to start your learning journey?</p>
+          <a href="/dashboard" class="start-learning-btn" style="display: inline-block; padding: 12px 32px; background: #fff; color: #667eea; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; transition: transform 0.2s;">
+            <i class="fas fa-user-graduate" style="margin-right: 8px;"></i>Mening kurslarim
+          </a>
+        </div>
+      <% } %>
+
+      <div class="overview">
+        <div class="overview-video">
+          <p class="infotitle">
+            <i class="fa-brands fa-youtube"></i>Videokurs taqdimoti videosi
+          </p>
+          <div class="video-container">
+            <iframe
+              src="https://www.youtube.com/embed/<%=course.introVideoID%>"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            >
+            </iframe>
+          </div>
+        </div>
+        <div class="overview-details">
+          <p class="infotitle">
+            <i class="fa-solid fa-circle-info"></i>Umumiy ma'lumot
+          </p>
+          <div class="overview-details-items">
+            <p class="course-detail-item">
+              <i
+                style="color: indigo; font-size: 1.8rem; width: 32px"
+                class="fa-solid fa-photo-film"
+              ></i
+              ><strong style="font-size: 1.8rem"
+                ><%= course.numberOfLessonsManual %></strong
+              >
+              darslar
+            </p>
+            <p class="course-detail-item">
+              <i
+                style="color: crimson; font-size: 1.8rem; width: 32px"
+                class="fa-solid fa-stopwatch"
+              ></i
+              ><strong style="font-size: 1.8rem"
+                ><%= course.totalHours %></strong
+              >
+              soat
+            </p>
+            <p class="course-detail-item">
+              <i
+                style="color: cornflowerblue; font-size: 1.8rem; width: 32px"
+                class="fa-solid fa-file-circle-check"
+              ></i
+              ><strong style="font-size: 1.8rem"
+                ><%= course.numOfProjects %></strong
+              >
+              loyihalar
+            </p>
+            <p class="course-detail-item">
+              <i
+                style="color: burlywood; font-size: 1.8rem; width: 32px"
+                class="fa-solid fa-folder-closed"
+              ></i
+              ><strong style="font-size: 1.8rem"><%= course.sizeGb %></strong>
+              Gb
+            </p>
+            <p class="course-detail-item">
+              <i
+                style="color: deeppink; font-size: 1.8rem; width: 32px"
+                class="fa-solid fa-book-open"
+              ></i
+              ><strong style="font-size: 1.8rem"
+                ><%= course.topicsCovered %></strong
+              >
+              mavzular
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if (typeof canWatch !== 'undefined' && canWatch) { %>
+      <div style="margin: 2em 0;">
+        <h2>Watch Lessons</h2>
+        <% if (course.sections && course.sections.length > 0) { %>
+          <% course.sections.forEach(section => { %>
+            <div style="margin-bottom: 1.5em;">
+              <h3><%= section.sectionTitle %></h3>
+              <ol>
+                <% section.lessons.forEach(lesson => { %>
+                  <li style="margin-bottom: 1em;">
+                    <strong><%= lesson.title %></strong><br/>
+                    <% if (lesson.videoUrl) { %>
+                      <video controls style="max-width: 480px; width: 100%; margin-top: 0.5em;">
+                        <source src="<%= lesson.videoUrl %>" type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    <% } else { %>
+                      <span style="color: #888;">No video uploaded for this lesson.</span>
+                    <% } %>
+                  </li>
+                <% }); %>
+              </ol>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p>No lessons available for this course yet.</p>
+        <% } %>
+      </div>
+    <% } %>
+
+    <!-- INFO TABS -->
+    <div class="info-tabs-container">
+      <div class="tabs">
+        <a href="#general-info" class="tab active" data-tab="general-info">Nimalar o'rgatiladi?</a>
+        <a href="#lessons-list" class="tab" data-tab="lessons-list">Mundarija</a>
+        <a href="#projects" class="tab" data-tab="projects">Loyihalar galereyasi</a>
+
+      </div>
+
+      <!-- INFO TABS CONTENT -->
+      <div class="info">
+        <div class="info-inner">
+          <div class="tab-content active" id="general-info">
+            <p>Ushbu videokursda nimalarni o'rganasiz?</p>
+            <p
+              style="
+                font-size: 1.2rem;
+                font-weight: 400;
+                color: darkslateblue;
+                margin: 0px 0 20px 0;
+              "
+            >
+              <%= course.description %>
+            </p>
+          </div>
+          <div class="tab-content" id="lessons-list">
+            <p>Videokurs mundarijasi (kursdagi barcha darslar royxati)</p>
+            <h2><%= course.title %></h2>
+            <!-- Render formatted course contents if available -->
+            <% if (course.courseContents && course.courseContents.trim()) { %>
+              <div class="course-contents-quill" style="margin-bottom: 2em;">
+                <%- course.courseContents %>
+              </div>
+            <% } %>
+            <% course.sections.forEach(section => { %>
+            <div class="section">
+              <h3><%= section.sectionTitle %></h3>
+              <ol>
+                <% section.lessons.forEach(lesson => { %>
+                <li><%= lesson.title %></li>
+                <% }); %>
+              </ol>
+            </div>
+            <% }); %>
+          </div>
+          <div class="tab-content" id="projects">
+            <p>Videokursda yasab ko'rsatilgan amaliy loyihalar</p>
+            <div class="gallery-grid">
+              <% course.gallery.forEach((item, index) => { %>
+              <div class="gallery-item" data-index="<%= index %>">
+                <% if (item.mediaFileType === 'image') { %>
+                <img
+                  src="<%= item.url %>"
+                  alt="<%= item.caption || 'Gallery Image' %>"
+                />
+                <% } else if (item.mediaFileType === 'video') { %>
+                <video>
+                  <source src="<%= item.url %>" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                <% } %>
+              </div>
+              <% }); %>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Notification -->
+    <div id="floatingNotification" class="floating-notification">
+      <i class="fas fa-check-circle"></i>
+      <span>Kurs savatchaga qo'shildi</span>
+    </div>
+
+    <!-- Contact Sales Modal -->
+    <%- include('partials/contact-sales-modal') %>
+
+    <!-- LIGHTBOX TO VIEW GALLERY ITEMS -->
+    <div id="lightbox" class="lightbox" style="display: none">
+      <span class="close">&times;</span>
+      <div class="lightbox-content">
+        <!-- Image or video will be inserted here dynamically -->
+      </div>
+      <a class="prev">&#10094;</a>
+      <a class="next">&#10095;</a>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script>
+      // Add to cart functionality for course details
+      document.addEventListener('DOMContentLoaded', function() {
+        const addToCartButton = document.querySelector('.add-to-cart-btn-course');
+        const ctaContainer = document.getElementById('ctaContainer');
+        
+        // Function to show floating notification
+        function showNotification(message = "Kurs savatchaga qo'shildi") {
+          const notification = document.getElementById('floatingNotification');
+          if (!notification) {
+            console.error('Floating notification element not found');
+            return;
+          }
+          
+          const messageSpan = notification.querySelector('span');
+          const icon = notification.querySelector('i');
+          
+          // Update message and icon based on the type
+          messageSpan.textContent = message;
+          
+          if (message.includes('allaqachon')) {
+            // Already in cart - show info icon
+            icon.className = 'fas fa-info-circle';
+            icon.style.color = '#FFA500'; // Orange for info
+          } else {
+            // Added to cart - show check icon
+            icon.className = 'fas fa-check-circle';
+            icon.style.color = '#4CAF50'; // Green for success
+          }
+          
+          notification.classList.add('show');
+          
+          // Hide notification after 2 seconds
+          setTimeout(() => {
+            notification.classList.remove('show');
+          }, 2000);
+        }
+        
+        // Wait for cart functions to be available
+        function waitForCartFunctions() {
+          return new Promise((resolve) => {
+            const checkFunctions = () => {
+              if (typeof addToCart === 'function' && typeof getCartItems === 'function') {
+                resolve();
+              } else {
+                setTimeout(checkFunctions, 100);
+              }
+            };
+            checkFunctions();
+          });
+        }
+        
+        // Check if course is already in cart on page load
+        async function checkCartStatus() {
+          if (ctaContainer && addToCartButton) {
+            await waitForCartFunctions();
+            const courseId = addToCartButton.getAttribute('data-course-id');
+            if (courseId) {
+              const cartItems = getCartItems();
+              if (cartItems && cartItems.some(item => item.id === courseId)) {
+                ctaContainer.classList.add('hidden');
+              }
+            }
+          }
+        }
+        
+        // Initialize cart status check
+        checkCartStatus();
+        
+        if (addToCartButton) {
+          addToCartButton.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            const courseId = this.getAttribute('data-course-id');
+            const courseTitle = this.getAttribute('data-course-title');
+            const coursePrice = parseInt(this.getAttribute('data-course-price'));
+            const courseImage = this.getAttribute('data-course-image');
+            
+            // Wait for cart functions to be available
+            await waitForCartFunctions();
+            
+            // Check if addToCart function exists
+            if (typeof addToCart === 'function') {
+              const wasAdded = addToCart(courseId, courseTitle, coursePrice, courseImage);
+              
+              if (wasAdded) {
+                // Course was added successfully
+                showNotification("Kurs savatchaga qo'shildi");
+                
+                // Show success message on button
+                this.innerHTML = '<i class="fas fa-check"></i> Savatga qo\'shildi!';
+                this.classList.add('success');
+                
+                // Hide the entire CTA container after a short delay
+                setTimeout(() => {
+                  if (ctaContainer) {
+                    ctaContainer.classList.add('hidden');
+                  }
+                }, 1500);
+              } else {
+                // Course was already in cart
+                showNotification("Kurs allaqachon savatchada, savatchani tekshiring");
+              }
+            } else {
+              console.error('addToCart function not found');
+              showNotification("Xatolik yuz berdi, qaytadan urinib ko'ring");
+            }
+          });
+        }
+      });
+
+      // TABS BEHAVIOUR LOGIC
+      const buttons = document.querySelectorAll(".tab");
+      const contents = document.querySelectorAll(".tab-content");
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tab = btn.dataset.tab;
+
+          // Toggle tab content visibility
+          contents.forEach((con) => {
+            con.classList.toggle("active", con.id === tab);
+          });
+
+          // Highlight active tab button
+          buttons.forEach((but) => {
+            but.classList.toggle("active", but === btn);
+          });
+        });
+      });
+
+      // LIGHTBOX BEHAVIOUR LOGIC
+      const lightbox = document.getElementById('lightbox');
+      if (lightbox) {
+        const lightboxContent = lightbox.querySelector('.lightbox-content');
+        const closeBtn = lightbox.querySelector('.close');
+        const prevBtn = lightbox.querySelector('.prev');
+        const nextBtn = lightbox.querySelector('.next');
+
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        let galleryMedia = [];
+        galleryItems.forEach(item => {
+          const media = item.querySelector('img') || item.querySelector('video');
+          if (media) {
+            galleryMedia.push(media);
+          }
+        });
+
+        let currentIndex = 0;
+
+        function showLightbox(index) {
+          if (index < 0 || index >= galleryMedia.length) {
+            return;
+          }
+          currentIndex = index;
+          const mediaElement = galleryMedia[currentIndex];
+          
+          lightboxContent.innerHTML = '';
+          const clone = mediaElement.cloneNode(true);
+
+          if (clone.tagName.toLowerCase() === 'video') {
+            clone.controls = true;
+            clone.autoplay = true;
+            clone.muted = false;
+          }
+          
+          lightboxContent.appendChild(clone);
+          lightbox.style.display = 'flex';
+          document.body.style.overflow = 'hidden'; // Prevent scrolling background
+        }
+
+        function closeLightbox() {
+          lightbox.style.display = 'none';
+          lightboxContent.innerHTML = '';
+          document.body.style.overflow = 'auto';
+        }
+
+        function showNext() {
+          showLightbox((currentIndex + 1) % galleryMedia.length);
+        }
+
+        function showPrev() {
+          showLightbox((currentIndex - 1 + galleryMedia.length) % galleryMedia.length);
+        }
+
+        galleryItems.forEach((item) => {
+          item.addEventListener('click', (e) => {
+            const index = parseInt(e.currentTarget.dataset.index, 10);
+            showLightbox(index);
+          });
+        });
+
+        closeBtn.addEventListener('click', closeLightbox);
+        nextBtn.addEventListener('click', showNext);
+        prevBtn.addEventListener('click', showPrev);
+
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) {
+            closeLightbox();
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (lightbox.style.display === 'flex') {
+            if (e.key === 'ArrowRight') {
+              showNext();
+            } else if (e.key === 'ArrowLeft') {
+              showPrev();
+            } else if (e.key === 'Escape') {
+              closeLightbox();
+            }
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

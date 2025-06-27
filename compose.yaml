@@ -1,0 +1,40 @@
+services:
+  js-app:
+    build:
+      context: .
+    container_name: js-app
+    restart: unless-stopped
+    init: true
+    ports:
+      - "3001:3001"  # Expose app on port 3001
+    # env_file: ./.env  # Uncomment if .env file exists
+    networks:
+      - appnet
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"  # Expose MongoDB for local development
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    # Uncomment the following to persist MongoDB data
+    # volumes:
+    #   - mongo-data:/data/db
+
+networks:
+  appnet:
+    driver: bridge
+
+# Uncomment the following if you want to persist MongoDB data
+# volumes:
+#   mongo-data:
+#     driver: local

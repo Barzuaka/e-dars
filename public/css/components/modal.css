@@ -1,0 +1,352 @@
+/* Modal Component Styles */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background-color: var(--white);
+  margin: 5% auto;
+  padding: 0;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  animation: modalSlideIn 0.3s ease-out;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+  color: var(--white);
+  padding: 24px 32px 20px;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+  position: relative;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.modal-header p {
+  margin: 8px 0 0;
+  opacity: 0.9;
+  font-size: 14px;
+}
+
+.modal-body {
+  padding: 32px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 12px 16px;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+  background: var(--white);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(186, 28, 130, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  color: var(--white);
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.close:hover {
+  opacity: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+  
+  .modal-header {
+    padding: 20px 24px 16px;
+  }
+  
+  .modal-header h2 {
+    font-size: 20px;
+  }
+  
+  .modal-body {
+    padding: 24px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 98%;
+    margin: 5% auto;
+  }
+  
+  .modal-header {
+    padding: 16px 20px 12px;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+}
+
+/* Edit Course Modal Specific Styles */
+.edit-section {
+  background: var(--gray-light);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-light);
+}
+
+.edit-section h4 {
+  margin: 0 0 12px 0;
+  color: var(--primary-dark);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.edit-section input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.edit-lesson {
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+}
+
+.edit-lesson input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.lesson-video-upload {
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--gray-light);
+  border-radius: 4px;
+}
+
+.lesson-video-upload label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.lesson-video-upload-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.lesson-video-upload-btn:hover {
+  background: var(--primary-lighter);
+}
+
+.lesson-video-progress {
+  font-size: 12px;
+  color: var(--primary-dark);
+  font-weight: 500;
+}
+
+.lesson-video-preview {
+  margin-top: 8px;
+}
+
+.lesson-video-preview video {
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+}
+
+.remove-section-btn,
+.remove-lesson-btn {
+  background: #dc3545;
+  color: var(--white);
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.remove-section-btn:hover,
+.remove-lesson-btn:hover {
+  background: #c82333;
+}
+
+.add-lesson-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.add-lesson-btn:hover {
+  background: var(--primary-lighter);
+}
+
+/* Gallery Items Styles */
+.edit-gallery-item {
+  background: var(--gray-light);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-gallery-item input[type="text"] {
+  padding: 6px 8px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.edit-gallery-item select {
+  padding: 6px 8px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  font-size: 12px;
+  background: var(--white);
+}
+
+.gallery-upload-btn {
+  background: var(--primary-light);
+  color: var(--white);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.gallery-upload-btn:hover {
+  background: var(--primary-lighter);
+}
+
+.remove-gallery-btn {
+  background: #dc3545;
+  color: var(--white);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.remove-gallery-btn:hover {
+  background: #c82333;
+}
+
+/* Responsive adjustments for gallery items */
+@media (max-width: 768px) {
+  .edit-gallery-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  
+  .edit-gallery-item input[type="text"],
+  .edit-gallery-item select {
+    width: 100%;
+  }
+} 

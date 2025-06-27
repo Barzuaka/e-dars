@@ -1,0 +1,498 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <%- include('partials/navbar') %>
+    <h1><%= message %></h1>
+    <a href="/admin-page/courses/new" class="create-course-btn"
+      >Create course</a
+    >
+    <a href="/admin-page/users" class="create-course-btn" style="margin-left: 12px; background: #4a90e2;">Manage users</a>
+    <a href="/admin/student-works" class="create-course-btn" style="margin-left: 12px; background: #28a745;">Manage Student Works</a>
+    <br />
+    <a href="/">Go back home</a>
+
+    <div class="admin-courses-list">
+      <% if (courses && courses.length > 0) { %>
+        <% courses.forEach(course => { %>
+          <div class="admin-course-card">
+            <img src="<%= course.thumbnailImage %>" alt="<%= course.title %> Thumbnail" class="admin-course-thumb" />
+            <div class="admin-course-info">
+              <h3><%= course.title %></h3>
+              <p><%= course.category %></p>
+              <p><%= course.price.toLocaleString('ru-RU') %> so'm</p>
+            </div>
+            <span class="edit-course-icon" title="Edit Course">
+              <i class="fa fa-pencil"></i>
+            </span>
+            <span class="featured-star" data-id="<%= course._id %>" title="Toggle Featured">
+              <% if (course.featured) { %>
+                <i class="fa-solid fa-star"></i>
+              <% } else { %>
+                <i class="fa-regular fa-star"></i>
+              <% } %>
+            </span>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p>No courses available.</p>
+      <% } %>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script type="application/json" id="courses-data">
+      <%- JSON.stringify(courses) %>
+    </script>
+    <script>
+      // Make courses data available in JS
+      const coursesData = JSON.parse(document.getElementById('courses-data').textContent);
+    </script>
+
+    <!-- Edit Course Modal -->
+    <div id="editCourseModal" class="modal" style="display:none;">
+      <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+          <h2>Edit Course</h2>
+          <span class="close-modal" id="closeEditModal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <form id="editCourseForm" enctype="multipart/form-data" class="modal-form">
+            <input type="hidden" name="_id" id="edit-course-id" />
+            
+            <div class="form-group">
+              <label for="edit-title">Title:</label>
+              <input type="text" name="title" id="edit-title" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-category">Category:</label>
+              <input type="text" name="category" id="edit-category" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-price">Price:</label>
+              <input type="number" name="price" id="edit-price" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-description">Description:</label>
+              <textarea name="description" id="edit-description" required></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-courseContents">Course Contents (Rich Text):</label>
+              <div id="edit-quill-editor" style="height: 200px; border: 2px solid var(--border-light); border-radius: 8px;"></div>
+              <input type="hidden" name="courseContents" id="edit-courseContents" />
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-introVideoID">Course Intro video url:</label>
+              <input type="text" name="introVideoID" id="edit-introVideoID" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-totalHours">Course total hours:</label>
+              <input type="number" name="totalHours" id="edit-totalHours" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-topicsCovered">Topics covered:</label>
+              <input type="number" name="topicsCovered" id="edit-topicsCovered" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-numOfProjects">Number of real life projects:</label>
+              <input type="number" name="numOfProjects" id="edit-numOfProjects" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-sizeGb">Course size (in GB):</label>
+              <input type="number" name="sizeGb" id="edit-sizeGb" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="edit-numberOfLessonsManual">Number of video lessons in the course:</label>
+              <input type="number" name="numberOfLessonsManual" id="edit-numberOfLessonsManual" required />
+            </div>
+            
+            <!-- Sections and Lessons (dynamic) -->
+            <div class="form-group">
+              <label>Sections & Lessons:</label>
+              <div id="editSectionsContainer" style="border: 1px solid var(--border-light); border-radius: 8px; padding: 16px; margin-top: 8px;"></div>
+              <button type="button" id="addEditSectionBtn" class="btn btn-primary" style="margin-top: 12px;">Add Lesson Section</button>
+            </div>
+            
+            <!-- Gallery items (dynamic) -->
+            <div class="form-group">
+              <label>Gallery items:</label>
+              <div id="editGalleryItemsContainer" style="border: 1px solid var(--border-light); border-radius: 8px; padding: 16px; margin-top: 8px;"></div>
+              <button type="button" id="addEditGalleryItemBtn" class="btn btn-primary" style="margin-top: 12px;">Add images or videos</button>
+            </div>
+            
+            <div class="modal-actions">
+              <button type="submit" class="modal-btn modal-btn-primary">Save/Update</button>
+              <button type="button" id="cancelEditBtn" class="modal-btn modal-btn-secondary">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quill CSS & JS (CDN) for modal -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+    <script>
+      // Modal logic
+      const modal = document.getElementById('editCourseModal');
+      const closeModalBtn = document.getElementById('closeEditModal');
+      const cancelEditBtn = document.getElementById('cancelEditBtn');
+      const editForm = document.getElementById('editCourseForm');
+      let quillEdit;
+
+      // Open modal and populate fields
+      document.querySelectorAll('.edit-course-icon').forEach((icon, idx) => {
+        icon.addEventListener('click', function() {
+          const course = coursesData[idx];
+          document.getElementById('edit-course-id').value = course._id;
+          document.getElementById('edit-title').value = course.title;
+          document.getElementById('edit-category').value = course.category;
+          document.getElementById('edit-price').value = course.price;
+          document.getElementById('edit-description').value = course.description;
+          document.getElementById('edit-introVideoID').value = course.introVideoID || '';
+          document.getElementById('edit-totalHours').value = course.totalHours || '';
+          document.getElementById('edit-topicsCovered').value = course.topicsCovered || '';
+          document.getElementById('edit-numOfProjects').value = course.numOfProjects || '';
+          document.getElementById('edit-sizeGb').value = course.sizeGb || '';
+          document.getElementById('edit-numberOfLessonsManual').value = course.numberOfLessonsManual || '';
+          // Set Quill content
+          if (!quillEdit) {
+            quillEdit = new Quill('#edit-quill-editor', { theme: 'snow' });
+          }
+          quillEdit.root.innerHTML = course.courseContents || '';
+          // Render sections/lessons
+          renderEditSections(course.sections || []);
+          // Render gallery items
+          renderEditGalleryItems(course.gallery || []);
+          modal.style.display = 'flex';
+        });
+      });
+
+      // Close modal
+      closeModalBtn.onclick = cancelEditBtn.onclick = function() {
+        modal.style.display = 'none';
+      };
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      };
+
+      // On submit, set hidden input to Quill HTML
+      editForm.onsubmit = function(e) {
+        document.getElementById('edit-courseContents').value = quillEdit.root.innerHTML;
+        e.preventDefault();
+        // Gather all form data
+        const formData = new FormData(editForm);
+        // Gather sections/lessons
+        const sections = [];
+        document.querySelectorAll('#editSectionsContainer .edit-section').forEach((sectionDiv, sIdx) => {
+          const sectionTitle = sectionDiv.querySelector('input[type="text"]').value;
+          const lessons = [];
+          sectionDiv.querySelectorAll('.edit-lesson').forEach((lessonDiv, lIdx) => {
+            const title = lessonDiv.querySelector('input[type="text"]').value;
+            const videoUrl = lessonDiv.querySelector('.lesson-video-url').value;
+            lessons.push({ title, videoUrl });
+          });
+          sections.push({ sectionTitle, lessons });
+        });
+        // Gather gallery items
+        const gallery = [];
+        document.querySelectorAll('#editGalleryItemsContainer .edit-gallery-item').forEach(itemDiv => {
+          gallery.push({
+            url: itemDiv.querySelector('input[name*="[url]"]').value,
+            mediaFileType: itemDiv.querySelector('select').value,
+            caption: itemDiv.querySelector('input[name*="[caption]"]').value
+          });
+        });
+        // Build payload
+        const payload = {
+          _id: formData.get('_id'),
+          title: formData.get('title'),
+          category: formData.get('category'),
+          price: formData.get('price'),
+          description: formData.get('description'),
+          courseContents: formData.get('courseContents'),
+          introVideoID: formData.get('introVideoID'),
+          totalHours: formData.get('totalHours'),
+          topicsCovered: formData.get('topicsCovered'),
+          numOfProjects: formData.get('numOfProjects'),
+          sizeGb: formData.get('sizeGb'),
+          numberOfLessonsManual: formData.get('numberOfLessonsManual'),
+          sections,
+          gallery
+        };
+        
+        console.log('Sending payload:', JSON.stringify(payload, null, 2));
+        
+        // AJAX POST
+        fetch(`/admin-page/courses/${payload._id}/edit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Course updated successfully!');
+            window.location.reload();
+          } else {
+            alert('Failed to update course.');
+          }
+        })
+        .catch(() => alert('Failed to update course.'));
+        modal.style.display = 'none';
+      };
+
+      // Sections & Lessons logic
+      function renderEditSections(sections) {
+        const container = document.getElementById('editSectionsContainer');
+        container.innerHTML = '';
+        sections.forEach((section, sIdx) => {
+          const sectionDiv = document.createElement('div');
+          sectionDiv.className = 'edit-section';
+          sectionDiv.innerHTML = `
+            <h4>Section <span class="section-num">${sIdx + 1}</span></h4>
+            <input type="text" name="sections[${sIdx}][sectionTitle]" value="${section.sectionTitle || ''}" placeholder="Section title" required />
+            <button type="button" class="remove-section-btn">Remove Section</button>
+            <div class="edit-lessons-container"></div>
+            <button type="button" class="add-lesson-btn">Add Lesson</button>
+          `;
+          // Lessons
+          const lessonsContainer = sectionDiv.querySelector('.edit-lessons-container');
+          (section.lessons || []).forEach((lesson, lIdx) => {
+            const lessonDiv = document.createElement('div');
+            lessonDiv.className = 'edit-lesson';
+            lessonDiv.innerHTML = `
+              <input type="text" name="sections[${sIdx}][lessons][${lIdx}][title]" value="${lesson.title || ''}" placeholder="Lesson title" required />
+              <button type="button" class="remove-lesson-btn">Remove</button>
+              <div class="lesson-video-upload">
+                <label>Video:</label>
+                <input type="file" accept="video/*" class="lesson-video-input" style="display:none;" />
+                <button type="button" class="lesson-video-upload-btn">Upload Video</button>
+                <span class="lesson-video-progress" style="display:none;"></span>
+                <input type="hidden" name="sections[${sIdx}][lessons][${lIdx}][videoUrl]" value="${lesson.videoUrl || ''}" class="lesson-video-url" />
+                <div class="lesson-video-preview">
+                  ${lesson.videoUrl ? `<video src="${lesson.videoUrl}" controls style="max-width:180px;max-height:100px;"></video>` : '<span style="color:#888;">No video</span>'}
+                </div>
+              </div>
+            `;
+            lessonsContainer.appendChild(lessonDiv);
+            // Video upload logic
+            const videoInput = lessonDiv.querySelector('.lesson-video-input');
+            const uploadBtn = lessonDiv.querySelector('.lesson-video-upload-btn');
+            const progressSpan = lessonDiv.querySelector('.lesson-video-progress');
+            const videoUrlInput = lessonDiv.querySelector('.lesson-video-url');
+            const previewDiv = lessonDiv.querySelector('.lesson-video-preview');
+            uploadBtn.onclick = () => videoInput.click();
+            videoInput.onchange = function() {
+              if (videoInput.files.length > 0) {
+                const file = videoInput.files[0];
+                const formData = new FormData();
+                formData.append('video', file);
+                progressSpan.style.display = 'inline';
+                progressSpan.textContent = 'Uploading...';
+                fetch(`/admin-page/lessons/upload-video`, {
+                  method: 'POST',
+                  body: formData
+                }).then(res => res.json())
+                  .then(data => {
+                    if (data.success) {
+                      videoUrlInput.value = data.url;
+                      previewDiv.innerHTML = `<video src="${data.url}" controls style="max-width:180px;max-height:100px;"></video>`;
+                      progressSpan.textContent = 'Uploaded!';
+                    } else {
+                      progressSpan.textContent = 'Upload failed.';
+                    }
+                    setTimeout(() => { progressSpan.style.display = 'none'; }, 2000);
+                  })
+                  .catch(() => {
+                    progressSpan.textContent = 'Upload failed.';
+                    setTimeout(() => { progressSpan.style.display = 'none'; }, 2000);
+                  });
+              }
+            };
+          });
+          // Add lesson button
+          sectionDiv.querySelector('.add-lesson-btn').onclick = function() {
+            const lIdx = lessonsContainer.children.length;
+            const lessonDiv = document.createElement('div');
+            lessonDiv.className = 'edit-lesson';
+            lessonDiv.innerHTML = `
+              <input type="text" name="sections[${sIdx}][lessons][${lIdx}][title]" placeholder="Lesson title" required />
+              <button type="button" class="remove-lesson-btn">Remove</button>
+              <div class="lesson-video-upload">
+                <label>Video:</label>
+                <input type="file" accept="video/*" class="lesson-video-input" style="display:none;" />
+                <button type="button" class="lesson-video-upload-btn">Upload Video</button>
+                <span class="lesson-video-progress" style="display:none;"></span>
+                <input type="hidden" name="sections[${sIdx}][lessons][${lIdx}][videoUrl]" value="" class="lesson-video-url" />
+                <div class="lesson-video-preview">
+                  <span style="color:#888;">No video</span>
+                </div>
+              </div>
+            `;
+            lessonsContainer.appendChild(lessonDiv);
+            lessonDiv.querySelector('.remove-lesson-btn').onclick = function() {
+              lessonDiv.remove();
+            };
+            // Video upload logic
+            const videoInput = lessonDiv.querySelector('.lesson-video-input');
+            const uploadBtn = lessonDiv.querySelector('.lesson-video-upload-btn');
+            const progressSpan = lessonDiv.querySelector('.lesson-video-progress');
+            const videoUrlInput = lessonDiv.querySelector('.lesson-video-url');
+            const previewDiv = lessonDiv.querySelector('.lesson-video-preview');
+            uploadBtn.onclick = () => videoInput.click();
+            videoInput.onchange = function() {
+              if (videoInput.files.length > 0) {
+                const file = videoInput.files[0];
+                const formData = new FormData();
+                formData.append('video', file);
+                progressSpan.style.display = 'inline';
+                progressSpan.textContent = 'Uploading...';
+                fetch(`/admin-page/lessons/upload-video`, {
+                  method: 'POST',
+                  body: formData
+                }).then(res => res.json())
+                  .then(data => {
+                    if (data.success) {
+                      videoUrlInput.value = data.url;
+                      previewDiv.innerHTML = `<video src="${data.url}" controls style="max-width:180px;max-height:100px;"></video>`;
+                      progressSpan.textContent = 'Uploaded!';
+                    } else {
+                      progressSpan.textContent = 'Upload failed.';
+                    }
+                    setTimeout(() => { progressSpan.style.display = 'none'; }, 2000);
+                  })
+                  .catch(() => {
+                    progressSpan.textContent = 'Upload failed.';
+                    setTimeout(() => { progressSpan.style.display = 'none'; }, 2000);
+                  });
+              }
+            };
+          };
+          // Remove section button
+          sectionDiv.querySelector('.remove-section-btn').onclick = function() {
+            sectionDiv.remove();
+          };
+          // Remove lesson buttons
+          sectionDiv.querySelectorAll('.remove-lesson-btn').forEach(btn => {
+            btn.onclick = function() {
+              btn.parentElement.remove();
+            };
+          });
+          container.appendChild(sectionDiv);
+        });
+      }
+      document.getElementById('addEditSectionBtn').onclick = function() {
+        renderEditSections([...document.querySelectorAll('#editSectionsContainer .edit-section')].map(sectionDiv => {
+          return {
+            sectionTitle: sectionDiv.querySelector('input[type="text"]').value,
+            lessons: [...sectionDiv.querySelectorAll('.edit-lesson')].map(lessonDiv => ({
+              title: lessonDiv.querySelector('input[type="text"]').value,
+              videoUrl: lessonDiv.querySelector('.lesson-video-url').value
+            }))
+          };
+        }).concat([{ sectionTitle: '', lessons: [] }]));
+      };
+
+      // Gallery items logic
+      function renderEditGalleryItems(gallery) {
+        const container = document.getElementById('editGalleryItemsContainer');
+        container.innerHTML = '';
+        gallery.forEach((item, idx) => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'edit-gallery-item';
+          itemDiv.innerHTML = `
+            <input type="text" name="gallery[${idx}][url]" value="${item.url || ''}" placeholder="Media URL" required />
+            <input type="file" accept="image/*,video/*" class="gallery-upload-input" style="display:none;" />
+            <button type="button" class="gallery-upload-btn">Upload</button>
+            <select name="gallery[${idx}][mediaFileType]">
+              <option value="image" ${item.mediaFileType === 'image' ? 'selected' : ''}>Image</option>
+              <option value="video" ${item.mediaFileType === 'video' ? 'selected' : ''}>Video</option>
+            </select>
+            <input type="text" name="gallery[${idx}][caption]" value="${item.caption || ''}" placeholder="Caption" />
+            <button type="button" class="remove-gallery-btn">Remove</button>
+          `;
+          // Upload button logic
+          const uploadBtn = itemDiv.querySelector('.gallery-upload-btn');
+          const fileInput = itemDiv.querySelector('.gallery-upload-input');
+          uploadBtn.onclick = () => fileInput.click();
+          fileInput.onchange = function() {
+            if (fileInput.files.length > 0) {
+              const formData = new FormData();
+              formData.append('galleryFile', fileInput.files[0]);
+              fetch('/admin-page/gallery/upload', {
+                method: 'POST',
+                body: formData
+              })
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  itemDiv.querySelector('input[name*="[url]"]').value = data.url;
+                  itemDiv.querySelector('select').value = data.mediaFileType;
+                } else {
+                  alert('Upload failed.');
+                }
+              })
+              .catch(() => alert('Upload failed.'));
+            }
+          };
+          itemDiv.querySelector('.remove-gallery-btn').onclick = function() {
+            itemDiv.remove();
+          };
+          container.appendChild(itemDiv);
+        });
+      }
+      document.getElementById('addEditGalleryItemBtn').onclick = function() {
+        renderEditGalleryItems([...document.querySelectorAll('#editGalleryItemsContainer .edit-gallery-item')].map(itemDiv => {
+          return {
+            url: itemDiv.querySelector('input[name*="[url]"]').value,
+            mediaFileType: itemDiv.querySelector('select').value,
+            caption: itemDiv.querySelector('input[name*="[caption]"]').value
+          };
+        }).concat([{ url: '', mediaFileType: 'image', caption: '' }]));
+      };
+
+      // Featured star toggle logic
+      document.querySelectorAll('.featured-star').forEach(star => {
+        star.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const courseId = star.getAttribute('data-id');
+          fetch(`/admin-page/courses/${courseId}/toggle-featured`, {
+            method: 'POST'
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              // Update icon
+              if (data.featured) {
+                star.innerHTML = '<i class="fa-solid fa-star"></i>';
+              } else {
+                star.innerHTML = '<i class="fa-regular fa-star"></i>';
+              }
+            } else {
+              alert('Failed to toggle featured status.');
+            }
+          })
+          .catch(() => alert('Failed to toggle featured status.'));
+        });
+      });
+    </script>
+  </body>
+</html>

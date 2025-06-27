@@ -1,0 +1,86 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+
+# Version control
+.git/
+.gitignore
+.svn/
+.hg/
+
+# IDE/editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build and output directories
+dist/
+build/
+out/
+
+# Test and debug artifacts
+test/
+tests/
+debug/
+*.log
+
+# Temporary files and folders
+tmp/
+temp/
+*.tmp
+
+# Environment and secrets
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.crt
+config.local.*
+*.local.yml
+
+# Documentation
+*.md
+README*
+docs/
+
+# Docker files
+Dockerfile*
+docker-compose*
+
+# Project-specific: public/uploads (user uploads, not needed for build context)
+public/uploads/
+
+# Project-specific: empty fonts directory (if not needed)
+public/fonts/
+
+# Miscellaneous
+.local/
+local/
+
+# Exclude coverage and cache (if any)
+coverage/
+.pytest_cache/
+
+# Python cache (in case of mixed code)
+__pycache__/
+*.pyc
+*.pyo
+
+# Go cache (in case of mixed code)
+.go-cache/
+/vendor/
+*.test
+
+# Java cache (in case of mixed code)
+target/
+*.class
+.gradle/
+
+# Shell history and scripts (if not needed)
+*.sh~
+
+# Exclude self
+.dockerignore

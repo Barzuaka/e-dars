@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Edars</title>
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <%- include('partials/navbar') %>
+
+    <div class="auth-container">
+      <div class="auth-form-container">
+        <h2>Login to Your Account</h2>
+        <% if (typeof error !== 'undefined' && error) { %>
+          <div class="error-message"><%= error %></div>
+        <% } %>
+        <form action="/api/auth/login" method="POST">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <button type="submit" class="auth-btn">Login</button>
+        </form>
+        <p class="auth-switch">
+          Don't have an account? <a href="/register">Register here</a>
+        </p>
+      </div>
+    </div>
+
+    <%- include('partials/footer') %>
+  </body>
+</html> 

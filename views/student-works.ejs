@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Works - Edars</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components/student-works.css">
+  <link rel="stylesheet" href="/css/fontawesome-free-6.7.2-web/css/all.css">
+</head>
+<body>
+  <!-- NAVBAR -->
+  <%- include('partials/navbar') %>
+
+  <!-- HERO SECTION -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Student Results</h1>
+        <p>Discover amazing works created by our students</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY SECTION -->
+  <section class="gallery-section">
+    <div class="container">
+      <div class="gallery-grid" id="galleryGrid">
+        <% studentWorks.forEach((work, index) => { %>
+          <div class="gallery-item" data-work-id="<%= work._id %>" data-index="<%= index %>">
+            <% if (work.mediaType === 'video') { %>
+              <video src="<%= work.mediaUrl %>" preload="metadata"></video>
+              <div class="play-overlay">
+                <i class="fas fa-play"></i>
+              </div>
+            <% } else { %>
+              <img src="<%= work.mediaUrl %>" alt="Student work">
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- PAGINATION -->
+      <% if (pagination.totalPages > 1) { %>
+        <div class="pagination">
+          <% if (pagination.hasPrev) { %>
+            <a href="?page=<%= pagination.currentPage - 1 %>" class="page-link">
+              <i class="fas fa-chevron-left"></i>
+              Previous
+            </a>
+          <% } %>
+          
+          <div class="page-numbers">
+            <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+              <a href="?page=<%= i %>" class="page-link <%= i === pagination.currentPage ? 'active' : '' %>">
+                <%= i %>
+              </a>
+            <% } %>
+          </div>
+          
+          <% if (pagination.hasNext) { %>
+            <a href="?page=<%= pagination.currentPage + 1 %>" class="page-link">
+              Next
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- GALLERY VIEW MODAL -->
+  <div id="galleryModal" class="gallery-modal" tabindex="-1">
+    <div class="gallery-modal-content">
+      <div class="gallery-header">
+        <button class="close-gallery" onclick="closeGallery()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="gallery-viewer">
+        <button class="gallery-nav prev" onclick="previousMedia()">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="gallery-media-container">
+          <div id="galleryMedia" class="gallery-media">
+            <!-- Media will be loaded here -->
+          </div>
+        </div>
+        
+        <button class="gallery-nav next" onclick="nextMedia()">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      
+      <div class="gallery-info-panel">
+        <div class="work-details">
+          <div class="student-info">
+            <div class="student-name-course">
+              <h3 id="modalStudentName"></h3>
+              <p id="modalCourseName" class="course-name"></p>
+            </div>
+            <div class="student-meta">
+              <div id="modalJobPosition" class="job-position" style="display: none;">
+                <i class="fas fa-briefcase"></i>
+                <span></span>
+              </div>
+              <a id="modalPortfolioLink" class="portfolio-link" target="_blank" style="display: none;">
+                <i class="fas fa-external-link-alt"></i>
+                <span>View Portfolio</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="media-counter">
+          <span id="currentMediaIndex">1</span> / <span id="totalMediaCount">1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+
+  <!-- Hidden data container for JavaScript -->
+  <div id="worksData" data-works='<%- JSON.stringify(studentWorks) %>' style="display: none;"></div>
+
+  <script>
+    let currentIndex = 0;
+    let allWorks = JSON.parse(document.getElementById('worksData').dataset.works);
+
+    // Open gallery when clicking on gallery item
+    document.querySelectorAll('.gallery-item').forEach((item, index) => {
+      item.addEventListener('click', function() {
+        openGallery(index);
+      });
+    });
+
+    function openGallery(index) {
+      if (index < 0 || index >= allWorks.length) return;
+      currentIndex = index;
+      showMedia(currentIndex);
+      const modal = document.getElementById('galleryModal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => { modal.focus(); }, 100);
+    }
+
+    function showMedia(index) {
+      if (allWorks.length === 0) return;
+      if (index < 0) index = 0;
+      if (index >= allWorks.length) index = allWorks.length - 1;
+      currentIndex = index;
+      const work = allWorks[index];
+      const mediaContainer = document.getElementById('galleryMedia');
+      if (work.mediaType === 'image') {
+        mediaContainer.innerHTML = `<img src="${work.mediaUrl}" alt="Student work">`;
+      } else {
+        mediaContainer.innerHTML = `<video src="${work.mediaUrl}" controls autoplay></video>`;
+      }
+      
+      // Update info panel with new field structure
+      document.getElementById('modalStudentName').textContent = work.studentName;
+      document.getElementById('modalCourseName').textContent = work.courseName;
+      
+      // Handle job position
+      const jobPositionEl = document.getElementById('modalJobPosition');
+      if (work.jobPosition) {
+        jobPositionEl.querySelector('span').textContent = work.jobPosition;
+        jobPositionEl.style.display = 'flex';
+      } else {
+        jobPositionEl.style.display = 'none';
+      }
+      
+      // Handle portfolio link
+      const portfolioLinkEl = document.getElementById('modalPortfolioLink');
+      if (work.portfolioLink) {
+        portfolioLinkEl.href = work.portfolioLink;
+        portfolioLinkEl.style.display = 'inline-flex';
+      } else {
+        portfolioLinkEl.style.display = 'none';
+      }
+      
+      // Update counter
+      document.getElementById('currentMediaIndex').textContent = index + 1;
+      document.getElementById('totalMediaCount').textContent = allWorks.length;
+      
+      // Update navigation buttons
+      const prevBtn = document.querySelector('.gallery-nav.prev');
+      const nextBtn = document.querySelector('.gallery-nav.next');
+      if (prevBtn) prevBtn.style.display = allWorks.length > 1 && index > 0 ? 'flex' : 'none';
+      if (nextBtn) nextBtn.style.display = allWorks.length > 1 && index < allWorks.length - 1 ? 'flex' : 'none';
+    }
+
+    function nextMedia() {
+      if (currentIndex < allWorks.length - 1) {
+        showMedia(currentIndex + 1);
+      }
+    }
+
+    function previousMedia() {
+      if (currentIndex > 0) {
+        showMedia(currentIndex - 1);
+      }
+    }
+
+    function closeGallery() {
+      document.getElementById('galleryModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+      currentIndex = 0;
+    }
+
+    document.addEventListener('keydown', function(e) {
+      const modal = document.getElementById('galleryModal');
+      if (modal && modal.style.display === 'flex') {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeGallery();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          nextMedia();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          previousMedia();
+        }
+      }
+    });
+
+    document.getElementById('galleryModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeGallery();
+      }
+    });
+
+    // Test function
+    window.testGallery = function() {
+      console.log('Testing gallery...');
+      console.log('All works:', allWorks);
+      if (allWorks.length > 0) {
+        openGallery(0);
+      }
+    };
+
+    // Auto-test on page load if there are works
+    if (allWorks.length > 0) {
+      console.log('Page loaded with', allWorks.length, 'works. You can test with testGallery()');
+    }
+  </script>
+</body>
+</html> 
