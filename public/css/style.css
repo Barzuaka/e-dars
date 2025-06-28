@@ -49,6 +49,8 @@ i {
   margin: 8px 0 0;
   opacity: 0.9;
   font-size: 14px;
+  color: var(--white);
+  font-weight: 400;
 }
 
 .close-modal .close {

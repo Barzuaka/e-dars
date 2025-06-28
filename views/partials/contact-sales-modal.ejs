@@ -3,23 +3,48 @@
   <div class="modal-content contact-sales-modal">
     <div class="contact-sales-header">
       <h2>Kontaktlar</h2>
+      <p>Biz bilan bog'lanish uchun <br> quyidagi usullardan birini tanlang</p>
     </div>
-    <div class="contact-methods-compact">
-      <a href="tel:+998909833340" class="contact-btn">
-        <i class="fas fa-phone"></i> <span>+998 90 983 33 40</span>
-      </a>
-      <a href="https://t.me/imperiacg" target="_blank" class="contact-btn">
-        <i class="fab fa-telegram"></i> <span>@imperiacg</span>
-      </a>
-    </div>
-    <div style="text-align:center; font-size:0.98rem; color:var(--primary-dark); margin-bottom:8px; margin-top:2px; font-weight:500;">Yoki raqamingizni qoldiring, siz bilan bog'lanamiz:</div>
-    <div class="contact-form-section compact">
-      <form id="contactForm" class="contact-form compact">
-        <div class="form-group compact">
-          <input type="tel" id="contactPhone" name="phone" required class="large-centered-input" placeholder="+998 (XX) XXX-XX-XX">
+    
+    <div class="contact-methods-modern">
+      <a href="tel:+998909833340" class="contact-btn-modern phone-btn">
+        <div class="contact-btn-icon">
+          <i class="fas fa-phone"></i>
         </div>
-        <button type="submit" class="submit-contact-btn compact">
-          <i class="fas fa-paper-plane"></i> Yaxshisi men bilan bog'laning
+        <div class="contact-btn-content">
+          <span class="contact-btn-label">Telefon orqali</span>
+          <span class="contact-btn-value">+998 90 983 33 40</span>
+        </div>
+      </a>
+      
+      <a href="https://t.me/imperiacg" target="_blank" class="contact-btn-modern telegram-btn">
+        <div class="contact-btn-icon">
+          <i class="fab fa-telegram"></i>
+        </div>
+        <div class="contact-btn-content">
+          <span class="contact-btn-label">Telegram orqali</span>
+          <span class="contact-btn-value">@imperiacg</span>
+        </div>
+      </a>
+    </div>
+    
+    <div class="contact-divider">
+      <span>Yoki</span>
+    </div>
+    
+    <div class="contact-form-section-modern">
+      <div class="form-header">
+        <h3>Raqamingizni qoldiring</h3>
+        <p>Siz bilan bog'lanamiz</p>
+      </div>
+      
+      <form id="contactForm" class="contact-form-modern">
+        <div class="form-group-modern">
+          <input type="tel" id="contactPhone" name="phone" required class="modern-input" placeholder="+998 (XX) XXX-XX-XX">
+        </div>
+        <button type="submit" class="submit-contact-btn-modern">
+          <i class="fas fa-paper-plane"></i>
+          <span>Yaxshisi men bilan bog'laning</span>
         </button>
       </form>
     </div>
