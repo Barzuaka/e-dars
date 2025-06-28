@@ -172,7 +172,39 @@
           document.getElementById('edit-numberOfLessonsManual').value = course.numberOfLessonsManual || '';
           // Set Quill content
           if (!quillEdit) {
-            quillEdit = new Quill('#edit-quill-editor', { theme: 'snow' });
+            quillEdit = new Quill('#edit-quill-editor', { 
+              theme: 'snow',
+              modules: {
+                toolbar: [
+                  [{ 'header': [1, 2, 3, false] }],
+                  ['bold', 'italic', 'underline', 'strike'],
+                  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                  [{ 'color': [] }, { 'background': [] }],
+                  ['link', 'image'],
+                  ['clean']
+                ]
+              }
+            });
+
+            // Custom link handler to ensure proper URL formatting
+            const toolbar = quillEdit.getModule('toolbar');
+            toolbar.addHandler('link', function(value) {
+              if (value) {
+                let url = prompt('Enter URL:');
+                if (url) {
+                  // Add protocol if missing
+                  if (!url.match(/^https?:\/\//)) {
+                    url = 'https://' + url;
+                  }
+                  const range = quillEdit.getSelection();
+                  if (range) {
+                    quillEdit.format('link', url);
+                  }
+                }
+              } else {
+                quillEdit.format('link', false);
+              }
+            });
           }
           quillEdit.root.innerHTML = course.courseContents || '';
           // Render sections/lessons

@@ -763,6 +763,26 @@
         }
       });
 
+      // Custom link handler to ensure proper URL formatting
+      const toolbar = quill.getModule('toolbar');
+      toolbar.addHandler('link', function(value) {
+        if (value) {
+          let url = prompt('Enter URL:');
+          if (url) {
+            // Add protocol if missing
+            if (!url.match(/^https?:\/\//)) {
+              url = 'https://' + url;
+            }
+            const range = quill.getSelection();
+            if (range) {
+              quill.format('link', url);
+            }
+          }
+        } else {
+          quill.format('link', false);
+        }
+      });
+
       // On form submit, set the hidden input value to the Quill HTML
       document.querySelector('form').addEventListener('submit', function(e) {
         document.getElementById('courseContents').value = quill.root.innerHTML;
