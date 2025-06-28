@@ -28,19 +28,26 @@
     <!-- CALL TO ACTION AREA -->
     <% if ((typeof user === 'undefined' || !user) || (user && !user.purchasedCourses.some(c => c.toString() === course._id.toString()))) { %>
       <div class="cta-container" id="ctaContainer">
+        <div class="cta-background">
+          <div class="cta-pattern"></div>
+        </div>
         <div class="cta-content">
-          <div class="cta-text">
-            <h3>🚀 Tayyormisiz?</h3>
-            <p>Kursni sotib oling va o'rganishni boshlang!</p>
+          <div class="cta-left">
+            <div class="cta-text">
+              <h3><i class="fas fa-rocket"></i> O'rganishga tayyormisiz?</h3>
+            </div>
           </div>
-          <div class="cta-button">
-            <button class="add-to-cart-btn-course" 
+          <div class="cta-right">
+            <div class="cta-price">
+              <span class="price-amount"><%= course.price ? course.price.toLocaleString('ru-RU') + ' so\'m' : 'Bepul' %></span>
+            </div>
+            <button class="action-btn primary" 
               data-course-id="<%= course._id %>" 
               data-course-title="<%= course.title %>" 
               data-course-price="<%= course.price %>" 
               data-course-image="<%= course.thumbnailImage %>">
               <i class="fas fa-cart-plus"></i>
-              Savatga!
+              <span>Savatga qo'shish</span>
             </button>
           </div>
         </div>
@@ -52,12 +59,22 @@
       <div class="course-title"><p><%= course.title %></p></div>
 
       <% if (typeof user !== 'undefined' && user && user.purchasedCourses && user.purchasedCourses.some(c => c.toString() === course._id.toString())) { %>
-        <div style="text-align: center; margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
-          <h3 style="margin-bottom: 10px; font-size: 24px;">🎉 You're enrolled in this course!</h3>
-          <p style="margin-bottom: 20px; opacity: 0.9;">Ready to start your learning journey?</p>
-          <a href="/dashboard" class="start-learning-btn" style="display: inline-block; padding: 12px 32px; background: #fff; color: #667eea; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; transition: transform 0.2s;">
-            <i class="fas fa-user-graduate" style="margin-right: 8px;"></i>Mening kurslarim
-          </a>
+        <div class="enrolled-notice">
+          <div class="enrolled-content">
+            <div class="enrolled-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="enrolled-text">
+              <h3>🎉 Siz ushbu kursda ro'yxatdan o'tgansiz!</h3>
+              <p>O'qishni boshlashga tayyormisiz?</p>
+            </div>
+            <div class="enrolled-action">
+              <a href="/dashboard" class="start-learning-btn">
+                <i class="fas fa-play"></i>
+                <span>O'qishni boshlash</span>
+              </a>
+            </div>
+          </div>
         </div>
       <% } %>
 
@@ -251,7 +268,7 @@
     <script>
       // Add to cart functionality for course details
       document.addEventListener('DOMContentLoaded', function() {
-        const addToCartButton = document.querySelector('.add-to-cart-btn-course');
+        const addToCartButton = document.querySelector('.action-btn.primary');
         const ctaContainer = document.getElementById('ctaContainer');
         
         // Function to show floating notification

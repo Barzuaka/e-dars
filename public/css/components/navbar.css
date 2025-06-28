@@ -64,6 +64,119 @@
   color: var(--primary-light);
 }
 
+/* Beautiful My Courses Button - Desktop Only */
+.my-courses-btn {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px !important;
+  border-radius: 25px !important;
+  transition: all var(--transition) !important;
+  text-decoration: none;
+  color: var(--primary-dark) !important;
+  background: rgba(102, 51, 153, 0.05) !important;
+  border: 1px solid rgba(102, 51, 153, 0.1) !important;
+  position: relative;
+  overflow: hidden;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.5px !important;
+  margin: 0 8px !important;
+  box-shadow: 0 2px 8px rgba(102, 51, 153, 0.08) !important;
+}
+
+.my-courses-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 51, 153, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.my-courses-btn:hover::before {
+  left: 100%;
+}
+
+.my-courses-btn:hover {
+  color: rgb(48, 15, 80) !important;
+  transform: translateY(-3px) !important;
+  cursor: pointer;
+  background: rgba(102, 51, 153, 0.1) !important;
+  border-color: rgba(102, 51, 153, 0.2) !important;
+  box-shadow: 0 6px 20px rgba(102, 51, 153, 0.15) !important;
+}
+
+.my-courses-btn:active {
+  transform: translateY(-1px) !important;
+}
+
+.my-courses-btn:focus {
+  outline: 2px solid rgba(102, 51, 153, 0.3) !important;
+  outline-offset: 2px !important;
+}
+
+.my-courses-btn:focus-visible {
+  outline: 3px solid rgba(102, 51, 153, 0.5) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(102, 51, 153, 0.1) !important;
+}
+
+.my-courses-btn i {
+  font-size: 16px;
+  transition: transform var(--transition);
+}
+
+.my-courses-btn:hover i {
+  transform: scale(1.1);
+}
+
+.my-courses-btn span {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .my-courses-btn {
+    border: 2px solid currentColor !important;
+  }
+  
+  .my-courses-btn:hover,
+  .my-courses-btn:focus {
+    border-color: var(--primary-dark) !important;
+    background: var(--primary-dark) !important;
+    color: var(--white) !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .my-courses-btn,
+  .my-courses-btn::before,
+  .my-courses-btn i {
+    transition: none !important;
+  }
+  
+  .my-courses-btn:hover {
+    transform: none !important;
+  }
+  
+  .my-courses-btn:hover i {
+    transform: none !important;
+  }
+}
+
+/* Hide the beautiful button on mobile - keep mobile menu unchanged */
+@media (max-width: 768px) {
+  .my-courses-btn {
+    display: none !important;
+  }
+}
+
 /* Enhanced Mobile Menu Styles */
 .mobile-menu {
   display: none;

@@ -69,6 +69,12 @@
           <a href="/admin/student-works" class="menu-item">Student Works</a>
         <% } %>
         <span class="menu-item">Salom, <%= user.firstName %>!</span>
+        <% if (user.purchasedCourses && user.purchasedCourses.length > 0) { %>
+          <a href="/dashboard" class="menu-item my-courses-btn">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Mening kurslarim</span>
+          </a>
+        <% } %>
         <a href="/api/auth/logout" class="login-btn menu-item">Chiqish</a>
       <% } else { %>
         <a href="/login" class="login-btn menu-item">Kirish</a>

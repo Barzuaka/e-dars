@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Dashboard</title>
+  <title>My Learning Dashboard</title>
   <link rel="stylesheet" href="/css/main.css" />
   <link rel="stylesheet" href="/css/fontawesome-free-6.7.2-web/css/all.css" />
 </head>
@@ -10,49 +10,168 @@
   <!-- NAVBAR -->
   <%- include('partials/navbar') %>
   
-  <div class="dashboard-container">
-    <div class="dashboard-content">
-      <h1>Welcome, <%= user.firstName %>!</h1>
+  <!-- Hero Section -->
+  <section class="dashboard-hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-welcome">
+          <h1 class="hero-title">
+            <i class="fas fa-graduation-cap"></i>
+            Salom, <%= user.firstName %>!
+          </h1>
+          <p class="hero-subtitle">O'rganishda davom eting va yangi ko'nikmalarni o'zlashtiring</p>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number"><%= myCourses.length %></span>
+              <span class="stat-label">Mening kurslarim</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-play-circle"></i>
+            </div>
+            <div class="stat-info">
+              <span class="stat-number"><%= allCourses.length %></span>
+              <span class="stat-label">Mavjud kurslar</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-main-container">
+    <!-- My Courses Section -->
+    <section class="dashboard-section">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-star"></i>
+          <h2>Mening kurslarim</h2>
+        </div>
+        <p class="section-description">Siz ro'yxatdan o'tgan kurslaringiz</p>
+      </div>
       
-      <h2>My Courses</h2>
       <% if (myCourses.length === 0) { %>
-        <p>You have not enrolled in any courses yet.</p>
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <h3>Hali kurslarda ro'yxatdan o'tmagansiz</h3>
+          <p>O'qishni boshlash uchun quyidagi kurslardan birini tanlang</p>
+          <a href="#available-courses" class="cta-button">
+            <i class="fas fa-arrow-down"></i>
+            Kurslarni ko'rish
+          </a>
+        </div>
       <% } else { %>
-        <div class="admin-courses-list">
+        <div class="courses-grid">
           <% myCourses.forEach(course => { %>
-            <div class="admin-course-card">
-              <img src="<%= course.thumbnailImage %>" alt="<%= course.title %> Thumbnail" class="admin-course-thumb" />
-              <div class="admin-course-info">
-                <div class="course-info-content">
-                  <h3><%= course.title %></h3>
-                  <p><%= course.category %></p>
+            <div class="course-card enrolled">
+              <div class="course-image">
+                <img src="<%= course.thumbnailImage %>" alt="<%= course.title %>" />
+                <div class="course-overlay">
+                  <div class="course-badge enrolled">
+                    <i class="fas fa-check-circle"></i>
+                    Ro'yxatdan o'tgan
+                  </div>
+                </div>
+              </div>
+              <div class="course-content">
+                <div class="course-category">
+                  <i class="fas fa-tag"></i>
+                  <%= course.category %>
+                </div>
+                <h3 class="course-title"><%= course.title %></h3>
+                <p class="course-description"><%= course.description ? course.description.substring(0, 100) + '...' : 'Kurs tavsifi mavjud emas' %></p>
+                <div class="course-meta">
+                  <span class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <%= course.totalHours || 0 %> soat
+                  </span>
+                  <span class="meta-item">
+                    <i class="fas fa-play-circle"></i>
+                    <%= course.numberOfLessonsManual || 0 %> dars
+                  </span>
                 </div>
                 <div class="course-actions">
-                  <a href="/learning-dashboard?course=<%= course._id %>" class="create-course-btn">Start Learning</a>
+                  <a href="/learning-dashboard?course=<%= course._id %>" class="action-btn primary">
+                    <i class="fas fa-play"></i>
+                    O'qishni davom ettirish
+                  </a>
                 </div>
               </div>
             </div>
           <% }) %>
         </div>
       <% } %>
+    </section>
 
-      <h2>Available Courses</h2>
-      <div class="admin-courses-list">
+    <!-- Available Courses Section -->
+    <section class="dashboard-section" id="available-courses">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-rocket"></i>
+          <h2>Mavjud kurslar</h2>
+        </div>
+        <p class="section-description">O'qishni boshlash uchun yangi kurslar</p>
+      </div>
+      
+      <div class="courses-grid">
         <% allCourses.forEach(course => {
              const alreadyEnrolled = myCourses.some(c => c._id.toString() === course._id.toString());
         %>
-          <div class="admin-course-card">
-            <img src="<%= course.thumbnailImage %>" alt="<%= course.title %> Thumbnail" class="admin-course-thumb" />
-            <div class="admin-course-info">
-              <div class="course-info-content">
-                <h3><%= course.title %></h3>
-                <p><%= course.category %></p>
+          <div class="course-card <%= alreadyEnrolled ? 'enrolled' : 'available' %>">
+            <div class="course-image">
+              <img src="<%= course.thumbnailImage %>" alt="<%= course.title %>" />
+              <div class="course-overlay">
+                <% if (alreadyEnrolled) { %>
+                  <div class="course-badge enrolled">
+                    <i class="fas fa-check-circle"></i>
+                    Ro'yxatdan o'tgan
+                  </div>
+                <% } else { %>
+                  <div class="course-badge new">
+                    <i class="fas fa-star"></i>
+                    Yangi
+                  </div>
+                <% } %>
+              </div>
+            </div>
+            <div class="course-content">
+              <div class="course-category">
+                <i class="fas fa-tag"></i>
+                <%= course.category %>
+              </div>
+              <h3 class="course-title"><%= course.title %></h3>
+              <p class="course-description"><%= course.description ? course.description.substring(0, 100) + '...' : 'Kurs tavsifi mavjud emas' %></p>
+              <div class="course-meta">
+                <span class="meta-item">
+                  <i class="fas fa-clock"></i>
+                  <%= course.totalHours || 0 %> soat
+                </span>
+                <span class="meta-item">
+                  <i class="fas fa-play-circle"></i>
+                  <%= course.numberOfLessonsManual || 0 %> dars
+                </span>
+                <span class="meta-item price">
+                  <i class="fas fa-tag"></i>
+                  <%= course.price ? course.price.toLocaleString('ru-RU') + ' so\'m' : 'Bepul' %>
+                </span>
               </div>
               <div class="course-actions">
                 <% if (alreadyEnrolled) { %>
-                  <span class="enrolled-badge">Enrolled</span>
+                  <a href="/learning-dashboard?course=<%= course._id %>" class="action-btn primary">
+                    <i class="fas fa-play"></i>
+                    O'qishni davom ettirish
+                  </a>
                 <% } else { %>
-                  <button type="button" class="add-to-cart-btn" 
+                  <button type="button" class="action-btn secondary add-to-cart-btn" 
                     data-course-id="<%= course._id %>" 
                     data-course-title="<%= course.title %>" 
                     data-course-price="<%= course.price %>" 
@@ -66,7 +185,7 @@
           </div>
         <% }) %>
       </div>
-    </div>
+    </section>
   </div>
   
   <!-- Contact Sales Modal -->

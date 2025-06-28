@@ -269,20 +269,21 @@
   margin: 0;
 }
 
-/* CTA Container */
+/* CTA Container - Modern & Elegant */
 .cta-container {
   position: relative;
-  width: 100%;
+  width: 88%;
   max-width: 1280px;
   margin: 0 auto;
-  background: #5d324b;
-  border-radius: 0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  padding: 24px 20px;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, rgb(47, 0, 18) 100%);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-heavy);
+  padding: 24px 32px;
   z-index: 100;
   transform: translateY(0);
   opacity: 1;
   transition: all var(--transition);
+  overflow: hidden;
 }
 
 .cta-container.hidden {
@@ -295,60 +296,158 @@
   overflow: hidden;
 }
 
+.cta-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.cta-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="cta-pattern" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23cta-pattern)"/></svg>');
+  opacity: 0.3;
+}
+
 .cta-content {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
 }
 
-.cta-text {
+.cta-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   flex: 1;
 }
 
-.cta-text h3 {
-  margin: 0 0 4px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
+.cta-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--white);
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.cta-text p {
+.cta-text h3 {
   margin: 0;
-  font-size: 14px;
-  color: #ecf0f1;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.2;
+}
+
+.cta-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.cta-price {
+  text-align: right;
+}
+
+.price-amount {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: orange;
+  line-height: 1;
 }
 
 .cta-button {
   flex-shrink: 0;
 }
 
-.cta-container .add-to-cart-btn-course {
-  background: var(--primary-light);
-  color: var(--white);
-  padding: 10px 16px;
+.add-to-cart-btn-course {
+  background: var(--white);
+  color: var(--primary-dark);
+  padding: 16px 32px;
   border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  font-size: 14px;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
   transition: all var(--transition);
   text-decoration: none;
   text-align: center;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  overflow: hidden;
+  min-width: 180px;
+  justify-content: center;
+  font-family: inherit;
 }
 
-.cta-container .add-to-cart-btn-course:hover {
-  background: var(--primary-lighter);
-  transform: translateY(-1px);
+.add-to-cart-btn-course::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 51, 153, 0.1), transparent);
+  transition: left 0.5s ease;
 }
 
-.cta-container .add-to-cart-btn-course i {
-  margin-right: 6px;
+.add-to-cart-btn-course:hover::before {
+  left: 100%;
 }
 
-.cta-container .add-to-cart-btn-course.success {
-  background: #28a745;
+.add-to-cart-btn-course:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+  color: var(--primary-dark);
+}
+
+.add-to-cart-btn-course:active {
+  transform: translateY(0);
+}
+
+.add-to-cart-btn-course i {
+  font-size: 18px;
+  transition: transform var(--transition);
+}
+
+.add-to-cart-btn-course:hover i {
+  transform: scale(1.1);
+}
+
+.add-to-cart-btn-course span {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.add-to-cart-btn-course.success {
+  background: #4CAF50;
+  color: var(--white);
   transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
+
+.add-to-cart-btn-course.success i {
+  transform: scale(1.2);
 }
 
 /* Featured Badge */
@@ -440,7 +539,45 @@
   
   .cta-container {
     max-width: 100%;
-    padding: 20px 16px;
+    padding: 20px 24px;
+  }
+  
+  .cta-content {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .cta-left {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .cta-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+  
+  .cta-text h3 {
+    font-size: 1.25rem;
+  }
+  
+  .cta-right {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .price-amount {
+    font-size: 1.5rem;
+  }
+  
+  .add-to-cart-btn-course {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    min-width: 150px;
   }
 }
 
@@ -485,6 +622,359 @@
   }
   
   .cta-container {
-    padding: 16px 12px;
+    padding: 16px 20px;
   }
+  
+  .cta-content {
+    gap: 16px;
+  }
+  
+  .cta-left {
+    gap: 10px;
+  }
+  
+  .cta-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .cta-text h3 {
+    font-size: 1.1rem;
+  }
+  
+  .cta-text p {
+    font-size: 0.9rem;
+  }
+  
+  .cta-features {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .feature-item {
+    font-size: 0.8rem;
+  }
+  
+  .cta-right {
+    gap: 12px;
+  }
+  
+  .cta-price {
+    padding: 8px 12px;
+  }
+  
+  .price-label {
+    font-size: 0.8rem;
+  }
+  
+  .price-amount {
+    font-size: 1.25rem;
+  }
+  
+  .add-to-cart-btn-course {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    min-width: 130px;
+    gap: 8px;
+  }
+  
+  .add-to-cart-btn-course i {
+    font-size: 14px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .cta-container {
+    border: 2px solid var(--white);
+  }
+  
+  .add-to-cart-btn-course {
+    border: 2px solid var(--white);
+  }
+  
+  .feature-item i {
+    color: var(--white);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .cta-container,
+  .add-to-cart-btn-course,
+  .add-to-cart-btn-course::before,
+  .add-to-cart-btn-course i {
+    transition: none;
+    animation: none;
+  }
+  
+  .add-to-cart-btn-course:hover {
+    transform: none;
+  }
+  
+  .add-to-cart-btn-course:hover i {
+    transform: none;
+  }
+  
+  .add-to-cart-btn-course.success {
+    transform: none;
+  }
+  
+  .add-to-cart-btn-course.success i {
+    transform: none;
+  }
+}
+
+/* Focus styles for accessibility */
+.add-to-cart-btn-course:focus {
+  outline: 3px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.add-to-cart-btn-course:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.2);
+}
+
+/* Enrolled Notice - Modern Design */
+.enrolled-notice {
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-heavy);
+  padding: 32px;
+  margin: 20px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.enrolled-notice::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="enrolled-pattern" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23enrolled-pattern)"/></svg>');
+  opacity: 0.3;
+}
+
+.enrolled-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.enrolled-icon {
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--white);
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.enrolled-text {
+  flex: 1;
+}
+
+.enrolled-text h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.2;
+}
+
+.enrolled-text p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+}
+
+.enrolled-action {
+  flex-shrink: 0;
+}
+
+.start-learning-btn {
+  background: var(--white);
+  color: #4CAF50;
+  padding: 16px 32px;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-medium);
+  position: relative;
+  overflow: hidden;
+  min-width: 180px;
+  justify-content: center;
+}
+
+.start-learning-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.start-learning-btn:hover::before {
+  left: 100%;
+}
+
+.start-learning-btn:hover {
+  background: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+  color: #4CAF50;
+}
+
+.start-learning-btn:active {
+  transform: translateY(0);
+}
+
+.start-learning-btn i {
+  font-size: 16px;
+  transition: transform var(--transition);
+}
+
+.start-learning-btn:hover i {
+  transform: scale(1.1);
+}
+
+.start-learning-btn span {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive Design for Enrolled Notice */
+@media (max-width: 768px) {
+  .enrolled-notice {
+    padding: 24px 20px;
+  }
+  
+  .enrolled-content {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .enrolled-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+  
+  .enrolled-text h3 {
+    font-size: 1.5rem;
+  }
+  
+  .enrolled-text p {
+    font-size: 1rem;
+  }
+  
+  .start-learning-btn {
+    padding: 14px 28px;
+    font-size: 0.95rem;
+    min-width: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .enrolled-notice {
+    padding: 20px 16px;
+  }
+  
+  .enrolled-content {
+    gap: 16px;
+  }
+  
+  .enrolled-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+  
+  .enrolled-text h3 {
+    font-size: 1.25rem;
+  }
+  
+  .enrolled-text p {
+    font-size: 0.9rem;
+  }
+  
+  .start-learning-btn {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    min-width: 140px;
+    gap: 8px;
+  }
+  
+  .start-learning-btn i {
+    font-size: 16px;
+  }
+}
+
+/* Accessibility Support for Enrolled Notice */
+@media (prefers-contrast: high) {
+  .enrolled-notice {
+    border: 2px solid var(--white);
+  }
+  
+  .start-learning-btn {
+    border: 2px solid #4CAF50;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enrolled-notice,
+  .start-learning-btn,
+  .start-learning-btn::before,
+  .start-learning-btn i {
+    transition: none;
+    animation: none;
+  }
+  
+  .start-learning-btn:hover {
+    transform: none;
+  }
+  
+  .start-learning-btn:hover i {
+    transform: none;
+  }
+}
+
+/* Focus styles for enrolled notice */
+.start-learning-btn:focus {
+  outline: 3px solid rgba(76, 175, 80, 0.5);
+  outline-offset: 2px;
+}
+
+.start-learning-btn:focus-visible {
+  outline: 3px solid #4CAF50;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgba(76, 175, 80, 0.2);
 } 

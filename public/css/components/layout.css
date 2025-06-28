@@ -39,7 +39,7 @@
   position: relative;
   overflow: hidden;
   width: 100%;
-  background-image: url('/images/hero_back.jpg');
+  background-image: url('/images/hero_back.avif');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -48,7 +48,7 @@
 /* Mobile hero background - using a different approach for mobile */
 @media (max-width: 767px) {
   .carousel-container-index {
-    background-image: url('/images/hero_back_mobile.jpg');
+    background-image: url('/images/hero_back_mobile.avif');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
