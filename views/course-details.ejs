@@ -26,7 +26,7 @@
     </div>
 
     <!-- CALL TO ACTION AREA -->
-    <% if (typeof user !== 'undefined' && user && !user.purchasedCourses.some(c => c.toString() === course._id.toString())) { %>
+    <% if ((typeof user === 'undefined' || !user) || (user && !user.purchasedCourses.some(c => c.toString() === course._id.toString()))) { %>
       <div class="cta-container" id="ctaContainer">
         <div class="cta-content">
           <div class="cta-text">
