@@ -4,133 +4,594 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create a new course</title>
     <link rel="stylesheet" href="/css/main.css" />
+    <style>
+      /* Create Course Form Specific Styles */
+      .create-course-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      .create-course-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .create-course-header h1 {
+        font-size: 2.5rem;
+        color: var(--primary-dark);
+        margin-bottom: 12px;
+        font-weight: 700;
+      }
+
+      .create-course-header p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        margin: 0;
+      }
+
+      .create-course-form {
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        border: 1px solid var(--border-light);
+      }
+
+      .form-section {
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+
+      .form-section h3 {
+        color: var(--primary-dark);
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--primary-light);
+        display: inline-block;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .form-row.full-width {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .form-group label {
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .form-group label i {
+        color: var(--primary-light);
+        font-size: 12px;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        padding: 12px 16px;
+        border: 2px solid var(--border-light);
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: var(--white);
+        font-family: inherit;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(186, 28, 130, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+
+      .form-group input[type="file"] {
+        padding: 8px;
+        border: 2px dashed var(--border-light);
+        background: var(--gray-light);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .form-group input[type="file"]:hover {
+        border-color: var(--primary-light);
+        background: rgba(186, 28, 130, 0.05);
+      }
+
+      .form-group small {
+        color: var(--text-light);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      /* Quill Editor Styling */
+      .quill-container {
+        border: 2px solid var(--border-light);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: border-color 0.3s ease;
+      }
+
+      .quill-container:focus-within {
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(186, 28, 130, 0.1);
+      }
+
+      /* Dynamic Sections Styling */
+      .sections-container {
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 16px;
+        background: var(--gray-light);
+      }
+
+      .section {
+        background: var(--white);
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .section h4 {
+        color: var(--primary-dark);
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 16px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .section h4 i {
+        color: var(--primary-light);
+      }
+
+      .lessons-container {
+        margin-top: 16px;
+      }
+
+      .lesson {
+        background: var(--gray-light);
+        border: 1px solid var(--border-light);
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 12px;
+        position: relative;
+      }
+
+      .lesson-video-upload {
+        margin-top: 12px;
+        padding: 12px;
+        background: var(--white);
+        border-radius: 6px;
+        border: 1px solid var(--border-light);
+      }
+
+      .lesson-video-upload label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .lesson-video-upload-btn {
+        background: var(--primary-light);
+        color: var(--white);
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .lesson-video-upload-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+      }
+
+      .lesson-video-progress {
+        font-size: 12px;
+        color: var(--primary-light);
+        margin-left: 8px;
+      }
+
+      .lesson-video-preview {
+        margin-top: 8px;
+        padding: 8px;
+        background: var(--gray-light);
+        border-radius: 4px;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+      }
+
+      .lesson-video-preview video {
+        max-width: 180px;
+        max-height: 100px;
+        border-radius: 4px;
+      }
+
+      .remove-lesson-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #dc3545;
+        color: var(--white);
+        border: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .remove-lesson-btn:hover {
+        background: #c82333;
+        transform: scale(1.1);
+      }
+
+      /* Gallery Items Styling */
+      .gallery-container {
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 16px;
+        background: var(--gray-light);
+      }
+
+      .gallery-item {
+        background: var(--white);
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      /* Button Styling */
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background: var(--primary-light);
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(186, 28, 130, 0.3);
+      }
+
+      .btn-secondary {
+        background: var(--gray-light);
+        color: var(--text-dark);
+        border: 1px solid var(--border-light);
+      }
+
+      .btn-secondary:hover {
+        background: var(--border-light);
+        transform: translateY(-1px);
+      }
+
+      .btn-danger {
+        background: #dc3545;
+        color: var(--white);
+      }
+
+      .btn-danger:hover {
+        background: #c82333;
+        transform: translateY(-1px);
+      }
+
+      .btn-small {
+        padding: 8px 16px;
+        font-size: 12px;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border-light);
+      }
+
+      .navigation-links {
+        text-align: center;
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border-light);
+      }
+
+      .navigation-links a {
+        color: var(--primary-light);
+        text-decoration: none;
+        font-weight: 500;
+        margin: 0 12px;
+        transition: color 0.3s ease;
+      }
+
+      .navigation-links a:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
+      }
+
+      /* Message Styling */
+      .message {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        font-weight: 500;
+        text-align: center;
+      }
+
+      .message.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .message.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .create-course-container {
+          margin: 20px auto;
+          padding: 0 16px;
+        }
+
+        .create-course-form {
+          padding: 24px;
+        }
+
+        .create-course-header h1 {
+          font-size: 2rem;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+
+        .form-actions {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .create-course-form {
+          padding: 20px;
+        }
+
+        .create-course-header h1 {
+          font-size: 1.8rem;
+        }
+
+        .form-section h3 {
+          font-size: 1.2rem;
+        }
+      }
+    </style>
   </head>
   <body>
     <%- include('partials/navbar') %>
-    <form
-      enctype="multipart/form-data"
-      action="/admin-page/courses/new"
-      method="post"
-    >
-      <p><%= message %></p>
-      <div>
-        <label for="course-title">Course title:</label>
-        <input type="text" name="title" id="course-title" required />
+    
+    <div class="create-course-container">
+      <div class="create-course-header">
+        <h1><i class="fas fa-plus-circle"></i> Create New Course</h1>
+        <p>Fill in the details below to create a new course for your platform</p>
       </div>
-      <div>
-        <label for="course-category">Category:</label>
-        <select
-          id="course-category"
-          name="category"
-          onchange="toggleNewCategoryInput()"
-        >
-          <option value="">-- Select or Create a Category --</option>
-          <% categories.forEach(category => { %>
-          <option value="<%= category %>"><%= category %></option>
-          <% }) %>
-          <option value="new">-- Create New Category --</option>
-        </select>
 
-        <div id="newCategoryInput">
-          <label for="newCategoryName">New Category Name:</label>
-          <input
-            type="text"
-            id="newCategoryName"
-            name="newCategoryName"
-            placeholder="Enter new category name"
-          />
+      <% if (message) { %>
+        <div class="message <%= message.includes('success') ? 'success' : 'error' %>">
+          <%= message %>
         </div>
-      </div>
-      <div>
-        <label for="courseThumbnail">Upload course course Thumbnail</label>
-        <input type="file" name="courseThumbnail" id="courseThumbnail" />
-      </div>
-      <div>
-        <label for="course-description">Course description:</label>
-        <textarea name="description" id="course-description" required>
-Write course description...</textarea>
-      </div>
-      
-      <!-- Quill Editor for Course Contents -->
-      <div>
-        <label for="quill-editor">Course Contents (Rich Text):</label>
-        <div id="quill-editor" style="height: 250px;"></div>
-        <input type="hidden" name="courseContents" id="courseContents">
-      </div>
-      <div>
-        <label for="course-introVideoUrl">Course Intro video url:</label>
-        <input
-          type="text"
-          name="introVideoID"
-          id="course-introVideoUrl"
-          required
-        />
-      </div>
-      <div>
-        <label for="course-totalHours">Course total hours:</label>
-        <input
-          type="number"
-          name="totalHours"
-          id="course-totalHours"
-          required
-        />
-      </div>
-      <div>
-        <label for="course-topicsCovered">Topics covered:</label>
-        <input
-          type="number"
-          name="topicsCovered"
-          id="course-topicsCovered"
-          required
-        />
-      </div>
-      <div>
-        <label for="course-numOfProjects">Number of real life projects:</label>
-        <input
-          type="number"
-          name="numOfProjects"
-          id="course-numOfProjects"
-          required
-        />
-      </div>
-      <div>
-        <label for="course-sizeGb">Course size (in GB): </label>
-        <input type="number" name="sizeGb" id="course-sizeGb" required />
-      </div>
-      <div>
-        <label for="course-numberOfLessonsManual"
-          >Number of video lessons in the course:</label
-        >
-        <input
-          type="number"
-          name="numberOfLessonsManual"
-          id="course-numberOfLessonsManual"
-          required
-        />
-      </div>
-      <div>
-        <label for="course-price">Course price:</label>
-        <input type="number" name="price" id="course-price" required />
-      </div>
+      <% } %>
 
-      <!-- Lesson sections -->
-      <div id="lessonSectionsContainer"></div>
+      <form class="create-course-form" enctype="multipart/form-data" action="/admin-page/courses/new" method="post">
+        
+        <!-- Basic Information Section -->
+        <div class="form-section">
+          <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+          
+          <div class="form-group">
+            <label for="course-title"><i class="fas fa-heading"></i> Course Title</label>
+            <input type="text" name="title" id="course-title" placeholder="Enter course title" required />
+          </div>
 
-      <button type="button" id="addSectionBtn">Add Lesson Section</button>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="course-category"><i class="fas fa-tags"></i> Category</label>
+              <select id="course-category" name="category" onchange="toggleNewCategoryInput()">
+                <option value="">-- Select or Create a Category --</option>
+                <% categories.forEach(category => { %>
+                <option value="<%= category %>"><%= category %></option>
+                <% }) %>
+                <option value="new">-- Create New Category --</option>
+              </select>
+            </div>
 
-      <!-- Gallery items -->
+            <div class="form-group">
+              <label for="course-price"><i class="fas fa-dollar-sign"></i> Course Price</label>
+              <input type="number" name="price" id="course-price" placeholder="0.00" step="0.01" required />
+            </div>
+          </div>
 
-      <h3>Gallery items</h3>
-      <div id="galleryItemsContainer"></div>
-      <button type="button" id="addGalleryItemBtn">Add images or videos</button>
+          <div id="newCategoryInput" style="display: none;">
+            <div class="form-group">
+              <label for="newCategoryName"><i class="fas fa-plus"></i> New Category Name</label>
+              <input type="text" id="newCategoryName" name="newCategoryName" placeholder="Enter new category name" />
+            </div>
+          </div>
+        </div>
 
-      <hr />
-      <button type="submit">Create course</button>
-    </form>
-    <br />
-    <a href="/admin-page">Back to admin page</a>
-    <br />
-    <a href="/">Go back home</a>
+        <!-- Media Section -->
+        <div class="form-section">
+          <h3><i class="fas fa-image"></i> Media & Content</h3>
+          
+          <div class="form-group">
+            <label for="courseThumbnail"><i class="fas fa-upload"></i> Course Thumbnail</label>
+            <input type="file" name="courseThumbnail" id="courseThumbnail" accept="image/*" />
+            <small>Upload a high-quality image for your course (recommended: 800x600px)</small>
+          </div>
+
+          <div class="form-group">
+            <label for="course-description"><i class="fas fa-align-left"></i> Course Description</label>
+            <textarea name="description" id="course-description" placeholder="Write a compelling description of your course..." required></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="quill-editor"><i class="fas fa-edit"></i> Course Contents (Rich Text)</label>
+            <div class="quill-container">
+              <div id="quill-editor" style="height: 250px;"></div>
+            </div>
+            <input type="hidden" name="courseContents" id="courseContents">
+          </div>
+
+          <div class="form-group">
+            <label for="course-introVideoUrl"><i class="fas fa-video"></i> Course Intro Video URL</label>
+            <input type="text" name="introVideoID" id="course-introVideoUrl" placeholder="Enter video URL or ID" required />
+            <small>Paste the video URL or ID from your video platform</small>
+          </div>
+        </div>
+
+        <!-- Course Details Section -->
+        <div class="form-section">
+          <h3><i class="fas fa-chart-bar"></i> Course Details</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="course-totalHours"><i class="fas fa-clock"></i> Total Hours</label>
+              <input type="number" name="totalHours" id="course-totalHours" placeholder="0" min="0" step="0.5" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="course-topicsCovered"><i class="fas fa-list"></i> Topics Covered</label>
+              <input type="number" name="topicsCovered" id="course-topicsCovered" placeholder="0" min="0" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="course-numOfProjects"><i class="fas fa-project-diagram"></i> Number of Projects</label>
+              <input type="number" name="numOfProjects" id="course-numOfProjects" placeholder="0" min="0" required />
+            </div>
+            
+            <div class="form-group">
+              <label for="course-sizeGb"><i class="fas fa-hdd"></i> Course Size (GB)</label>
+              <input type="number" name="sizeGb" id="course-sizeGb" placeholder="0" min="0" step="0.1" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="course-numberOfLessonsManual"><i class="fas fa-play-circle"></i> Number of Video Lessons</label>
+            <input type="number" name="numberOfLessonsManual" id="course-numberOfLessonsManual" placeholder="0" min="0" required />
+          </div>
+        </div>
+
+        <!-- Lesson Sections -->
+        <div class="form-section">
+          <h3><i class="fas fa-layer-group"></i> Course Structure</h3>
+          
+          <div class="sections-container">
+            <div id="lessonSectionsContainer"></div>
+            <button type="button" id="addSectionBtn" class="btn btn-secondary btn-small">
+              <i class="fas fa-plus"></i> Add Lesson Section
+            </button>
+          </div>
+        </div>
+
+        <!-- Gallery Section -->
+        <div class="form-section">
+          <h3><i class="fas fa-images"></i> Gallery Items</h3>
+          
+          <div class="gallery-container">
+            <div id="galleryItemsContainer"></div>
+            <button type="button" id="addGalleryItemBtn" class="btn btn-secondary btn-small">
+              <i class="fas fa-plus"></i> Add Image or Video
+            </button>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Create Course
+          </button>
+          <a href="/admin-page" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Cancel
+          </a>
+        </div>
+      </form>
+
+      <div class="navigation-links">
+        <a href="/admin-page"><i class="fas fa-tachometer-alt"></i> Back to Admin Dashboard</a>
+        <a href="/"><i class="fas fa-home"></i> Go to Homepage</a>
+      </div>
+    </div>
 
     <%- include('partials/footer') %>
 
@@ -139,85 +600,89 @@ Write course description...</textarea>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script>
-      // implemeting category dropdown and new category functionality
-
+      // Category dropdown and new category functionality
       const toggleNewCategoryInput = () => {
         const categorySelect = document.getElementById("course-category");
         const newCategoryInputDiv = document.getElementById("newCategoryInput");
         const newCategoryNameInput = document.getElementById("newCategoryName");
 
         if (categorySelect.value === "new") {
-          // If 'Create New Category' is selected
           newCategoryInputDiv.style.display = "block";
-          newCategoryNameInput.setAttribute("name", "category"); // Set name for new input
-          newCategoryNameInput.setAttribute("required", "required"); // Make it required
-          categorySelect.removeAttribute("name"); // Remove name from dropdown
+          newCategoryNameInput.setAttribute("name", "category");
+          newCategoryNameInput.setAttribute("required", "required");
+          categorySelect.removeAttribute("name");
         } else {
-          // If an existing category or no category is selected
           newCategoryInputDiv.style.display = "none";
-          newCategoryNameInput.removeAttribute("name"); // Remove name from new input
-          newCategoryNameInput.removeAttribute("required"); // No longer required
-          categorySelect.setAttribute("name", "category"); // Set name back to dropdown
+          newCategoryNameInput.removeAttribute("name");
+          newCategoryNameInput.removeAttribute("required");
+          categorySelect.setAttribute("name", "category");
         }
       };
 
-      // Ensure the correct state on page load (e.g., if user navigates back)
+      // Ensure correct state on page load
       document.addEventListener("DOMContentLoaded", toggleNewCategoryInput);
 
-      // LESSON SECTIONS AND LESSON TITLES HANDLER
-
-      const lessonSectionsContainer = document.getElementById(
-        "lessonSectionsContainer"
-      );
+      // Lesson sections and lesson titles handler
+      const lessonSectionsContainer = document.getElementById("lessonSectionsContainer");
       const addSectionBtn = document.getElementById("addSectionBtn");
-
-      // Keeps track of how many sections exist
       let sectionCount = 0;
 
-      // event handler
       addSectionBtn.addEventListener("click", () => {
         const currentSectionIndex = sectionCount;
         const sectionDiv = document.createElement("div");
         sectionDiv.classList.add("section");
         sectionDiv.dataset.index = sectionCount;
         sectionDiv.innerHTML = `
-          <h3>Section ${currentSectionIndex + 1}</h3>
-          <label for="section-${currentSectionIndex}">Section title:</label>
-          <input type='text' id="section-${currentSectionIndex}" name="sections[${currentSectionIndex}][sectionTitle]" required>
-          <div class="lessonsContainer"></div>
-          <button type="button" class="addLessonBtn">Add lesson</button>
+          <h4><i class="fas fa-layer-group"></i> Section ${currentSectionIndex + 1}</h4>
+          <div class="form-group">
+            <label for="section-${currentSectionIndex}">Section Title</label>
+            <input type='text' id="section-${currentSectionIndex}" name="sections[${currentSectionIndex}][sectionTitle]" placeholder="Enter section title" required>
+          </div>
+          <div class="lessons-container"></div>
+          <button type="button" class="addLessonBtn btn btn-secondary btn-small">
+            <i class="fas fa-plus"></i> Add Lesson
+          </button>
         `;
         lessonSectionsContainer.appendChild(sectionDiv);
-        const lessonsContainer = sectionDiv.querySelector('.lessonsContainer');
+        
+        const lessonsContainer = sectionDiv.querySelector('.lessons-container');
         let lessonCount = 0;
+        
         sectionDiv.querySelector('.addLessonBtn').addEventListener('click', () => {
           const currentLessonIndex = lessonCount;
           const lessonDiv = document.createElement('div');
           lessonDiv.classList.add('lesson');
           lessonDiv.innerHTML = `
-            <label>Lesson title:</label>
-            <input type="text" name="sections[${currentSectionIndex}][lessons][${currentLessonIndex}][title]" required />
+            <div class="form-group">
+              <label>Lesson Title</label>
+              <input type="text" name="sections[${currentSectionIndex}][lessons][${currentLessonIndex}][title]" placeholder="Enter lesson title" required />
+            </div>
             <div class="lesson-video-upload">
-              <label>Video:</label>
+              <label>Video Upload</label>
               <input type="file" accept="video/*" class="lesson-video-input" style="display:none;" />
               <button type="button" class="lesson-video-upload-btn">Upload Video</button>
               <span class="lesson-video-progress" style="display:none;"></span>
               <input type="hidden" name="sections[${currentSectionIndex}][lessons][${currentLessonIndex}][videoUrl]" class="lesson-video-url" />
-              <div class="lesson-video-preview"><span style="color:#888;">No video</span></div>
+              <div class="lesson-video-preview"><span style="color:#888;">No video uploaded</span></div>
             </div>
-            <button type="button" class="removeLessonBtn">Remove lesson</button>
+            <button type="button" class="remove-lesson-btn" title="Remove lesson">
+              <i class="fas fa-times"></i>
+            </button>
           `;
           lessonsContainer.appendChild(lessonDiv);
+          
           // Remove lesson logic
-          lessonDiv.querySelector('.removeLessonBtn').onclick = function() {
+          lessonDiv.querySelector('.remove-lesson-btn').onclick = function() {
             lessonDiv.remove();
           };
+          
           // Video upload logic
           const videoInput = lessonDiv.querySelector('.lesson-video-input');
           const uploadBtn = lessonDiv.querySelector('.lesson-video-upload-btn');
           const progressSpan = lessonDiv.querySelector('.lesson-video-progress');
           const videoUrlInput = lessonDiv.querySelector('.lesson-video-url');
           const previewDiv = lessonDiv.querySelector('.lesson-video-preview');
+          
           uploadBtn.onclick = () => videoInput.click();
           videoInput.onchange = function() {
             if (videoInput.files.length > 0) {
@@ -226,6 +691,7 @@ Write course description...</textarea>
               formData.append('video', file);
               progressSpan.style.display = 'inline';
               progressSpan.textContent = 'Uploading...';
+              
               fetch(`/admin-page/lessons/upload-video`, {
                 method: 'POST',
                 body: formData
@@ -234,7 +700,7 @@ Write course description...</textarea>
                   if (data.success) {
                     videoUrlInput.value = data.url;
                     previewDiv.innerHTML = `<video src="${data.url}" controls style="max-width:180px;max-height:100px;"></video>`;
-                    progressSpan.textContent = 'Uploaded!';
+                    progressSpan.textContent = 'Uploaded successfully!';
                   } else {
                     progressSpan.textContent = 'Upload failed.';
                   }
@@ -251,55 +717,50 @@ Write course description...</textarea>
         sectionCount++;
       });
 
-      // HANDLING GALLERY CREATION FORM
-
+      // Gallery items handler
       let galleryItemCount = 0;
 
-      document
-        .getElementById("addGalleryItemBtn")
-        .addEventListener("click", () => {
-          const container = document.getElementById("galleryItemsContainer");
-
-          const html = `
-        
-        <div class="galleryItem">
-          <label for="galleryFile-${galleryItemCount}">Media file:</label>
-          <input
-          type="file"
-          name="galleryFiles"
-          id="galleryFile-${galleryItemCount}"
-          required
-        />
-
-        <label for="galleryCaption-${galleryItemCount}">Caption:</label>
-        <input
-          type="text"
-          name="galleryCaptions"
-          id="galleryCaption-${galleryItemCount}"
-          placeholder="Optional caption..."
-        />
-
-        <label for="galleryType-${galleryItemCount}">Type:</label>
-        <select name="galleryTypes" id="galleryType-${galleryItemCount}">
-          <option value="image">Image</option>
-          <option value="video">Video</option>
-        </select>
-
-      <br>
-      </div>
-
+      document.getElementById("addGalleryItemBtn").addEventListener("click", () => {
+        const container = document.getElementById("galleryItemsContainer");
+        const html = `
+          <div class="gallery-item">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="galleryFile-${galleryItemCount}"><i class="fas fa-upload"></i> Media File</label>
+                <input type="file" name="galleryFiles" id="galleryFile-${galleryItemCount}" accept="image/*,video/*" required />
+              </div>
+              <div class="form-group">
+                <label for="galleryType-${galleryItemCount}"><i class="fas fa-tag"></i> Media Type</label>
+                <select name="galleryTypes" id="galleryType-${galleryItemCount}">
+                  <option value="image">Image</option>
+                  <option value="video">Video</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="galleryCaption-${galleryItemCount}"><i class="fas fa-comment"></i> Caption (Optional)</label>
+              <input type="text" name="galleryCaptions" id="galleryCaption-${galleryItemCount}" placeholder="Enter optional caption..." />
+            </div>
+          </div>
         `;
-
         container.insertAdjacentHTML('beforeend', html);
         galleryItemCount++;
-
-
-        });
+      });
 
       // Initialize Quill editor
       var quill = new Quill('#quill-editor', {
         theme: 'snow',
-        placeholder: 'Write course contents here...'
+        placeholder: 'Write your course contents here...',
+        modules: {
+          toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'color': [] }, { 'background': [] }],
+            ['link', 'image'],
+            ['clean']
+          ]
+        }
       });
 
       // On form submit, set the hidden input value to the Quill HTML

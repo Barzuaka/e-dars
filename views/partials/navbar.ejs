@@ -81,32 +81,136 @@
     </div>
   </div>
 </nav>
-<!-- Mobile Menu (moved outside navbar-container) -->
+
+<!-- Enhanced Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
-  <div class="user-info">
-    <% if (user) { %>
-      <span class="user-name"><%= user.firstName %> <%= user.lastName %></span>
-    <% } else { %>
-      <span class="user-name">Guest User</span>
-    <% } %>
+  <!-- User Profile Section -->
+  <div class="mobile-menu-header">
+    <div class="user-profile">
+      <% if (user) { %>
+        <div class="user-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-info">
+          <span class="user-name"><%= user.firstName %> <%= user.lastName %></span>
+          <span class="user-email"><%= user.email %></span>
+        </div>
+      <% } else { %>
+        <div class="user-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-info">
+          <span class="user-name">Mehmon foydalanuvchi</span>
+          <span class="user-email">Tizimga kirish uchun ro'yxatdan o'ting</span>
+        </div>
+      <% } %>
+    </div>
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">
+      <i class="fas fa-times"></i>
+    </button>
   </div>
-  
-  <a href="/#courses-intro" class="menu-item" onclick="closeMobileMenu()">Videokurslar</a>
-  <a href="/student-works" class="menu-item" onclick="closeMobileMenu()">Natijalar</a>
-  
-  <% if (user) { %>
-    <% if (user.role === 'admin') { %>
-      <a href="/admin-page" class="menu-item" onclick="closeMobileMenu()">A-panel</a>
-      <a href="/admin/student-works" class="menu-item" onclick="closeMobileMenu()">Student Works</a>
-    <% } %>
-    <% if (user.purchasedCourses && user.purchasedCourses.length > 0) { %>
-      <a href="/dashboard" class="menu-item highlight-btn" onclick="closeMobileMenu()">Mening kurslarim</a>
-    <% } %>
-    <a href="/api/auth/logout" class="menu-item logout-btn" onclick="closeMobileMenu()">Chiqish</a>
-  <% } else { %>
-    <a href="/login" class="menu-item" onclick="closeMobileMenu()">Kirish</a>
-    <a href="/register" class="menu-item" onclick="closeMobileMenu()">Ro'yxatdan o'tish</a>
-  <% } %>
+
+  <!-- Main Navigation Section -->
+  <div class="mobile-menu-section">
+    <h3 class="mobile-menu-section-title">
+      <i class="fas fa-compass"></i>
+      Asosiy sahifalar
+    </h3>
+    <div class="mobile-menu-items">
+      <a href="/#courses-intro" class="mobile-menu-item" onclick="closeMobileMenu()">
+        <i class="fas fa-play-circle"></i>
+        <span>Videokurslar</span>
+        <i class="fas fa-chevron-right"></i>
+      </a>
+      <a href="/student-works" class="mobile-menu-item" onclick="closeMobileMenu()">
+        <i class="fas fa-trophy"></i>
+        <span>Natijalar</span>
+        <i class="fas fa-chevron-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- User Actions Section -->
+  <div class="mobile-menu-section">
+    <h3 class="mobile-menu-section-title">
+      <i class="fas fa-user"></i>
+      Foydalanuvchi
+    </h3>
+    <div class="mobile-menu-items">
+      <% if (user) { %>
+        <% if (user.role === 'admin') { %>
+          <a href="/admin-page" class="mobile-menu-item admin-item" onclick="closeMobileMenu()">
+            <i class="fas fa-cog"></i>
+            <span>Admin panel</span>
+            <i class="fas fa-chevron-right"></i>
+          </a>
+          <a href="/admin/student-works" class="mobile-menu-item admin-item" onclick="closeMobileMenu()">
+            <i class="fas fa-users"></i>
+            <span>Student Works</span>
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        <% } %>
+        <% if (user.purchasedCourses && user.purchasedCourses.length > 0) { %>
+          <a href="/dashboard" class="mobile-menu-item highlight-item" onclick="closeMobileMenu()">
+            <i class="fas fa-graduation-cap"></i>
+            <span>Mening kurslarim</span>
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        <% } %>
+        <a href="/api/auth/logout" class="mobile-menu-item logout-item" onclick="closeMobileMenu()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Chiqish</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      <% } else { %>
+        <a href="/login" class="mobile-menu-item login-item" onclick="closeMobileMenu()">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Kirish</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+        <a href="/register" class="mobile-menu-item register-item" onclick="closeMobileMenu()">
+          <i class="fas fa-user-plus"></i>
+          <span>Ro'yxatdan o'tish</span>
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Shopping Cart Section -->
+  <div class="mobile-menu-section">
+    <h3 class="mobile-menu-section-title">
+      <i class="fas fa-shopping-cart"></i>
+      Savat
+    </h3>
+    <div class="mobile-menu-items">
+      <button class="mobile-menu-item cart-item" onclick="toggleCart(); closeMobileMenu();">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Savatni ko'rish</span>
+        <span class="cart-badge" id="mobileCartCount">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Contact Section -->
+  <div class="mobile-menu-section">
+    <h3 class="mobile-menu-section-title">
+      <i class="fas fa-headset"></i>
+      Bog'lanish
+    </h3>
+    <div class="mobile-menu-items">
+      <a href="tel:+998901234567" class="mobile-menu-item contact-item">
+        <i class="fas fa-phone"></i>
+        <span>Telefon orqali</span>
+        <i class="fas fa-chevron-right"></i>
+      </a>
+      <a href="https://t.me/your_telegram" class="mobile-menu-item contact-item" target="_blank">
+        <i class="fab fa-telegram"></i>
+        <span>Telegram</span>
+        <i class="fas fa-external-link-alt"></i>
+      </a>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -164,6 +268,7 @@ let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 function updateCartCount() {
   document.getElementById('cartCount').textContent = cart.length;
+  document.getElementById('mobileCartCount').textContent = cart.length;
 }
 
 function addToCart(courseId, courseTitle, coursePrice, courseImage) {
