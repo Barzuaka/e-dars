@@ -28,6 +28,11 @@
               </div>
               <div class="testimonial-author">
                 <span class="author-name">— <%= randomTestimonial.studentName %></span>
+                <% if (randomTestimonial.portfolioLink) { %>
+                    <a href="<%= randomTestimonial.portfolioLink %>" target="_blank" rel="noopener noreferrer" class="portfolio-link">
+                        <i class="fas fa-external-link-alt"></i> Portfolio
+                    </a>
+                <% } %>
               </div>
             </div>
           </div>

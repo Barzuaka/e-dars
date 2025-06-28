@@ -23,6 +23,10 @@
                         <input type="text" id="studentName" name="studentName" required maxlength="100">
                     </div>
                     <div class="form-group">
+                        <label for="portfolioLink">Portfolio Link (optional):</label>
+                        <input type="url" id="portfolioLink" name="portfolioLink" maxlength="500" placeholder="https://example.com/portfolio">
+                    </div>
+                    <div class="form-group">
                         <label for="testimonialText">Testimonial Text:</label>
                         <textarea id="testimonialText" name="text" required maxlength="1000" rows="5"></textarea>
                     </div>
@@ -72,6 +76,7 @@
             container.innerHTML = testimonials.map(testimonial => `
                 <div class="testimonial-card">
                     <p><strong>${testimonial.studentName}</strong></p>
+                    ${testimonial.portfolioLink ? `<p><a href="${testimonial.portfolioLink}" target="_blank" rel="noopener noreferrer">Portfolio</a></p>` : ''}
                     <p>${testimonial.text}</p>
                     <p>Status: ${testimonial.isPublished ? 'Published' : 'Unpublished'}</p>
                     <button onclick="toggleTestimonial('${testimonial._id}', ${testimonial.isPublished})">
@@ -88,6 +93,7 @@
             const formData = new FormData(e.target);
             const data = {
                 studentName: formData.get('studentName'),
+                portfolioLink: formData.get('portfolioLink') || null,
                 text: formData.get('text'),
                 isPublished: formData.get('isPublished') === 'on'
             };

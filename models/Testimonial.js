@@ -7,6 +7,11 @@ const testimonialSchema = new mongoose.Schema({
     trim: true,
     maxlength: [100, 'Student name cannot exceed 100 characters']
   },
+  portfolioLink: {
+    type: String,
+    trim: true,
+    maxlength: [500, 'Portfolio link cannot exceed 500 characters']
+  },
   text: {
     type: String,
     required: [true, 'Testimonial text is required'],

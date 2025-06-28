@@ -72,6 +72,30 @@
   font-size: 1.1rem;
 }
 
+.portfolio-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #28a745;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-left: 1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.portfolio-link:hover {
+  color: #218838;
+  background-color: rgba(40, 167, 69, 0.1);
+  text-decoration: none;
+}
+
+.portfolio-link i {
+  font-size: 0.8rem;
+}
+
 /* Testimonials Page */
 .testimonials-page {
   max-width: 1200px;
@@ -329,4 +353,46 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+/* Admin testimonials list styling */
+#testimonialsList .testimonial-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+#testimonialsList .testimonial-card p {
+  margin: 0.5rem 0;
+}
+
+#testimonialsList .testimonial-card a {
+  color: #28a745;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+#testimonialsList .testimonial-card a:hover {
+  text-decoration: underline;
+}
+
+#testimonialsList .testimonial-card button {
+  margin-right: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+#testimonialsList .testimonial-card button:first-of-type {
+  background: #ffc107;
+  color: #212529;
+}
+
+#testimonialsList .testimonial-card button:last-of-type {
+  background: #dc3545;
+  color: white;
 } 

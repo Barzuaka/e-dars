@@ -31,6 +31,11 @@
                                 </div>
                                 <div class="testimonial-author">
                                     <span class="author-name">— <%= testimonial.studentName %></span>
+                                    <% if (testimonial.portfolioLink) { %>
+                                        <a href="<%= testimonial.portfolioLink %>" target="_blank" rel="noopener noreferrer" class="portfolio-link">
+                                            <i class="fas fa-external-link-alt"></i> Portfolio
+                                        </a>
+                                    <% } %>
                                     <span class="testimonial-date"><%= new Date(testimonial.createdAt).toLocaleDateString('uz-UZ') %></span>
                                 </div>
                             </div>

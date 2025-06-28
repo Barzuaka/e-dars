@@ -42,7 +42,7 @@ export const getRandomTestimonial = async (req, res) => {
 // @access  Private (Admin)
 export const createTestimonial = async (req, res) => {
   try {
-    const { studentName, text } = req.body;
+    const { studentName, portfolioLink, text } = req.body;
     
     if (!studentName || !text) {
       return res.status(400).json({ 
@@ -52,6 +52,7 @@ export const createTestimonial = async (req, res) => {
     
     const testimonial = new Testimonial({
       studentName,
+      portfolioLink: portfolioLink || null,
       text
     });
     
@@ -88,7 +89,7 @@ export const getAllTestimonialsAdmin = async (req, res) => {
 export const updateTestimonial = async (req, res) => {
   try {
     const { id } = req.params;
-    const { studentName, text, isPublished } = req.body;
+    const { studentName, portfolioLink, text, isPublished } = req.body;
     
     const testimonial = await Testimonial.findById(id);
     
@@ -97,6 +98,7 @@ export const updateTestimonial = async (req, res) => {
     }
     
     testimonial.studentName = studentName || testimonial.studentName;
+    testimonial.portfolioLink = portfolioLink !== undefined ? portfolioLink : testimonial.portfolioLink;
     testimonial.text = text || testimonial.text;
     testimonial.isPublished = isPublished !== undefined ? isPublished : testimonial.isPublished;
     
