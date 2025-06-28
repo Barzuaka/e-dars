@@ -3,3 +3,4 @@ node_modules/
 !.env.example
 
 notes.txt
+removed_code.txt

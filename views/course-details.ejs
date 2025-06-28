@@ -198,16 +198,7 @@
                 <%- course.courseContents %>
               </div>
             <% } %>
-            <% course.sections.forEach(section => { %>
-            <div class="section">
-              <h3><%= section.sectionTitle %></h3>
-              <ol>
-                <% section.lessons.forEach(lesson => { %>
-                <li><%= lesson.title %></li>
-                <% }); %>
-              </ol>
-            </div>
-            <% }); %>
+
           </div>
           <div class="tab-content" id="projects">
             <p>Videokursda yasab ko'rsatilgan amaliy loyihalar</p>
