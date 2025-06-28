@@ -40,19 +40,19 @@
 /* Contact Methods Compact */
 .contact-methods-compact {
   display: flex;
-  gap: 12px;
+  gap: 6px;
+  flex-direction: column;
   margin-bottom: 20px;
 }
 
 .contact-btn {
   flex: 1;
-  background: var(--gray-light);
-  color: var(--text-dark);
-  padding: 12px 16px;
+  color: var(--primary-light);
+  padding: 12px 6px;
   border: none;
   border-radius: 8px;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 1.6rem;
   cursor: pointer;
   transition: all var(--transition);
   text-decoration: none;
@@ -63,9 +63,9 @@
   gap: 8px;
 }
 
-.contact-btn i {
+/* .contact-btn i {
   font-size: 16px;
-}
+} */
 
 .contact-btn:hover {
   background: var(--primary-light);

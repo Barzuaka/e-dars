@@ -59,8 +59,8 @@
 
 /* Login Button */
 .login-btn {
-  background: var(--white);
   color: var(--primary-dark);
+  box-sizing: border-box; 
   padding: 10px 20px;
   border-radius: 6px;
   text-decoration: none;
@@ -77,8 +77,8 @@
 
 /* Register Button */
 .register-btn {
-  background: var(--primary-light);
-  color: var(--white);
+  color: var(--primary-light);
+  border: 2px solid var(--primary-light);
   padding: 10px 20px;
   border-radius: 6px;
   text-decoration: none;
@@ -88,6 +88,7 @@
 
 .register-btn:hover {
   background: var(--primary-lighter);
+  color: white;
   transform: translateY(-1px);
 }
 
@@ -430,11 +431,11 @@
 .submit-contact-btn.compact {
   background: var(--primary-light);
   color: var(--white);
-  padding: 10px 20px;
+  padding: 16px 20px;
   border: none;
   border-radius: 6px;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: all var(--transition);
   text-decoration: none;

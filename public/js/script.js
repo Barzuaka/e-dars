@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if ('IntersectionObserver' in window) {
         const observerOptions = {
             root: null, // Use viewport as root
-            rootMargin: `-${stickyNavHeight + 20}px 0px -50% 0px`, // Account for sticky nav and trigger when section is in upper half
+            rootMargin: `-${stickyNavHeight + 30}px 0px -40% 0px`, // Balanced trigger point
             threshold: 0
         };
 

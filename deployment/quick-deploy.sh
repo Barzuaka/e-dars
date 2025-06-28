@@ -41,7 +41,7 @@ sudo chown $USER:$USER /var/www/course-platform
 # Clone repository (REPLACE WITH YOUR ACTUAL GITHUB REPO URL)
 echo "📥 Cloning repository..."
 cd /var/www
-git clone https://github.com/your-username/course-platform.git course-platform
+git clone git clone https://github.com/Barzuaka/e-dars.git course-platform
 cd course-platform
 
 # Install dependencies

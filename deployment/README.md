@@ -15,11 +15,10 @@ This guide will help you deploy your course platform to Digital Ocean with minim
 SSH into your Digital Ocean droplet and run:
 
 ```bash
-# Download and run the setup script
-curl -sSL https://raw.githubusercontent.com/your-username/course-platform/main/deployment/setup-digitalocean.sh | bash
-```
 
-**Important**: Replace `your-username` with your actual GitHub username in the setup script before running.
+# Download and run the setup script
+curl -sSL https://raw.githubusercontent.com/Barzuaka/e-dars/main/deployment/quick-deploy.sh | bash
+
 
 ### 2. Configure Environment Variables
 

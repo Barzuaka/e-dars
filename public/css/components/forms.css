@@ -124,13 +124,13 @@
 }
 
 .form-group.compact label {
-  font-size: 13px;
+  font-size: 1.2rem;
   margin-bottom: 4px;
 }
 
 .form-group.compact input {
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: 1.2rem;
 }
 
 /* Course Selector */

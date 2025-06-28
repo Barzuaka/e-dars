@@ -16,7 +16,7 @@ git pull origin main
 
 # Install/update dependencies
 echo "📦 Installing dependencies..."
-npm install --production
+# npm install --production
 
 # Create/update .env file if it doesn't exist
 if [ ! -f .env ]; then

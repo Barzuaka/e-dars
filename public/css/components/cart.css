@@ -243,11 +243,11 @@
 .buy-cart-btn {
   background: var(--primary-light);
   color: var(--white);
-  padding: 8px 20px;
+  padding: 12px 20px;
   border: none;
   border-radius: 6px;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: all var(--transition);
   display: flex;
@@ -265,7 +265,7 @@
 .contact-message {
   padding: 12px 16px;
   font-size: 1.2rem;
-  color: var(--text-light);
+  color: red;
   margin: 0;
 }
 
