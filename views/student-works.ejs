@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Works - Edars</title>
+  <title>O'quvchilarimiz ishlari - Edars</title>
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/components/student-works.css">
   <link rel="stylesheet" href="/css/fontawesome-free-6.7.2-web/css/all.css">
@@ -16,8 +16,7 @@
   <section class="hero-section">
     <div class="container">
       <div class="hero-content">
-        <h1>Student Results</h1>
-        <p>Discover amazing works created by our students</p>
+        <h1>O'quvchilarimiz ishlari</h1>
       </div>
     </div>
   </section>
@@ -108,7 +107,7 @@
               </div>
               <a id="modalPortfolioLink" class="portfolio-link" target="_blank" style="display: none;">
                 <i class="fas fa-external-link-alt"></i>
-                <span>View Portfolio</span>
+                <span>Portfolioni ko'rish</span>
               </a>
             </div>
           </div>
@@ -226,8 +225,35 @@
       }
     });
 
-    document.getElementById('galleryModal').addEventListener('click', function(e) {
+    // Also close when clicking on the modal content (but not on interactive elements)
+    document.querySelector('.gallery-modal-content').addEventListener('click', function(e) {
+      console.log('Content clicked, target:', e.target);
+      console.log('Content element:', this);
+      console.log('Target === this:', e.target === this);
+      // Only close if clicking on the content div itself, not on its children
       if (e.target === this) {
+        console.log('Closing gallery from content click...');
+        closeGallery();
+      }
+    });
+
+    // Alternative approach: close when clicking on non-interactive elements
+    document.getElementById('galleryModal').addEventListener('click', function(e) {
+      const target = e.target;
+      const isInteractive = target.tagName === 'BUTTON' || 
+                           target.tagName === 'A' || 
+                           target.tagName === 'INPUT' || 
+                           target.tagName === 'VIDEO' ||
+                           target.closest('button') ||
+                           target.closest('a') ||
+                           target.closest('.gallery-nav') ||
+                           target.closest('.close-gallery');
+      
+      console.log('Modal clicked, target:', target.tagName, target.className);
+      console.log('Is interactive:', isInteractive);
+      
+      if (!isInteractive) {
+        console.log('Closing gallery from non-interactive click...');
         closeGallery();
       }
     });
