@@ -177,21 +177,6 @@
     </div>
   </div>
 
-  <!-- Shopping Cart Section -->
-  <div class="mobile-menu-section">
-    <h3 class="mobile-menu-section-title">
-      <i class="fas fa-shopping-cart"></i>
-      Savat
-    </h3>
-    <div class="mobile-menu-items">
-      <button class="mobile-menu-item cart-item" onclick="toggleCart(); closeMobileMenu();">
-        <i class="fas fa-shopping-cart"></i>
-        <span>Savatni ko'rish</span>
-        <span class="cart-badge" id="mobileCartCount">0</span>
-      </button>
-    </div>
-  </div>
-
   <!-- Contact Section -->
   <div class="mobile-menu-section">
     <h3 class="mobile-menu-section-title">
@@ -225,6 +210,7 @@ function toggleMobileMenu() {
   
   if (mobileMenu) {
     mobileMenu.classList.toggle('show');
+    document.body.classList.toggle('mobile-menu-open');
     console.log('Mobile menu classes after toggle:', mobileMenu.className);
     
     // Change icon
@@ -248,6 +234,7 @@ function closeMobileMenu() {
   
   if (mobileMenu) {
     mobileMenu.classList.remove('show');
+    document.body.classList.remove('mobile-menu-open');
     toggleBtn.className = 'fas fa-bars';
     console.log('Mobile menu closed');
   }
@@ -267,8 +254,16 @@ document.addEventListener('click', function(event) {
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 function updateCartCount() {
-  document.getElementById('cartCount').textContent = cart.length;
-  document.getElementById('mobileCartCount').textContent = cart.length;
+  const cartCountElement = document.getElementById('cartCount');
+  const mobileCartCountElement = document.getElementById('mobileCartCount');
+  
+  if (cartCountElement) {
+    cartCountElement.textContent = cart.length;
+  }
+  
+  if (mobileCartCountElement) {
+    mobileCartCountElement.textContent = cart.length;
+  }
 }
 
 function addToCart(courseId, courseTitle, coursePrice, courseImage) {
