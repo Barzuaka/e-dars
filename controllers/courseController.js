@@ -4,6 +4,8 @@ import path from 'path';
 import multer from 'multer';
 import { uploadVideo } from '../services/bunnyService.js';
 import User from '../models/User.js';
+import Testimonial from "../models/Testimonial.js";
+import upload from "../config/multerConfig.js";
 
 // Multer config for gallery uploads
 const galleryStorage = multer.diskStorage({
@@ -126,20 +128,29 @@ export const handleCreateCourseForm = async (req, res) => {
 
 export const displayCourses = async (req, res) => {
   try {
-    const courses = await Course.find().sort({ createdAt: -1 });
-    // Get up to 5 featured courses for the carousel
-    const featuredCourses = await Course.find({ featured: true }).sort({ createdAt: -1 }).limit(5);
-
+    const courses = await Course.find();
+    
+    // Get featured courses
+    const featuredCourses = courses.filter(course => course.featured);
+    
     // Group courses by category
     const coursesByCategory = courses.reduce((acc, course) => {
       const category = course.category;
       if (!acc[category]) {
         acc[category] = [];
       }
-
       acc[category].push(course);
       return acc;
     }, {});
+
+    // Get a random testimonial
+    const testimonialCount = await Testimonial.countDocuments({ isPublished: true });
+    let randomTestimonial = null;
+    
+    if (testimonialCount > 0) {
+      const random = Math.floor(Math.random() * testimonialCount);
+      randomTestimonial = await Testimonial.findOne({ isPublished: true }).skip(random);
+    }
 
     // If user is logged in, populate their purchasedCourses
     let user = null;
@@ -154,6 +165,7 @@ export const displayCourses = async (req, res) => {
       title: "Welcome to the best video course platform!",
       categoryArray: Object.keys(coursesByCategory),
       featuredCourses: featuredCourses,
+      randomTestimonial: randomTestimonial,
       user: user, // Pass user data explicitly as well
     });
 

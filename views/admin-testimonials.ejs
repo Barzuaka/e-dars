@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Testimonials</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <%- include('partials/navbar') %>
+    
+    <main class="main">
+        <div class="admin-testimonials-page">
+            <h1>Testimonials Management</h1>
+            <a href="/admin-page">Back to Admin</a>
+            
+            <!-- Add New Testimonial Form -->
+            <div class="add-testimonial-section">
+                <h2>Add New Testimonial</h2>
+                <form id="addTestimonialForm">
+                    <div class="form-group">
+                        <label for="studentName">Student Name:</label>
+                        <input type="text" id="studentName" name="studentName" required maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="testimonialText">Testimonial Text:</label>
+                        <textarea id="testimonialText" name="text" required maxlength="1000" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="isPublished" name="isPublished" checked>
+                            Published
+                        </label>
+                    </div>
+                    <button type="submit">Add Testimonial</button>
+                </form>
+            </div>
+            
+            <div id="testimonialsList">
+                <!-- Testimonials will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTestimonials();
+            
+            // Add testimonial form
+            const addForm = document.getElementById('addTestimonialForm');
+            addForm.addEventListener('submit', handleAddSubmit);
+        });
+        
+        async function loadTestimonials() {
+            try {
+                const response = await fetch('/api/testimonials/admin/all');
+                const testimonials = await response.json();
+                renderTestimonials(testimonials);
+            } catch (error) {
+                console.error('Error loading testimonials:', error);
+            }
+        }
+        
+        function renderTestimonials(testimonials) {
+            const container = document.getElementById('testimonialsList');
+            
+            if (testimonials.length === 0) {
+                container.innerHTML = '<p>No testimonials found.</p>';
+                return;
+            }
+            
+            container.innerHTML = testimonials.map(testimonial => `
+                <div class="testimonial-card">
+                    <p><strong>${testimonial.studentName}</strong></p>
+                    <p>${testimonial.text}</p>
+                    <p>Status: ${testimonial.isPublished ? 'Published' : 'Unpublished'}</p>
+                    <button onclick="toggleTestimonial('${testimonial._id}', ${testimonial.isPublished})">
+                        ${testimonial.isPublished ? 'Unpublish' : 'Publish'}
+                    </button>
+                    <button onclick="deleteTestimonial('${testimonial._id}')">Delete</button>
+                </div>
+            `).join('');
+        }
+        
+        async function handleAddSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                studentName: formData.get('studentName'),
+                text: formData.get('text'),
+                isPublished: formData.get('isPublished') === 'on'
+            };
+            
+            try {
+                const response = await fetch('/api/testimonials', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    e.target.reset();
+                    loadTestimonials();
+                    alert('Testimonial added successfully!');
+                } else {
+                    alert('Error adding testimonial');
+                }
+            } catch (error) {
+                console.error('Error adding testimonial:', error);
+                alert('Error adding testimonial');
+            }
+        }
+        
+        async function toggleTestimonial(id, currentStatus) {
+            try {
+                const response = await fetch(`/api/testimonials/${id}/toggle`, {
+                    method: 'PATCH'
+                });
+                
+                if (response.ok) {
+                    loadTestimonials();
+                }
+            } catch (error) {
+                console.error('Error toggling testimonial:', error);
+            }
+        }
+        
+        async function deleteTestimonial(id) {
+            if (!confirm('Delete this testimonial?')) return;
+            
+            try {
+                const response = await fetch(`/api/testimonials/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadTestimonials();
+                }
+            } catch (error) {
+                console.error('Error deleting testimonial:', error);
+            }
+        }
+    </script>
+
+    <%- include('partials/footer') %>
+</body>
+</html> 

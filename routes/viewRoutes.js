@@ -15,6 +15,7 @@ import multer from 'multer';
 import { listUsers, getUser, updateUser, deleteUser, dashboard, learningDashboard, getUserEnrollments, addCourseToUser, removeCourseFromUser } from '../controllers/authController.js';
 import Course from "../models/Course.js";
 import StudentWork from "../models/StudentWork.js";
+import Testimonial from "../models/Testimonial.js";
 import User from "../models/User.js";
 
 const router = express.Router();
@@ -127,10 +128,20 @@ const homePage = async (req, res) => {
       coursesByCategory[course.category].push(course);
     });
     
+    // Get a random testimonial
+    const testimonialCount = await Testimonial.countDocuments({ isPublished: true });
+    let randomTestimonial = null;
+    
+    if (testimonialCount > 0) {
+      const random = Math.floor(Math.random() * testimonialCount);
+      randomTestimonial = await Testimonial.findOne({ isPublished: true }).skip(random);
+    }
+    
     res.render("index", { 
       courses, 
       coursesByCategory, 
       categoryArray,
+      randomTestimonial,
       user: req.session.user || null 
     });
   } catch (error) {
@@ -239,6 +250,23 @@ const adminStudentWorksPage = async (req, res) => {
   }
 };
 
+// Admin Testimonials Management page
+const adminTestimonialsPage = async (req, res) => {
+  try {
+    // Check if user is admin
+    if (!req.session.user || req.session.user.role !== 'admin') {
+      return res.redirect('/');
+    }
+    
+    res.render("admin-testimonials", {
+      user: req.session.user
+    });
+  } catch (error) {
+    console.error("Error loading admin testimonials page:", error);
+    res.status(500).send("Error loading admin testimonials page");
+  }
+};
+
 // Course details page
 const courseDetails = async (req, res) => {
   try {
@@ -260,11 +288,47 @@ const courseDetails = async (req, res) => {
   }
 };
 
+// Testimonials page
+const testimonialsPage = async (req, res) => {
+  try {
+    const { page = 1 } = req.query;
+    
+    // Get testimonials with pagination
+    const limit = 10;
+    const skip = (page - 1) * limit;
+    
+    const testimonials = await Testimonial.find({ isPublished: true })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    
+    // Get total count for pagination
+    const total = await Testimonial.countDocuments({ isPublished: true });
+    
+    res.render("testimonials", {
+      testimonials,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        hasNext: skip + testimonials.length < total,
+        hasPrev: page > 1
+      },
+      user: req.session.user || null
+    });
+  } catch (error) {
+    console.error("Error loading testimonials page:", error);
+    res.status(500).send("Error loading testimonials page");
+  }
+};
+
 // Route handlers
 router.get("/", homePage);
 router.get("/student-works", studentWorksPage);
 router.get("/student-works/:id", studentWorkDetailPage);
+router.get("/testimonials", testimonialsPage);
 router.get("/admin/student-works", isAuthenticated, isAdmin, adminStudentWorksPage);
+router.get("/admin/testimonials", isAuthenticated, isAdmin, adminTestimonialsPage);
 router.get("/courses/:id", courseDetails);
 
 // Admin routes

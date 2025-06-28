@@ -10,6 +10,7 @@ import viewRoutes from './routes/viewRoutes.js'
 import authRoutes from "./routes/authRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import studentWorkRoutes from "./routes/studentWorkRoutes.js";
+import testimonialRoutes from "./routes/testimonialRoutes.js";
 import User from "./models/User.js"; // Import the User model
 
 dotenv.config();
@@ -83,6 +84,9 @@ app.use('/api/cart', cartRoutes);
 
 // Student Work routes
 app.use('/api/student-works', studentWorkRoutes);
+
+// Testimonial routes
+app.use('/api/testimonials', testimonialRoutes);
 
 // Health check endpoint for monitoring
 app.get('/health', (req, res) => {

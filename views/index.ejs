@@ -15,6 +15,25 @@
         <!-- Carousel placeholder: add your custom carousel here later -->
       </div>
 
+      <!-- RANDOM TESTIMONIAL -->
+      <% if (randomTestimonial) { %>
+        <div class="testimonial-section">
+          <h4>O'quvchilar fikrlari</h4>
+          <div class="testimonial-container">
+            <div class="testimonial-content">
+              <div class="testimonial-quote">
+                <i class="fas fa-quote-left"></i>
+                <p><%= randomTestimonial.text %></p>
+                <i class="fas fa-quote-right"></i>
+              </div>
+              <div class="testimonial-author">
+                <span class="author-name">— <%= randomTestimonial.studentName %></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+
       <!-- COURSES -->
       <div class="courses-container">
         <div class="courses-intro" id="courses-intro">

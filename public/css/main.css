@@ -18,6 +18,7 @@
 @import url('./components/cart.css');
 @import url('./components/notifications.css');
 @import url('./components/quill-content.css');
+@import url('./components/testimonials.css');
 
 /* 4. Page-specific styles */
 @import url('./course-details-style.css');

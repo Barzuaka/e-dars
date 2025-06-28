@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fikrlar - Edars</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/fontawesome-free-6.7.2-web/css/all.css">
+</head>
+<body>
+    <!-- NAVBAR -->
+    <%- include('partials/navbar') %>
+
+    <main class="main">
+        <div class="testimonials-page">
+            <div class="testimonials-header">
+                <h1>O'quvchilar fikrlari</h1>
+                <p>Video kurslarimizni tamomlagan o'quvchilarning fikrlari</p>
+            </div>
+
+            <!-- Testimonials List -->
+            <div class="testimonials-list">
+                <% if (testimonials && testimonials.length > 0) { %>
+                    <% testimonials.forEach(testimonial => { %>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                <div class="testimonial-quote">
+                                    <i class="fas fa-quote-left"></i>
+                                    <p><%= testimonial.text %></p>
+                                    <i class="fas fa-quote-right"></i>
+                                </div>
+                                <div class="testimonial-author">
+                                    <span class="author-name">— <%= testimonial.studentName %></span>
+                                    <span class="testimonial-date"><%= new Date(testimonial.createdAt).toLocaleDateString('uz-UZ') %></span>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="no-testimonials">
+                        <i class="fas fa-comments"></i>
+                        <p>Hali fikrlar yo'q.</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Pagination -->
+            <% if (pagination && pagination.totalPages > 1) { %>
+                <div class="pagination">
+                    <% if (pagination.hasPrev) { %>
+                        <a href="/testimonials?page=<%= pagination.currentPage - 1 %>" class="pagination-btn">
+                            <i class="fas fa-chevron-left"></i>
+                            Oldingi
+                        </a>
+                    <% } %>
+                    
+                    <span class="pagination-info">
+                        <%= pagination.currentPage %> / <%= pagination.totalPages %>
+                    </span>
+                    
+                    <% if (pagination.hasNext) { %>
+                        <a href="/testimonials?page=<%= pagination.currentPage + 1 %>" class="pagination-btn">
+                            Keyingi
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html> 

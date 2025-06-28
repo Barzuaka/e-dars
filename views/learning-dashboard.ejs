@@ -54,6 +54,9 @@
             <!-- Sidebar -->
             <aside class="dashboard-sidebar" id="dashboardSidebar">
                 <div class="sidebar-header">
+                    <button class="sidebar-close" onclick="closeSidebar()">
+                        <i class="fas fa-times"></i>
+                    </button>
                     <h3>Course Content</h3>
                     <div class="progress-info">
                         <span class="progress-text">Progress</span>
@@ -218,6 +221,14 @@
             }
         }
         
+        // Close sidebar functionality
+        function closeSidebar() {
+            const sidebar = document.getElementById('dashboardSidebar');
+            if (sidebar) {
+                sidebar.classList.remove('open');
+            }
+        }
+        
         // Dashboard mobile menu functionality
         function toggleDashboardMenu() {
             console.log('toggleDashboardMenu function called');
@@ -262,7 +273,7 @@
             item.addEventListener('click', function() {
                 // Close sidebar on mobile after lesson selection
                 if (window.innerWidth <= 767) {
-                    document.getElementById('dashboardSidebar').classList.remove('open');
+                    closeSidebar();
                 }
             });
         });
@@ -271,11 +282,15 @@
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('dashboardSidebar');
             const toggleBtn = document.querySelector('.sidebar-toggle');
+            const closeBtn = document.querySelector('.sidebar-close');
             
             if (window.innerWidth <= 767 && 
+                sidebar && 
+                sidebar.classList.contains('open') &&
                 !sidebar.contains(event.target) && 
-                !toggleBtn.contains(event.target)) {
-                sidebar.classList.remove('open');
+                !toggleBtn.contains(event.target) &&
+                !closeBtn.contains(event.target)) {
+                closeSidebar();
             }
             
             // Close dashboard mobile menu when clicking outside
