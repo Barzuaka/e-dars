@@ -421,6 +421,23 @@
     padding: 16px 20px;
   }
   
+  .cart-actions {
+    padding: 16px 20px;
+  }
+  
+  .buy-cart-btn {
+    padding: 18px 20px;
+    font-size: 18px;
+    min-height: 56px;
+    font-weight: 600;
+  }
+  
+  .contact-message {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+  }
+  
   .cta-container {
     max-width: 100%;
     padding: 20px 16px;
@@ -448,6 +465,23 @@
   
   .cart-summary {
     padding: 12px 16px;
+  }
+  
+  .cart-actions {
+    padding: 12px 16px;
+  }
+  
+  .buy-cart-btn {
+    padding: 16px 18px;
+    font-size: 16px;
+    min-height: 52px;
+    font-weight: 600;
+  }
+  
+  .contact-message {
+    font-size: 1.1rem;
+    margin-bottom: 14px;
+    padding: 10px 14px;
   }
   
   .cta-container {

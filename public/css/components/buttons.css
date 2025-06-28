@@ -508,4 +508,21 @@
     padding: 8px 16px;
     font-size: 13px;
   }
+  
+  .buy-cart-btn {
+    padding: 18px 20px;
+    font-size: 18px;
+    min-height: 56px;
+    width: 100%;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 480px) {
+  .buy-cart-btn {
+    padding: 16px 18px;
+    font-size: 16px;
+    min-height: 52px;
+    font-weight: 600;
+  }
 } 
