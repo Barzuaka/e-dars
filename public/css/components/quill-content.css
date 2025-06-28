@@ -1,359 +1,98 @@
-/* Quill Content Display Styles */
-/* This file contains styles for displaying Quill editor content in the course details page */
-
+/* Minimal Quill Content Styles */
 .course-contents-quill {
-  /* Base container styles */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  font-family: inherit !important;
   line-height: 1.4 !important;
-  color: #333 !important;
+  color: inherit !important;
   padding: 10px 0 !important;
   width: 100% !important;
-  font-size: 0.85rem !important;
+  font-size: 1.02rem !important; /* 0.85rem * 1.2 = 1.02rem */
 }
 
-/* Typography - More specific selectors to override global styles */
-.course-contents-quill h1,
-.course-contents-quill h2,
-.course-contents-quill h3,
-.course-contents-quill h4,
-.course-contents-quill h5,
-.course-contents-quill h6 {
-  margin: 1em 0 0.3em 0 !important;
-  font-weight: 600 !important;
-  line-height: 1.2 !important;
-  color: #2c3e50 !important;
-  font-family: inherit !important;
-}
+/* Essential typography */
+.course-contents-quill h1 { font-size: 1.68em !important; margin: 1em 0 0.3em 0 !important; }
+.course-contents-quill h2 { font-size: 1.44em !important; margin: 1em 0 0.3em 0 !important; }
+.course-contents-quill h3 { font-size: 1.32em !important; margin: 1em 0 0.3em 0 !important; }
+.course-contents-quill h4 { font-size: 1.2em !important; margin: 1em 0 0.3em 0 !important; }
+.course-contents-quill h5 { font-size: 1.14em !important; margin: 1em 0 0.3em 0 !important; }
+.course-contents-quill h6 { font-size: 1.08em !important; margin: 1em 0 0.3em 0 !important; }
 
-.course-contents-quill h1 {
-  font-size: 1.4em !important;
-  border-bottom: 2px solid #3498db !important;
-  padding-bottom: 0.2em !important;
-}
+.course-contents-quill p { font-size: 1.02rem !important; margin: 0 0 0.7em 0 !important; }
+.course-contents-quill ul, .course-contents-quill ol { font-size: 1.02rem !important; margin: 0.7em 0 !important; padding-left: 1.5em !important; }
+.course-contents-quill li { font-size: 1.02rem !important; margin: 0.3em 0 !important; }
 
-.course-contents-quill h2 {
-  font-size: 1.2em !important;
-  border-bottom: 1px solid #bdc3c7 !important;
-  padding-bottom: 0.15em !important;
-}
-
-.course-contents-quill h3 {
-  font-size: 1.1em !important;
-  color: #34495e !important;
-}
-
-.course-contents-quill h4 {
-  font-size: 1em !important;
-  color: #34495e !important;
-}
-
-.course-contents-quill h5 {
-  font-size: 0.95em !important;
-  color: #34495e !important;
-}
-
-.course-contents-quill h6 {
-  font-size: 0.9em !important;
-  color: #34495e !important;
-}
-
-/* Paragraphs and text */
-.course-contents-quill p {
-  margin: 0 0 0.7em 0 !important;
-  line-height: 1.4 !important;
-  font-family: inherit !important;
-  font-size: 0.85rem !important;
-}
-
-.course-contents-quill p:last-child {
-  margin-bottom: 0 !important;
-}
-
-/* Text formatting */
-.course-contents-quill strong,
-.course-contents-quill b {
-  font-weight: 700 !important;
-  color: #2c3e50 !important;
-}
-
-.course-contents-quill em,
-.course-contents-quill i {
-  font-style: italic !important;
-  color: #7f8c8d !important;
-}
-
-.course-contents-quill u {
-  text-decoration: underline !important;
-  text-decoration-color: #3498db !important;
-}
-
-.course-contents-quill s,
-.course-contents-quill strike {
-  text-decoration: line-through !important;
-  color: #95a5a6 !important;
-}
-
-/* Lists */
-.course-contents-quill ul,
-.course-contents-quill ol {
-  margin: 0.7em 0 !important;
-  padding-left: 1.5em !important;
-  font-family: inherit !important;
-  font-size: 0.85rem !important;
-}
-
-.course-contents-quill li {
-  margin: 0.3em 0 !important;
-  line-height: 1.4 !important;
-  font-family: inherit !important;
-  font-size: 0.85rem !important;
-}
-
-.course-contents-quill ul li {
-  list-style-type: disc !important;
-}
-
-.course-contents-quill ol li {
-  list-style-type: decimal !important;
-}
-
-.course-contents-quill ul ul,
-.course-contents-quill ol ol,
-.course-contents-quill ul ol,
-.course-contents-quill ol ul {
-  margin: 0.3em 0 !important;
-}
+/* Essential formatting */
+.course-contents-quill strong, .course-contents-quill b { font-weight: 700 !important; }
+.course-contents-quill em, .course-contents-quill i { font-style: italic !important; }
+.course-contents-quill u { text-decoration: underline !important; }
+.course-contents-quill s, .course-contents-quill strike { text-decoration: line-through !important; }
 
 /* Links */
-.course-contents-quill a {
-  color: #3498db !important;
-  text-decoration: none !important;
-  border-bottom: 1px solid transparent !important;
-  transition: all 0.2s ease !important;
-  font-size: 0.85rem !important;
-}
-
-.course-contents-quill a:hover {
-  color: #2980b9 !important;
-  border-bottom-color: #2980b9 !important;
-}
+.course-contents-quill a { color: #3498db !important; text-decoration: none !important; font-size: 1.02rem !important; }
+.course-contents-quill a:hover { color: #2980b9 !important; }
 
 /* Blockquotes */
-.course-contents-quill blockquote {
-  margin: 1em 0 !important;
-  padding: 0.7em 1em !important;
-  border-left: 3px solid #3498db !important;
-  background: #f8f9fa !important;
-  border-radius: 0 4px 4px 0 !important;
-  font-style: italic !important;
-  color: #555 !important;
-  font-family: inherit !important;
-  font-size: 0.8rem !important;
+.course-contents-quill blockquote { 
+  margin: 1em 0 !important; 
+  padding: 0.7em 1em !important; 
+  border-left: 3px solid #3498db !important; 
+  background: #f8f9fa !important; 
+  font-style: italic !important; 
+  font-size: 0.96rem !important; 
 }
 
-.course-contents-quill blockquote p {
-  margin: 0 !important;
+/* Code */
+.course-contents-quill pre { 
+  margin: 1em 0 !important; 
+  padding: 0.7em !important; 
+  background: #2c3e50 !important; 
+  color: #ecf0f1 !important; 
+  border-radius: 4px !important; 
+  font-family: monospace !important; 
+  font-size: 0.9em !important; 
+}
+.course-contents-quill code { 
+  background: #f1f2f6 !important; 
+  color: #e74c3c !important; 
+  padding: 0.15em 0.3em !important; 
+  border-radius: 3px !important; 
+  font-family: monospace !important; 
+  font-size: 0.96em !important; 
 }
 
-/* Code blocks */
-.course-contents-quill pre {
-  margin: 1em 0 !important;
-  padding: 0.7em !important;
-  background: #2c3e50 !important;
-  color: #ecf0f1 !important;
-  border-radius: 4px !important;
-  overflow-x: auto !important;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
-  font-size: 0.75em !important;
-  line-height: 1.3 !important;
-}
+/* Images and tables */
+.course-contents-quill img { max-width: 100% !important; height: auto !important; margin: 0.7em 0 !important; }
+.course-contents-quill table { width: 100% !important; border-collapse: collapse !important; margin: 1em 0 !important; font-size: 0.96rem !important; }
+.course-contents-quill th, .course-contents-quill td { padding: 0.5em 0.7em !important; border-bottom: 1px solid #e1e5e9 !important; }
 
-.course-contents-quill code {
-  background: #f1f2f6 !important;
-  color: #e74c3c !important;
-  padding: 0.15em 0.3em !important;
-  border-radius: 3px !important;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
-  font-size: 0.8em !important;
-}
+/* Quill-specific classes */
+.course-contents-quill .ql-color-red { color: #e74c3c !important; }
+.course-contents-quill .ql-color-orange { color: #e67e22 !important; }
+.course-contents-quill .ql-color-yellow { color: #f1c40f !important; }
+.course-contents-quill .ql-color-green { color: #27ae60 !important; }
+.course-contents-quill .ql-color-blue { color: #3498db !important; }
+.course-contents-quill .ql-color-purple { color: #9b59b6 !important; }
+.course-contents-quill .ql-color-gray { color: #95a5a6 !important; }
 
-.course-contents-quill pre code {
-  background: transparent !important;
-  color: inherit !important;
-  padding: 0 !important;
-}
+.course-contents-quill .ql-bg-red { background-color: #e74c3c !important; color: white !important; padding: 0.1em 0.3em !important; border-radius: 3px !important; }
+.course-contents-quill .ql-bg-orange { background-color: #e67e22 !important; color: white !important; padding: 0.1em 0.3em !important; border-radius: 3px !important; }
+.course-contents-quill .ql-bg-yellow { background-color: #f1c40f !important; color: #2c3e50 !important; padding: 0.1em 0.3em !important; border-radius: 3px !important; }
+.course-contents-quill .ql-bg-green { background-color: #27ae60 !important; color: white !important; padding: 0.1em 0.3em !important; border-radius: 3px !important; }
+.course-contents-quill .ql-bg-blue { background-color: #3498db !important; color: white !important; padding: 0.1em 0.3em !important; border-radius: 3px !important; }
+.course-contents-quill .ql-bg-purple { background-color: #9b59b6 !important; color: white !important; padding: 0.1em 0.3em !important; border-radius: 3px !important; }
+.course-contents-quill .ql-bg-gray { background-color: #95a5a6 !important; color: white !important; padding: 0.1em 0.3em !important; border-radius: 3px !important; }
 
-/* Images */
-.course-contents-quill img {
-  max-width: 100% !important;
-  height: auto !important;
-  border-radius: 4px !important;
-  margin: 0.7em 0 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  display: block !important;
-}
+.course-contents-quill .ql-text-center { text-align: center !important; }
+.course-contents-quill .ql-text-right { text-align: right !important; }
+.course-contents-quill .ql-text-justify { text-align: justify !important; }
 
-/* Tables */
-.course-contents-quill table {
-  width: 100% !important;
-  border-collapse: collapse !important;
-  margin: 1em 0 !important;
-  border-radius: 4px !important;
-  overflow: hidden !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-  font-size: 0.8rem !important;
-}
-
-.course-contents-quill th,
-.course-contents-quill td {
-  padding: 0.5em 0.7em !important;
-  text-align: left !important;
-  border-bottom: 1px solid #e1e5e9 !important;
-  font-family: inherit !important;
-}
-
-.course-contents-quill th {
-  background: #f8f9fa !important;
-  font-weight: 600 !important;
-  color: #2c3e50 !important;
-}
-
-.course-contents-quill tr:hover {
-  background: #f8f9fa !important;
-}
-
-/* Horizontal rules */
-.course-contents-quill hr {
-  margin: 1.5em 0 !important;
-  border: none !important;
-  border-top: 2px solid #e1e5e9 !important;
-  border-radius: 1px !important;
-}
-
-/* Color classes for text - Quill specific */
-.course-contents-quill .ql-color-red {
-  color: #e74c3c !important;
-}
-
-.course-contents-quill .ql-color-orange {
-  color: #e67e22 !important;
-}
-
-.course-contents-quill .ql-color-yellow {
-  color: #f1c40f !important;
-}
-
-.course-contents-quill .ql-color-green {
-  color: #27ae60 !important;
-}
-
-.course-contents-quill .ql-color-blue {
-  color: #3498db !important;
-}
-
-.course-contents-quill .ql-color-purple {
-  color: #9b59b6 !important;
-}
-
-.course-contents-quill .ql-color-gray {
-  color: #95a5a6 !important;
-}
-
-/* Background color classes - Quill specific */
-.course-contents-quill .ql-bg-red {
-  background-color: #e74c3c !important;
-  color: white !important;
-  padding: 0.1em 0.3em !important;
-  border-radius: 3px !important;
-}
-
-.course-contents-quill .ql-bg-orange {
-  background-color: #e67e22 !important;
-  color: white !important;
-  padding: 0.1em 0.3em !important;
-  border-radius: 3px !important;
-}
-
-.course-contents-quill .ql-bg-yellow {
-  background-color: #f1c40f !important;
-  color: #2c3e50 !important;
-  padding: 0.1em 0.3em !important;
-  border-radius: 3px !important;
-}
-
-.course-contents-quill .ql-bg-green {
-  background-color: #27ae60 !important;
-  color: white !important;
-  padding: 0.1em 0.3em !important;
-  border-radius: 3px !important;
-}
-
-.course-contents-quill .ql-bg-blue {
-  background-color: #3498db !important;
-  color: white !important;
-  padding: 0.1em 0.3em !important;
-  border-radius: 3px !important;
-}
-
-.course-contents-quill .ql-bg-purple {
-  background-color: #9b59b6 !important;
-  color: white !important;
-  padding: 0.1em 0.3em !important;
-  border-radius: 3px !important;
-}
-
-.course-contents-quill .ql-bg-gray {
-  background-color: #95a5a6 !important;
-  color: white !important;
-  padding: 0.1em 0.3em !important;
-  border-radius: 3px !important;
-}
-
-/* Text alignment - Quill specific */
-.course-contents-quill .ql-text-center {
-  text-align: center !important;
-}
-
-.course-contents-quill .ql-text-right {
-  text-align: right !important;
-}
-
-.course-contents-quill .ql-text-justify {
-  text-align: justify !important;
-}
-
-/* Indentation - Quill specific */
-.course-contents-quill .ql-indent-1 {
-  padding-left: 3em !important;
-}
-
-.course-contents-quill .ql-indent-2 {
-  padding-left: 6em !important;
-}
-
-.course-contents-quill .ql-indent-3 {
-  padding-left: 9em !important;
-}
-
-.course-contents-quill .ql-indent-4 {
-  padding-left: 12em !important;
-}
-
-.course-contents-quill .ql-indent-5 {
-  padding-left: 15em !important;
-}
-
-.course-contents-quill .ql-indent-6 {
-  padding-left: 18em !important;
-}
-
-.course-contents-quill .ql-indent-7 {
-  padding-left: 21em !important;
-}
-
-.course-contents-quill .ql-indent-8 {
-  padding-left: 24em !important;
-}
+.course-contents-quill .ql-indent-1 { padding-left: 3em !important; }
+.course-contents-quill .ql-indent-2 { padding-left: 6em !important; }
+.course-contents-quill .ql-indent-3 { padding-left: 9em !important; }
+.course-contents-quill .ql-indent-4 { padding-left: 12em !important; }
+.course-contents-quill .ql-indent-5 { padding-left: 15em !important; }
+.course-contents-quill .ql-indent-6 { padding-left: 18em !important; }
+.course-contents-quill .ql-indent-7 { padding-left: 21em !important; }
+.course-contents-quill .ql-indent-8 { padding-left: 24em !important; }
 
 /* Additional Quill-specific styles for better formatting */
 .course-contents-quill .ql-size-small {
