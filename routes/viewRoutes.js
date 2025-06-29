@@ -174,7 +174,7 @@ const homePage = async (req, res) => {
       coursesByCategory, 
       categoryArray,
       randomTestimonial,
-      user: req.session.user || null 
+      user: res.locals.user
     });
   } catch (error) {
     console.error("Error loading home page:", error);
@@ -208,7 +208,7 @@ const studentWorksPage = async (req, res) => {
         hasNext: skip + studentWorks.length < total,
         hasPrev: page > 1
       },
-      user: req.session.user || null
+      user: res.locals.user
     });
   } catch (error) {
     console.error("Error loading student works page:", error);
@@ -226,21 +226,21 @@ const studentWorkDetailPage = async (req, res) => {
     if (!studentWork) {
       return res.status(404).render("error", { 
         message: "Student work not found",
-        user: req.session.user || null 
+        user: res.locals.user
       });
     }
     
     // Check if user is admin or if work is published
-    if (!studentWork.isPublished && (!req.session.user || req.session.user.role !== 'admin')) {
+    if (!studentWork.isPublished && (!res.locals.user || res.locals.user.role !== 'admin')) {
       return res.status(404).render("error", { 
         message: "Student work not found",
-        user: req.session.user || null 
+        user: res.locals.user
       });
     }
     
     res.render("student-work-detail", {
       studentWork,
-      user: req.session.user || null
+      user: res.locals.user
     });
   } catch (error) {
     console.error("Error loading student work detail:", error);
@@ -274,7 +274,7 @@ const adminStudentWorksPage = async (req, res) => {
         totalPages: Math.ceil(total / limit),
         totalItems: total
       },
-      user: req.session.user
+      user: res.locals.user
     });
   } catch (error) {
     console.error("Error loading admin student works page:", error);
@@ -291,7 +291,7 @@ const adminTestimonialsPage = async (req, res) => {
     }
     
     res.render("admin-testimonials", {
-      user: req.session.user
+      user: res.locals.user
     });
   } catch (error) {
     console.error("Error loading admin testimonials page:", error);
@@ -306,13 +306,13 @@ const courseDetails = async (req, res) => {
     if (!course) {
       return res.status(404).render("error", { 
         message: "Course not found",
-        user: req.session.user || null 
+        user: res.locals.user
       });
     }
     res.render("course-details", { 
       course, 
       title: course.title,
-      user: req.session.user || null 
+      user: res.locals.user
     });
   } catch (error) {
     console.error("Error loading course details:", error);
@@ -346,7 +346,7 @@ const testimonialsPage = async (req, res) => {
         hasNext: skip + testimonials.length < total,
         hasPrev: page > 1
       },
-      user: req.session.user || null
+      user: res.locals.user
     });
   } catch (error) {
     console.error("Error loading testimonials page:", error);

@@ -56,8 +56,19 @@ app.use(
 );
 
 // Middleware to make user available in all views
-app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
+app.use(async (req, res, next) => {
+  if (req.session.user) {
+    try {
+      // Populate user with purchased courses
+      const populatedUser = await User.findById(req.session.user.id).populate('purchasedCourses');
+      res.locals.user = populatedUser;
+    } catch (error) {
+      console.error('Error populating user data:', error);
+      res.locals.user = req.session.user;
+    }
+  } else {
+    res.locals.user = null;
+  }
   next();
 });
 
