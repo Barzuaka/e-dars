@@ -1,5 +1,6 @@
 import express from 'express';
 import multer from 'multer';
+import path from 'path';
 import {
   getAllStudentWorks,
   getStudentWork,
@@ -10,9 +11,18 @@ import {
 
 const router = express.Router();
 
-// Configure multer for file uploads
+// Configure multer for file uploads to disk storage
 const upload = multer({
-  storage: multer.memoryStorage(),
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, path.join('public', 'uploads', 'student-works'));
+    },
+    filename: function (req, file, cb) {
+      const ext = path.extname(file.originalname);
+      const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + ext;
+      cb(null, uniqueName);
+    }
+  }),
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB limit
   },

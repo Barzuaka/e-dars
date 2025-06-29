@@ -1,5 +1,19 @@
 import StudentWork from '../models/StudentWork.js';
-import { uploadVideo } from '../services/bunnyService.js';
+import multer from 'multer';
+import path from 'path';
+
+// Multer config for student work uploads
+const studentWorkStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join('public', 'uploads', 'student-works'));
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + ext;
+    cb(null, uniqueName);
+  }
+});
+const uploadStudentWork = multer({ storage: studentWorkStorage });
 
 // @desc    Get all student works
 // @route   GET /api/student-works
@@ -53,9 +67,6 @@ export const createStudentWork = async (req, res) => {
     } else {
       return res.status(400).json({ success: false, message: 'Only image or video files are allowed' });
     }
-    // Upload to Bunny
-    const fileName = `${Date.now()}-${file.originalname}`;
-    const uploadedUrl = await uploadVideo(file.buffer, fileName, 'gallery');
     // Create student work
     const studentWork = new StudentWork({
       studentName,
@@ -63,7 +74,7 @@ export const createStudentWork = async (req, res) => {
       portfolioLink: portfolioLink || null,
       jobPosition: jobPosition || null,
       mediaType,
-      mediaUrl: uploadedUrl
+      mediaUrl: `/uploads/student-works/${file.filename}`
     });
     await studentWork.save();
     res.status(201).json({ success: true, message: 'Student work created successfully', data: studentWork });
@@ -97,10 +108,8 @@ export const updateStudentWork = async (req, res) => {
       } else {
         return res.status(400).json({ success: false, message: 'Only image or video files are allowed' });
       }
-      const fileName = `${Date.now()}-${req.file.originalname}`;
-      const uploadedUrl = await uploadVideo(req.file.buffer, fileName, 'gallery');
       studentWork.mediaType = mediaType;
-      studentWork.mediaUrl = uploadedUrl;
+      studentWork.mediaUrl = `/uploads/student-works/${req.file.filename}`;
     }
     await studentWork.save();
     res.json({ success: true, message: 'Student work updated successfully', data: studentWork });

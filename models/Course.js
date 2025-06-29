@@ -46,6 +46,40 @@ const galleryItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
+// Sub-schema for course resources
+const courseResourceSchema = new mongoose.Schema(
+  {
+    fileName: {
+      type: String,
+      trim: true,
+      required: [true, "file name is required"],
+    },
+    originalName: {
+      type: String,
+      trim: true,
+      required: [true, "original file name is required"],
+    },
+    fileUrl: {
+      type: String,
+      trim: true,
+      required: [true, "file URL is required"],
+    },
+    fileSize: {
+      type: Number,
+      min: [0, "file size cannot be negative"],
+    },
+    fileType: {
+      type: String,
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+  },
+  { _id: false }
+);
+
 // Define the course schema
 const courseSchema = new mongoose.Schema(
   {
@@ -95,6 +129,7 @@ const courseSchema = new mongoose.Schema(
     },
     sections: [lessonSectionSchema],
     gallery: [galleryItemSchema],
+    resources: [courseResourceSchema],
     price: {
       type: Number,
       default: 0,

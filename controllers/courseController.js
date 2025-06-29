@@ -6,6 +6,7 @@ import { uploadVideo } from '../services/bunnyService.js';
 import User from '../models/User.js';
 import Testimonial from "../models/Testimonial.js";
 import upload from "../config/multerConfig.js";
+import fs from 'fs';
 
 // Multer config for gallery uploads
 const galleryStorage = multer.diskStorage({
@@ -19,6 +20,19 @@ const galleryStorage = multer.diskStorage({
   }
 });
 const uploadGallery = multer({ storage: galleryStorage });
+
+// Multer config for resource uploads
+const resourceStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join('public', 'uploads', 'resources'));
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + ext;
+    cb(null, uniqueName);
+  }
+});
+const uploadResource = multer({ storage: resourceStorage });
 
 // CREATING A COURSE
 // @desc    Create a new course
@@ -100,6 +114,17 @@ export const handleCreateCourseForm = async (req, res) => {
             mediaFileType: ext === "video" ? "video" : "image",
             url: `/uploads/gallery/${file.filename}`,
             caption: "",
+          };
+        }) || [],
+      resources:
+        req.files?.resourceFiles?.map((file, index) => {
+          return {
+            fileName: file.filename,
+            originalName: file.originalname,
+            fileUrl: `/uploads/resources/${file.filename}`,
+            fileSize: file.size,
+            fileType: file.mimetype,
+            description: req.body.resourceDescriptions?.[index] || "",
           };
         }) || [],
       price: parseFloat(req.body.price),
@@ -321,26 +346,49 @@ export const toggleFeatured = async (req, res) => {
   }
 };
 
+// UPLOAD LESSON VIDEO
 export const uploadLessonVideo = async (req, res) => {
   try {
     if (!req.file) {
-      console.error('No file uploaded in request.');
-      return res.json({ success: false, message: 'No file uploaded.' });
+      return res.status(400).json({ success: false, message: 'No video file uploaded' });
     }
-    const fileBuffer = req.file.buffer;
-    const originalName = req.file.originalname;
-    const fileName = Date.now() + '-' + originalName.replace(/\s+/g, '_');
-    const url = await uploadVideo(fileBuffer, fileName, 'lesson-videos');
-    res.json({ success: true, url });
-  } catch (err) {
-    // Log full error details for debugging
-    console.error('Error uploading lesson video:', err);
-    res.json({
-      success: false,
-      message: err.message,
-      stack: err.stack,
-      details: err.response ? err.response.data : undefined
+
+    // Read the file from disk and upload to Bunny.net
+    const fileBuffer = fs.readFileSync(req.file.path);
+    const videoUrl = await uploadVideo(fileBuffer, req.file.filename, 'lesson-videos');
+
+    // Clean up the temporary file
+    fs.unlinkSync(req.file.path);
+
+    res.json({ 
+      success: true, 
+      url: videoUrl,
+      message: 'Video uploaded successfully' 
     });
+  } catch (error) {
+    console.error('Error uploading lesson video:', error);
+    res.status(500).json({ success: false, message: 'Error uploading video' });
+  }
+};
+
+// UPLOAD COURSE RESOURCE
+export const uploadCourseResource = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No resource file uploaded' });
+    }
+
+    const fileUrl = `/uploads/resources/${req.file.filename}`;
+
+    res.json({ 
+      success: true, 
+      url: fileUrl,
+      fileName: req.file.filename,
+      message: 'Resource uploaded successfully' 
+    });
+  } catch (error) {
+    console.error('Error uploading course resource:', error);
+    res.status(500).json({ success: false, message: 'Error uploading resource' });
   }
 };
 

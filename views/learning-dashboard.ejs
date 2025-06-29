@@ -178,16 +178,57 @@
                         <div class="tab-content" id="resources">
                             <h3>Course Resources</h3>
                             <div class="resources-list">
-                                <% if (selectedCourse.gallery && selectedCourse.gallery.length > 0) { %>
-                                    <% selectedCourse.gallery.forEach(item => { %>
+                                <% if (selectedCourse.resources && selectedCourse.resources.length > 0) { %>
+                                    <% selectedCourse.resources.forEach(resource => { %>
                                         <div class="resource-item">
-                                            <i class="fas fa-<%= item.mediaFileType === 'video' ? 'video' : 'image' %>"></i>
-                                            <span><%= item.caption || 'Resource' %></span>
-                                            <a href="<%= item.url %>" target="_blank" class="download-btn">View</a>
+                                            <div class="resource-icon">
+                                                <% 
+                                                let iconClass = 'fas fa-file';
+                                                if (resource.fileType && resource.fileType.includes('zip')) {
+                                                    iconClass = 'fas fa-file-archive';
+                                                } else if (resource.fileType && resource.fileType.includes('pdf')) {
+                                                    iconClass = 'fas fa-file-pdf';
+                                                } else if (resource.fileType && resource.fileType.includes('image')) {
+                                                    iconClass = 'fas fa-file-image';
+                                                } else if (resource.fileType && resource.fileType.includes('video')) {
+                                                    iconClass = 'fas fa-file-video';
+                                                } else if (resource.fileType && resource.fileType.includes('text')) {
+                                                    iconClass = 'fas fa-file-alt';
+                                                } else if (resource.fileType && (resource.fileType.includes('word') || resource.fileType.includes('document'))) {
+                                                    iconClass = 'fas fa-file-word';
+                                                } else if (resource.fileType && (resource.fileType.includes('excel') || resource.fileType.includes('spreadsheet'))) {
+                                                    iconClass = 'fas fa-file-excel';
+                                                } else if (resource.fileType && (resource.fileType.includes('powerpoint') || resource.fileType.includes('presentation'))) {
+                                                    iconClass = 'fas fa-file-powerpoint';
+                                                } else if (resource.fileType && (resource.fileType.includes('code') || resource.fileType.includes('javascript') || resource.fileType.includes('python') || resource.fileType.includes('html'))) {
+                                                    iconClass = 'fas fa-file-code';
+                                                }
+                                                %>
+                                                <i class="<%= iconClass %>"></i>
+                                            </div>
+                                            <div class="resource-info">
+                                                <h4><%= resource.originalName %></h4>
+                                                <% if (resource.description) { %>
+                                                    <p class="resource-description"><%= resource.description %></p>
+                                                <% } %>
+                                                <div class="resource-meta">
+                                                    <span class="file-size"><%= (resource.fileSize / 1024 / 1024).toFixed(2) %> MB</span>
+                                                    <span class="file-type"><%= resource.fileType %></span>
+                                                </div>
+                                            </div>
+                                            <div class="resource-actions">
+                                                <a href="<%= resource.fileUrl %>" download="<%= resource.originalName %>" class="download-btn">
+                                                    <i class="fas fa-download"></i>
+                                                    Download
+                                                </a>
+                                            </div>
                                         </div>
                                     <% }) %>
                                 <% } else { %>
-                                    <p>No additional resources available for this course.</p>
+                                    <div class="no-resources">
+                                        <i class="fas fa-file-archive"></i>
+                                        <p>No additional resources available for this course.</p>
+                                    </div>
                                 <% } %>
                             </div>
                         </div>

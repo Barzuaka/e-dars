@@ -289,6 +289,71 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       }
 
+      /* Resources container styling */
+      .resources-container {
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 16px;
+        background: var(--gray-light);
+      }
+
+      .resource-item {
+        background: var(--white);
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .resource-item .form-row {
+        margin-bottom: 16px;
+      }
+
+      .resource-preview {
+        margin-top: 12px;
+        padding: 12px;
+        background: var(--gray-light);
+        border-radius: 6px;
+        border: 1px solid var(--border-light);
+      }
+
+      .resource-preview .file-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--text-dark);
+      }
+
+      .resource-preview .file-info i {
+        color: var(--primary-light);
+      }
+
+      .remove-resource-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: #ff4757;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .remove-resource-btn:hover {
+        background: #ff3742;
+        transform: scale(1.1);
+      }
+
       /* Button Styling */
       .btn {
         padding: 12px 24px;
@@ -576,6 +641,19 @@
           </div>
         </div>
 
+        <!-- Course Resources Section -->
+        <div class="form-section">
+          <h3><i class="fas fa-file-archive"></i> Course Resources</h3>
+          <p style="color: var(--text-light); margin-bottom: 20px;">Upload project files, source code, assets, or any additional materials for your students</p>
+          
+          <div class="resources-container">
+            <div id="resourcesItemsContainer"></div>
+            <button type="button" id="addResourceItemBtn" class="btn btn-secondary btn-small">
+              <i class="fas fa-plus"></i> Add Resource File
+            </button>
+          </div>
+        </div>
+
         <!-- Form Actions -->
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">
@@ -745,6 +823,100 @@
         `;
         container.insertAdjacentHTML('beforeend', html);
         galleryItemCount++;
+      });
+
+      // Resources items handler
+      let resourceItemCount = 0;
+
+      document.getElementById("addResourceItemBtn").addEventListener("click", () => {
+        const container = document.getElementById("resourcesItemsContainer");
+        const currentResourceIndex = resourceItemCount;
+        const html = `
+          <div class="resource-item" style="position: relative;">
+            <button type="button" class="remove-resource-btn" title="Remove resource">
+              <i class="fas fa-times"></i>
+            </button>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="resourceFile-${currentResourceIndex}"><i class="fas fa-upload"></i> Resource File</label>
+                <input type="file" name="resourceFiles" id="resourceFile-${currentResourceIndex}" accept=".zip,.rar,.7z,.pdf,.doc,.docx,.txt,.blend,.fbx,.obj,.max,.c4d,.psd,.ai,.sketch,.fig,.xd,.html,.css,.js,.py,.java,.cpp,.c,.php,.sql,.json,.xml,.md,.rtf,.odt,.ods,.odp,.xls,.xlsx,.ppt,.pptx" required />
+                <small>Accepted formats: ZIP, RAR, PDF, documents, design files, code files, etc. (Max size: 1GB)</small>
+              </div>
+              <div class="form-group">
+                <label for="resourceDescription-${currentResourceIndex}"><i class="fas fa-comment"></i> Description (Optional)</label>
+                <input type="text" name="resourceDescriptions" id="resourceDescription-${currentResourceIndex}" placeholder="e.g., Project source files, Assets pack, etc." />
+              </div>
+            </div>
+            <div class="resource-preview" style="display: none;">
+              <div class="file-info">
+                <i class="fas fa-file"></i>
+                <span class="file-name"></span>
+                <span class="file-size"></span>
+              </div>
+            </div>
+            <input type="hidden" name="resourceUrls" class="resource-url" />
+            <input type="hidden" name="resourceFileNames" class="resource-filename" />
+            <input type="hidden" name="resourceFileSizes" class="resource-filesize" />
+            <input type="hidden" name="resourceFileTypes" class="resource-filetype" />
+            <input type="hidden" name="resourceOriginalNames" class="resource-originalname" />
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+        
+        // Remove resource logic
+        const resourceItem = container.lastElementChild;
+        resourceItem.querySelector('.remove-resource-btn').onclick = function() {
+          resourceItem.remove();
+        };
+        
+        // File upload logic
+        const fileInput = resourceItem.querySelector('input[type="file"]');
+        const previewDiv = resourceItem.querySelector('.resource-preview');
+        const fileNameSpan = resourceItem.querySelector('.file-name');
+        const fileSizeSpan = resourceItem.querySelector('.file-size');
+        const urlInput = resourceItem.querySelector('.resource-url');
+        const filenameInput = resourceItem.querySelector('.resource-filename');
+        const filesizeInput = resourceItem.querySelector('.resource-filesize');
+        const filetypeInput = resourceItem.querySelector('.resource-filetype');
+        const originalnameInput = resourceItem.querySelector('.resource-originalname');
+        
+        fileInput.onchange = function() {
+          if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('resource', file);
+            
+            // Show file info immediately
+            fileNameSpan.textContent = file.name;
+            fileSizeSpan.textContent = `(${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+            previewDiv.style.display = 'block';
+            
+            // Upload file
+            fetch(`/admin-page/courses/upload-resource`, {
+              method: 'POST',
+              body: formData
+            }).then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  urlInput.value = data.url;
+                  filenameInput.value = data.fileName;
+                  filesizeInput.value = file.size;
+                  filetypeInput.value = file.type;
+                  originalnameInput.value = file.name;
+                  
+                  // Update preview with success indicator
+                  fileNameSpan.innerHTML = `<i class="fas fa-check-circle" style="color: #4CAF50;"></i> ${file.name}`;
+                } else {
+                  fileNameSpan.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #f44336;"></i> ${file.name} - Upload failed`;
+                }
+              })
+              .catch(() => {
+                fileNameSpan.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #f44336;"></i> ${file.name} - Upload failed`;
+              });
+          }
+        };
+        
+        resourceItemCount++;
       });
 
       // Initialize Quill editor

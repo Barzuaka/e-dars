@@ -9,6 +9,7 @@ import {
   uploadGalleryFile,
   toggleFeatured,
   uploadLessonVideo,
+  uploadCourseResource,
 } from "../controllers/courseController.js";
 import upload from "../config/multerConfig.js";
 import multer from 'multer';
@@ -17,6 +18,7 @@ import Course from "../models/Course.js";
 import StudentWork from "../models/StudentWork.js";
 import Testimonial from "../models/Testimonial.js";
 import User from "../models/User.js";
+import path from 'path';
 
 const router = express.Router();
 
@@ -71,7 +73,8 @@ router.post(
   isAdmin,
   upload.fields([
     { name: 'courseThumbnail', maxCount: 1 },
-    { name: 'galleryFiles', maxCount: 20 }
+    { name: 'galleryFiles', maxCount: 20 },
+    { name: 'resourceFiles', maxCount: 20 }
   ]),
   handleCreateCourseForm
 );
@@ -89,8 +92,37 @@ router.post("/admin-page/gallery/upload", isAuthenticated, isAdmin, uploadGaller
 router.post("/admin-page/courses/:id/toggle-featured", isAuthenticated, isAdmin, toggleFeatured);
 
 // Add this route for lesson video upload
-const lessonVideoUpload = multer({ storage: multer.memoryStorage() });
+const lessonVideoUpload = multer({ 
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'temp-uploads');
+    },
+    filename: function (req, file, cb) {
+      const ext = path.extname(file.originalname);
+      const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + ext;
+      cb(null, uniqueName);
+    }
+  })
+});
 router.post("/admin-page/lessons/upload-video", lessonVideoUpload.single('video'), uploadLessonVideo);
+
+// Add this route for course resource upload
+const resourceUpload = multer({ 
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'public/uploads/resources');
+    },
+    filename: function (req, file, cb) {
+      const ext = path.extname(file.originalname);
+      const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + ext;
+      cb(null, uniqueName);
+    }
+  }),
+  limits: {
+    fileSize: 1024 * 1024 * 1024, // 1GB limit
+  }
+});
+router.post("/admin-page/courses/upload-resource", resourceUpload.single('resource'), uploadCourseResource);
 
 // Admin user management routes
 router.get('/admin-page/users', isAuthenticated, isAdmin, listUsers);

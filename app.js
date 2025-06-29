@@ -62,8 +62,8 @@ app.use((req, res, next) => {
 });
 
 // Middleware for parsing request bodies
-app.use(express.json()); // for parsing json data, e.g. postman sends json data but html forms send url encoded data
-app.use(express.urlencoded({extended: true})); // For parsing application/x-www-form-urlencoded
+app.use(express.json({ limit: '1gb' })); // for parsing json data, e.g. postman sends json data but html forms send url encoded data
+app.use(express.urlencoded({extended: true, limit: '1gb'})); // For parsing application/x-www-form-urlencoded
 
 // View Engine Setup
 app.set("view engine", "ejs");

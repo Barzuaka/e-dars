@@ -4,3 +4,10 @@ node_modules/
 
 notes.txt
 removed_code.txt
+
+# Temporary uploads for Bunny.net processing
+temp-uploads/
+
+# Upload directories (keep structure but ignore content)
+public/uploads/*/
+!public/uploads/*/.gitkeep

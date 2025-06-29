@@ -6,10 +6,14 @@ import fs from "fs";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Set folder based on field name
-    const folder =
-      file.fieldname === "courseThumbnail"
-        ? "public/uploads/thumbnails"
-        : "public/uploads/gallery";
+    let folder;
+    if (file.fieldname === "courseThumbnail") {
+      folder = "public/uploads/thumbnails";
+    } else if (file.fieldname === "resourceFiles") {
+      folder = "public/uploads/resources";
+    } else {
+      folder = "public/uploads/gallery";
+    }
 
     cb(null, folder);
   },
@@ -19,7 +23,12 @@ const storage = multer.diskStorage({
   },
 });
 
-// Export the configured multer instance
-const upload = multer({ storage });
+// Export the configured multer instance with increased file size limits
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 1024 * 1024 * 1024, // 1GB limit for resource files
+  }
+});
 
 export default upload;

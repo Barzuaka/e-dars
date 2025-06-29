@@ -659,51 +659,123 @@
 .resources-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
 }
 
 .resource-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px;
-    background: var(--background-light);
-    border-radius: var(--radius-lg);
+    gap: 16px;
+    padding: 20px;
+    background: var(--white);
     border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
     transition: var(--transition);
+    box-shadow: var(--shadow-light);
 }
 
 .resource-item:hover {
-    background: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
     border-color: var(--primary-light);
-    transform: translateX(4px);
 }
 
-.resource-item i {
-    font-size: 18px;
+.resource-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: var(--background-light);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
     color: var(--primary-dark);
+    border: 2px solid var(--border-color);
+    transition: var(--transition);
 }
 
-.resource-item span {
+.resource-item:hover .resource-icon {
+    background: var(--primary-dark);
+    color: var(--white);
+    border-color: var(--primary-dark);
+}
+
+.resource-info {
     flex: 1;
-    font-weight: 500;
+    min-width: 0;
+}
+
+.resource-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
     color: var(--text-dark);
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.resource-description {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: var(--text-light);
+    line-height: 1.4;
+}
+
+.resource-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-light);
+}
+
+.file-size, .file-type {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.resource-actions {
+    flex-shrink: 0;
 }
 
 .download-btn {
-    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
     background: var(--primary-dark);
     color: var(--white);
     text-decoration: none;
     border-radius: var(--radius);
-    font-size: 0.875rem;
+    font-size: 14px;
     font-weight: 600;
     transition: var(--transition);
+    border: none;
+    cursor: pointer;
 }
 
 .download-btn:hover {
     background: var(--primary-light);
     transform: translateY(-1px);
+    box-shadow: var(--shadow-medium);
+}
+
+.no-resources {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-light);
+}
+
+.no-resources i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: var(--border-color);
+}
+
+.no-resources p {
+    font-size: 16px;
+    margin: 0;
 }
 
 /* No Course Selected */
@@ -809,13 +881,12 @@
     }
     
     .resources-tabs {
-        flex-direction: column;
+        flex-wrap: wrap;
     }
     
     .tab-btn {
-        text-align: left;
-        border-bottom: 1px solid var(--border-color);
-        border-right: none;
+        flex: 1;
+        min-width: 120px;
     }
     
     .tab-content {
@@ -823,11 +894,11 @@
     }
     
     .tab-content h3 {
-        font-size: 1.125rem;
+        font-size: 18px;
     }
     
     .tab-content p {
-        font-size: 0.875rem;
+        font-size: 14px;
     }
     
     .course-stats {
@@ -846,6 +917,43 @@
     .dashboard-mobile-menu {
         top: 64px;
         max-height: calc(100vh - 64px);
+    }
+    
+    /* Resource responsive styles */
+    .resource-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+    
+    .resource-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .resource-info h4 {
+        font-size: 14px;
+    }
+    
+    .resource-description {
+        font-size: 13px;
+    }
+    
+    .resource-meta {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .resource-actions {
+        width: 100%;
+    }
+    
+    .download-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 16px;
     }
 }
 
